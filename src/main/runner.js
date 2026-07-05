@@ -344,8 +344,11 @@ async function revertEntry(serial, entry) {
       return `Reativados (${ok.length})`;
     }
     case 'uninstall': {
-      // App que instalamos: remove.
-      await adb.removePackage(serial, r.pkg);
+      // App que NÓS instalamos: desinstalação completa (adb uninstall).
+      // Não usar removePackage aqui — o 'pm uninstall -k --user 0' dele é
+      // para apps de sistema; em apps instalados por nós o Android recusa
+      // o -k e a reversão falharia.
+      await adb.uninstallPackage(serial, r.pkg);
       return 'Removido';
     }
     case 'setting': {
