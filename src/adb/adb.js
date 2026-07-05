@@ -199,10 +199,12 @@ async function getDisplaySize(serial) {
   return { physical: phys ? phys[1] : null, override: over ? over[1] : null };
 }
 
-// Confirma se um pacote existe no aparelho.
+// Confirma se um pacote existe no aparelho. A comparação é por linha exata:
+// 'pm list packages com.mubi' também lista 'com.mubi.pro', e um includes()
+// simples daria falso positivo.
 async function hasPackage(serial, pkg) {
   const out = await adb(['-s', serial, 'shell', 'pm', 'list', 'packages', pkg]);
-  return out.includes(`package:${pkg}`);
+  return out.split('\n').some((line) => line.trim() === `package:${pkg}`);
 }
 
 module.exports = {

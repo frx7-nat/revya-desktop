@@ -2,7 +2,7 @@
 // Processo principal do Electron. Cria a janela, registra os handlers IPC
 // que o renderer chama através do preload, e serve o bundle do React.
 
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const adb = require('../adb/adb');
 const { checkDevices } = require('../adb/adbOrchestrator');
@@ -34,9 +34,22 @@ function createWindow() {
     }
   });
   // O renderer chama isto quando o usuário confirma o fechamento no pop-up.
+  // removeAllListeners: no macOS, reabrir pelo Dock cria uma nova janela e
+  // este handler é registrado de novo — sem a limpeza, o handler antigo
+  // (apontando para a janela destruída) também dispararia e lançaria erro.
+  ipcMain.removeAllListeners('confirm-close');
   ipcMain.on('confirm-close', () => {
     allowClose = true;
     win.close();
+  });
+
+  // Qualquer link com target=_blank (ex.: vitrine de acessórios) abre no
+  // navegador padrão do sistema, nunca numa janela do Electron.
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('https:') || url.startsWith('http:')) {
+      shell.openExternal(url);
+    }
+    return { action: 'deny' };
   });
 
   // Em DEV (--dev): carrega do servidor do Vite, com hot reload.
@@ -57,8 +70,20 @@ ipcMain.handle('adb:describeDevice', (_e, serial) => adb.describeDevice(serial))
 // Aplica uma task. Agora runTask devolve { detail, revert }. Guardamos a
 // informação de reversão no disco e devolvemos só o detail ao renderer
 // (a interface não precisa conhecer os detalhes de reversão).
+// Se a task falhar NO MEIO (ex.: 3 de 5 pacotes removidos), o erro traz
+// `partialRevert` — persistimos essa reversão parcial antes de repassar o
+// erro, para o que já foi alterado continuar desfazível.
 ipcMain.handle('adb:runTask', async (_e, serial, task) => {
-  const { detail, revert } = await runTask(serial, task);
+  let result;
+  try {
+    result = await runTask(serial, task);
+  } catch (err) {
+    if (err && err.partialRevert) {
+      revertStore.addEntry(serial, { taskId: task.id, label: task.label, revert: err.partialRevert });
+    }
+    throw err;
+  }
+  const { detail, revert } = result;
   if (revert) {
     revertStore.addEntry(serial, { taskId: task.id, label: task.label, revert });
   }

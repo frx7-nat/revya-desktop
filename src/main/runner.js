@@ -41,9 +41,12 @@ function extractZip(zipPath, destDir) {
   return new Promise((resolve, reject) => {
     fs.mkdirSync(destDir, { recursive: true });
     if (process.platform === 'win32') {
+      // Aspas simples nos caminhos (ex.: nome de usuário com apóstrofo)
+      // quebrariam o comando do PowerShell; dobrá-las é o escape correto.
+      const q = (s) => String(s).replace(/'/g, "''");
       execFile('powershell', [
         '-NoProfile', '-Command',
-        `Expand-Archive -LiteralPath '${zipPath}' -DestinationPath '${destDir}' -Force`,
+        `Expand-Archive -LiteralPath '${q(zipPath)}' -DestinationPath '${q(destDir)}' -Force`,
       ], { timeout: 60000 }, (err) => (err ? reject(err) : resolve()));
     } else {
       execFile('unzip', ['-o', zipPath, '-d', destDir], { timeout: 60000 }, (err, _out, stderr) => {
@@ -96,13 +99,22 @@ async function runTask(serial, task) {
   switch (task.kind) {
     case 'remove': {
       const results = [];
-      for (const pkg of task.pkgs) {
-        // Só tenta remover o que existe — evita ruído de erro em aparelhos
-        // que já não traziam aquele app.
-        if (await adb.hasPackage(serial, pkg)) {
-          await adb.removePackage(serial, pkg);
-          results.push(pkg);
+      try {
+        for (const pkg of task.pkgs) {
+          // Só tenta remover o que existe — evita ruído de erro em aparelhos
+          // que já não traziam aquele app.
+          if (await adb.hasPackage(serial, pkg)) {
+            await adb.removePackage(serial, pkg);
+            results.push(pkg);
+          }
         }
+      } catch (e) {
+        // Falha no meio da lista: os pacotes já removidos precisam continuar
+        // reversíveis. Anexa a reversão parcial ao erro; o main a persiste.
+        if (results.length) {
+          e.partialRevert = { kind: 'restore-many', pkgs: results };
+        }
+        throw e;
       }
       // Reverter = reativar SÓ os pacotes que realmente removemos (não os que
       // já estavam ausentes). Cada um vira uma sub-reversão.
@@ -134,8 +146,13 @@ async function runTask(serial, task) {
         throw new Error(`Origem de APK desconhecida: ${src.type}`);
       }
 
-      // Tenta desativar o verificador de pacotes (Play Protect para ADB).
-      await adb.adb(['-s', serial, 'shell', 'settings', 'put', 'global', 'verifier_verify_adb_installs', '0']).catch(() => {});
+      // Desativa o verificador de pacotes (Play Protect para ADB) SÓ durante a
+      // instalação, guardando o valor anterior para restaurar ao final —
+      // não deixamos uma proteção do sistema desligada permanentemente.
+      const prevVerifier = normalizePrev(
+        (await adb.getSetting(serial, 'global', 'verifier_verify_adb_installs').catch(() => 'null')).trim()
+      );
+      await adb.putSetting(serial, 'global', 'verifier_verify_adb_installs', 0).catch(() => {});
 
       try {
         const ext = path.extname(apkPath).toLowerCase();
@@ -152,6 +169,12 @@ async function runTask(serial, task) {
           throw new Error('VERIFICATION_FAILURE:');
         }
         throw e;
+      } finally {
+        if (prevVerifier === null) {
+          await adb.deleteSetting(serial, 'global', 'verifier_verify_adb_installs').catch(() => {});
+        } else {
+          await adb.putSetting(serial, 'global', 'verifier_verify_adb_installs', prevVerifier).catch(() => {});
+        }
       }
 
       // Reverter instalação = desinstalar o app que adicionamos (se tiver pkg).
@@ -181,7 +204,13 @@ async function runTask(serial, task) {
           prevs.push({ key, prev: normalizePrev(prev) });
           applied.push(key);
         } catch (e) {
-          throw new Error(`${applied.length}/${task.keys.length} aplicadas. Falhou em ${key}: ${e.message}`);
+          const err = new Error(`${applied.length}/${task.keys.length} aplicadas. Falhou em ${key}: ${e.message}`);
+          // As chaves já aplicadas precisam continuar reversíveis mesmo com a
+          // task falhando. Anexa a reversão parcial ao erro; o main a persiste.
+          if (prevs.length) {
+            err.partialRevert = { kind: 'settings', ns: task.ns, keys: prevs };
+          }
+          throw err;
         }
       }
       return {

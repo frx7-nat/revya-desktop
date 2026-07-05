@@ -44,9 +44,13 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
 
   const runRevert = async () => {
     setPhase('running');
-    setLog(entries.map((e) => ({ taskId: e.taskId, label: e.label, status: 'pending' })));
+    // Reverte na ordem INVERSA da aplicação: tasks que mexem no mesmo recurso
+    // (ex.: duas resoluções) se desfazem corretamente — a última aplicada é a
+    // primeira desfeita, como numa pilha.
+    const queue = [...entries].reverse();
+    setLog(queue.map((e) => ({ taskId: e.taskId, label: e.label, status: 'pending' })));
 
-    for (const entry of entries) {
+    for (const entry of queue) {
       setLog((l) => l.map((x) => x.taskId === entry.taskId ? { ...x, status: 'running' } : x));
       try {
         const detail = await window.api.revertOne(serial, entry.taskId);

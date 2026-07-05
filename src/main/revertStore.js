@@ -35,12 +35,41 @@ function write(serial, data) {
   fs.writeFileSync(fileFor(serial), JSON.stringify(data, null, 2), 'utf8');
 }
 
-// Acrescenta uma entrada de reversão (uma por task aplicada), evitando
-// duplicar a mesma task (taskId) se aplicada novamente.
+// Combina a reversão antiga com a nova quando a MESMA task é reaplicada.
+// Regra geral: o estado ORIGINAL (o mais antigo) é o que vale — se a task já
+// foi aplicada antes, o "valor anterior" capturado na reaplicação é o valor
+// que nós mesmos colocamos, não o do usuário. Para listas (pacotes/chaves),
+// unimos: itens novos entram, itens repetidos mantêm o registro original.
+function mergeRevert(oldRevert, newRevert) {
+  if (!oldRevert) return newRevert;
+  if (!newRevert || newRevert.kind !== oldRevert.kind) return oldRevert;
+  switch (oldRevert.kind) {
+    case 'restore-many':
+      return { ...oldRevert, pkgs: [...new Set([...oldRevert.pkgs, ...newRevert.pkgs])] };
+    case 'settings': {
+      const keys = [...oldRevert.keys];
+      for (const k of newRevert.keys) {
+        if (!keys.some((x) => x.key === k.key)) keys.push(k);
+      }
+      return { ...oldRevert, keys };
+    }
+    default:
+      // setting / home / rotate / wmsize / uninstall: mantém o original.
+      return oldRevert;
+  }
+}
+
+// Acrescenta uma entrada de reversão (uma por task aplicada). Se a task já
+// tem entrada, faz o merge preservando o estado original (ver mergeRevert).
 function addEntry(serial, entry) {
   const data = read(serial);
-  data.entries = data.entries.filter((e) => e.taskId !== entry.taskId);
-  data.entries.push(entry);
+  const existing = data.entries.find((e) => e.taskId === entry.taskId);
+  if (existing) {
+    existing.label = entry.label;
+    existing.revert = mergeRevert(existing.revert, entry.revert);
+  } else {
+    data.entries.push(entry);
+  }
   data.updatedAt = new Date().toISOString();
   write(serial, data);
   return data;

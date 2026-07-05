@@ -17,20 +17,18 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "concurrently": "^8.2.2",
-    "electron": "^31.0.0",
-    "electron-builder": "^24.13.3",
-    "vite": "^5.3.1",
-    "wait-on": "^7.2.0"
-  },
-  "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.20",
     "@mui/icons-material": "^5.15.20",
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "vite": "^5.3.1",
+    "wait-on": "^7.2.0"
   },
   "build": {
     "appId": "com.dexarmor.app",
@@ -42,8 +40,7 @@
     "files": [
       "src/main/**/*",
       "src/adb/**/*",
-      "dist/renderer/**/*",
-      "node_modules/**/*"
+      "dist/renderer/**/*"
     ],
     "extraResources": [
       {

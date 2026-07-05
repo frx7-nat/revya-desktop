@@ -69,9 +69,13 @@ export default function App() {
       // 'unauthorized' = cabo conectado, faltou o usuário tocar em "Permitir".
       const pending = devices.find((d) => d.state === 'unauthorized');
       if (online) {
-        const info = await window.api.describeDevice(online.serial);
-        setDevice(info);
         setCablePresent(true);
+        // Mesmo aparelho de antes: não reconsulta as propriedades a cada
+        // ciclo de polling (o describeDevice faz várias chamadas ADB).
+        if (!device || device.serial !== online.serial) {
+          const info = await window.api.describeDevice(online.serial);
+          setDevice(info);
+        }
       } else {
         setDevice(null);
         setCablePresent(!!pending);
@@ -82,7 +86,7 @@ export default function App() {
     } finally {
       setScanning(false);
     }
-  }, []);
+  }, [device]);
 
   // Atualiza a contagem de reversões disponíveis para o aparelho atual.
   const refreshRevertCount = useCallback(async () => {
@@ -112,9 +116,9 @@ export default function App() {
 
   // Quando o usuário tenta fechar a janela, o main avisa e mostramos o pop-up.
   useEffect(() => {
-    if (window.api && window.api.onShowClosePopup) {
-      window.api.onShowClosePopup(() => setClosePopup(true));
-    }
+    if (!window.api || !window.api.onShowClosePopup) return undefined;
+    const unsubscribe = window.api.onShowClosePopup(() => setClosePopup(true));
+    return () => { if (typeof unsubscribe === 'function') unsubscribe(); };
   }, []);
 
   // Ações do pop-up de fechamento.
@@ -127,17 +131,20 @@ export default function App() {
     if (window.api && window.api.confirmClose) window.api.confirmClose();
   }, []);
 
-  // Faz polling enquanto não há aparelho — detecta o plug automaticamente.
+  // Polling contínuo (pausado durante a execução): detecta tanto o plug
+  // quanto o DESplug do aparelho — sem isso, um cabo removido deixaria a UI
+  // mostrando um dispositivo que não existe mais.
   useEffect(() => {
     scan();
-    const t = setInterval(() => { if (!device && !running) scan(); }, 3000);
+    const t = setInterval(() => { if (!running) scan(); }, 3000);
     return () => clearInterval(t);
-  }, [device, running, scan]);
+  }, [running, scan]);
 
   const run = useCallback(async () => {
     if (!device) return;
     const queue = ALL_TASKS.filter((t) => selected[t.id]);
     setRunning(true);
+    setPercent(0);
     setLog(queue.map((t) => ({ id: t.id, label: t.label, status: 'pending' })));
 
     for (let i = 0; i < queue.length; i++) {

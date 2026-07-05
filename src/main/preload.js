@@ -19,8 +19,11 @@ contextBridge.exposeInMainWorld('api', {
   },
 
   // Pop-up de fechamento: o main avisa quando o usuário tenta fechar.
+  // Devolve uma função de cleanup, no mesmo padrão do onPhase.
   onShowClosePopup: (callback) => {
-    ipcRenderer.on('show-close-popup', callback);
+    const handler = () => callback();
+    ipcRenderer.on('show-close-popup', handler);
+    return () => ipcRenderer.removeListener('show-close-popup', handler);
   },
   // O renderer confirma o fechamento (após o usuário decidir no pop-up).
   confirmClose: () => ipcRenderer.send('confirm-close'),
