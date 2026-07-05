@@ -12,7 +12,6 @@ import {
   Select, MenuItem, FormControl, InputLabel,
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import TvIcon from '@mui/icons-material/Tv';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import WifiIcon from '@mui/icons-material/Wifi';
 import ScreenShareIcon from '@mui/icons-material/ScreenShare';
@@ -33,7 +32,7 @@ function Spec({ label, value }) {
 
 export default function DevicePanel({
   device, phase, onRun, onRunRecommended, running, ready, percent, currentLabel,
-  showAccessories, onOpenDexGuide, devices = [], onPickDevice, wifiStatus, onEnableWifi,
+  showAccessories, devices = [], onPickDevice, wifiStatus, onEnableWifi,
   mirrorStatus, onStartMirror,
 }) {
   const isTv = phase === 'tv';
@@ -175,16 +174,6 @@ export default function DevicePanel({
               {mirrorStatus.error}
             </Typography>
           )}
-
-          {/* Etapa opcional: configurar a saída de vídeo (desativar DeX).
-              Relevante para aparelhos que têm DeX; inofensivo para os demais. */}
-          <Button
-            variant="text" color="primary" fullWidth startIcon={<TvIcon />}
-            onClick={onOpenDexGuide}
-            sx={{ mt: 0.5, fontSize: '0.82rem' }}
-          >
-            DeX vs Experiência de TV
-          </Button>
         </Box>
       </Collapse>
 

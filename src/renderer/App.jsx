@@ -272,7 +272,6 @@ export default function App() {
             onRun={run} onRunRecommended={runRecommended} running={running} ready={ready}
             percent={percent} currentLabel={currentLabel}
             showAccessories={leftView === 'accessories'}
-            onOpenDexGuide={() => setDexGuide(true)}
             devices={onlineDevices} onPickDevice={setPreferredSerial}
             wifiStatus={wifiStatus} onEnableWifi={enableWifi}
             mirrorStatus={mirrorStatus} onStartMirror={startMirror}

@@ -187,7 +187,7 @@ export default function TaskPanel({ selected, completed, onToggle, disabled, vie
             onClick={onOpenDexGuide}
             sx={{ mb: 1.2, py: 1, fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.02em' }}
           >
-            Desativar DeX
+            Desative o DeX
           </Button>
 
           {/* Check-up: verifica se os ajustes aplicados continuam valendo.
