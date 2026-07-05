@@ -214,18 +214,21 @@ export const TASK_GROUPS = [
       // Resolução da TV: três opções mutuamente exclusivas (o usuário escolhe
       // UMA, conforme a resolução da TV dele). O valor DEVE bater com a
       // resolução nativa da TV — forçar um valor maior que o suportado encolhe
-      // a imagem para o centro da tela. Todas são 16:9. `exclusiveGroup` faz
-      // com que marcar uma desmarque as outras do mesmo grupo.
+      // a imagem para o centro da tela. Todas são 16:9 (o painel do celular é
+      // ~20:9; forçar 16:9 faz o espelhamento preencher a TV sem cortes).
+      // `density` é o dpi pareado no padrão Android TV (1080p→320, 1440p→480,
+      // 4K→640): interface na escala certa para ver do sofá. `exclusiveGroup`
+      // faz com que marcar uma desmarque as outras do mesmo grupo.
       { id: 'tw-res-fhd', label: 'Resolução Full HD (1080p)', kind: 'wmsize',
-        width: 1920, height: 1080, exclusiveGroup: 'resolution',
+        width: 1920, height: 1080, density: 320, exclusiveGroup: 'resolution',
         info: 'Para TVs Full HD (1920x1080). A resolução mais comum.' },
 
       { id: 'tw-res-2k', label: 'Resolução 2K (1440p)', kind: 'wmsize',
-        width: 2560, height: 1440, exclusiveGroup: 'resolution',
+        width: 2560, height: 1440, density: 480, exclusiveGroup: 'resolution',
         info: 'Para monitores e TVs 2K/QHD (2560x1440).' },
 
       { id: 'tw-res-4k', label: 'Resolução 4K (2160p)', kind: 'wmsize',
-        width: 3840, height: 2160, exclusiveGroup: 'resolution',
+        width: 3840, height: 2160, density: 640, exclusiveGroup: 'resolution',
         info: 'Para TVs 4K/UHD (3840x2160). Só use se a TV for realmente 4K.' },
 
       { id: 'tw-sound', label: 'Silenciar sons de toque', kind: 'settings',

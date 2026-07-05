@@ -13,6 +13,7 @@ import CloseDialog from './components/CloseDialog';
 import DexGuideDialog from './components/DexGuideDialog';
 import ResetDialog from './components/ResetDialog';
 import CheckupDialog from './components/CheckupDialog';
+import TvResolutionDialog from './components/TvResolutionDialog';
 import { ALL_TASKS, RECOMMENDED_TASK_IDS } from './data/tasks';
 
 export default function App() {
@@ -29,6 +30,8 @@ export default function App() {
   const [mirrorStatus, setMirrorStatus] = useState(null);
   // Diálogo de check-up (verificação dos ajustes aplicados).
   const [checkupOpen, setCheckupOpen] = useState(false);
+  // Pergunta da resolução da TV, feita antes da Configuração Recomendada.
+  const [tvResOpen, setTvResOpen] = useState(false);
   const [selected, setSelected] = useState({});
   const [log, setLog] = useState([]);
   const [running, setRunning] = useState(false);
@@ -188,12 +191,14 @@ export default function App() {
     return runQueue(ALL_TASKS.filter((t) => selected[t.id]));
   }, [runQueue, selected]);
 
-  // Configuração recomendada: seleciona o preset curado (pulando o que já foi
-  // concluído), reflete nos checkboxes para o usuário ver, e executa direto.
-  const runRecommended = useCallback(() => {
-    const queue = ALL_TASKS.filter(
-      (t) => RECOMMENDED_TASK_IDS.includes(t.id) && !completed[t.id]
-    );
+  // Configuração recomendada: o botão abre o diálogo da resolução da TV;
+  // com a resposta, monta o preset curado + a resolução escolhida (pulando o
+  // que já foi concluído), reflete nos checkboxes e executa direto.
+  const runRecommended = useCallback((resolutionTaskId) => {
+    setTvResOpen(false);
+    const ids = new Set(RECOMMENDED_TASK_IDS);
+    if (resolutionTaskId) ids.add(resolutionTaskId);
+    const queue = ALL_TASKS.filter((t) => ids.has(t.id) && !completed[t.id]);
     setSelected(Object.fromEntries(queue.map((t) => [t.id, true])));
     return runQueue(queue);
   }, [runQueue, completed]);
@@ -269,7 +274,7 @@ export default function App() {
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <DevicePanel
             device={device} phase={phase} scanning={scanning} onRefresh={scan}
-            onRun={run} onRunRecommended={runRecommended} running={running} ready={ready}
+            onRun={run} onRunRecommended={() => setTvResOpen(true)} running={running} ready={ready}
             percent={percent} currentLabel={currentLabel}
             showAccessories={leftView === 'accessories'}
             devices={onlineDevices} onPickDevice={setPreferredSerial}
@@ -307,6 +312,13 @@ export default function App() {
       <CheckupDialog
         open={checkupOpen} serial={device?.serial}
         onClose={() => { setCheckupOpen(false); refreshRevertCount(); }}
+      />
+
+      {/* Resolução da TV — etapa da Configuração Recomendada. */}
+      <TvResolutionDialog
+        open={tvResOpen}
+        onClose={() => setTvResOpen(false)}
+        onChoose={runRecommended}
       />
     </ThemeProvider>
   );

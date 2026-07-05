@@ -289,9 +289,20 @@ async function runTask(serial, task) {
     case 'wmsize': {
       const before = await adb.getDisplaySize(serial);
       await adb.setDisplaySize(serial, task.width, task.height);
+      const revert = { kind: 'wmsize', hadOverride: !!before.override, override: before.override };
+      // Densidade pareada (dpi de TV para a resolução escolhida): interface na
+      // escala certa para ver do sofá. Registrada na mesma entrada de reversão.
+      // Entradas antigas não têm os campos de densidade — a reversão detecta
+      // pela ausência e não mexe no dpi nesses casos.
+      if (task.density) {
+        const beforeDensity = await adb.getDisplayDensity(serial);
+        await adb.setDisplayDensity(serial, task.density);
+        revert.hadDensity = !!beforeDensity.override;
+        revert.density = beforeDensity.override;
+      }
       return {
-        detail: `Resolução ${task.width}x${task.height}`,
-        revert: { kind: 'wmsize', hadOverride: !!before.override, override: before.override },
+        detail: `Resolução ${task.width}x${task.height}${task.density ? ` · ${task.density}dpi` : ''}`,
+        revert,
       };
     }
     case 'dnd': {
@@ -385,6 +396,11 @@ async function revertEntry(serial, entry) {
       } else {
         await adb.setDisplaySize(serial, null, null);
       }
+      // Só restaura a densidade se esta entrada a alterou (campo presente).
+      if (r.hadDensity !== undefined) {
+        if (r.hadDensity && r.density) await adb.setDisplayDensity(serial, r.density);
+        else await adb.setDisplayDensity(serial, null);
+      }
       return 'Resolução restaurada';
     }
     case 'dnd': {
@@ -448,9 +464,16 @@ async function verifyTask(serial, task) {
     }
     case 'wmsize': {
       const size = await adb.getDisplaySize(serial);
-      return size.override === `${task.width}x${task.height}`
-        ? { ok: true }
-        : { ok: false, detail: `Resolução atual: ${size.override || size.physical || '?'}` };
+      if (size.override !== `${task.width}x${task.height}`) {
+        return { ok: false, detail: `Resolução atual: ${size.override || size.physical || '?'}` };
+      }
+      if (task.density) {
+        const density = await adb.getDisplayDensity(serial);
+        if (density.override !== task.density) {
+          return { ok: false, detail: `Densidade atual: ${density.override || density.physical || '?'}dpi` };
+        }
+      }
+      return { ok: true };
     }
     case 'dnd': {
       const zen = (await adb.getSetting(serial, 'global', 'zen_mode')).trim();

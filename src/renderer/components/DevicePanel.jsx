@@ -119,8 +119,9 @@ export default function DevicePanel({
             {running ? 'Aplicando…' : 'Configuração recomendada'}
           </Button>
           <Typography variant="caption" color="text.secondary" sx={{ mt: 1, mb: 2, display: 'block', textAlign: 'center' }}>
-            Aplica o conjunto ideal para TV em um clique. Resolução, bloqueio de
-            tela e apps de streaming você escolhe à esquerda.
+            Aplica o conjunto ideal para TV em um clique — só perguntamos a
+            resolução da sua TV. Bloqueio de tela e apps de streaming você
+            escolhe à esquerda.
           </Typography>
 
           <Button

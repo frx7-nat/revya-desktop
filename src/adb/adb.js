@@ -199,6 +199,22 @@ async function getDisplaySize(serial) {
   return { physical: phys ? phys[1] : null, override: over ? over[1] : null };
 }
 
+// Lê a densidade (dpi) atual do display, física e forçada.
+async function getDisplayDensity(serial) {
+  const out = await adb(['-s', serial, 'shell', 'wm', 'density']);
+  const phys = /Physical density:\s*(\d+)/.exec(out);
+  const over = /Override density:\s*(\d+)/.exec(out);
+  return { physical: phys ? Number(phys[1]) : null, override: over ? Number(over[1]) : null };
+}
+
+// Define a densidade (dpi) do display. Sem valor, reseta para o padrão.
+async function setDisplayDensity(serial, dpi) {
+  if (dpi == null) {
+    return adb(['-s', serial, 'shell', 'wm', 'density', 'reset']);
+  }
+  return adb(['-s', serial, 'shell', 'wm', 'density', String(dpi)]);
+}
+
 // Ativa/ajusta o Não Perturbe pelo gerenciador de notificações.
 // Modos aceitos: 'on' | 'priority' | 'none' | 'alarms' | 'off'.
 // O estado atual é lido pelo setting global 'zen_mode'
@@ -269,4 +285,6 @@ module.exports = {
   setFixToUserRotation,
   setDisplaySize,
   getDisplaySize,
+  setDisplayDensity,
+  getDisplayDensity,
 };
