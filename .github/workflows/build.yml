@@ -76,6 +76,31 @@ jobs:
           fi
           rm -rf pt.zip pt_tmp
 
+      # Baixa o scrcpy oficial (espelhamento de tela) para a plataforma da vez.
+      # Para Mac, usamos o build x86_64: roda em Intel e em Apple Silicon (via
+      # Rosetta), servindo ao dmg das duas arquiteturas com um binário só.
+      - name: Baixar scrcpy (espelhamento)
+        shell: bash
+        run: |
+          set -e
+          TAG=$(curl -s https://api.github.com/repos/Genymobile/scrcpy/releases/latest | grep -m1 '"tag_name"' | cut -d '"' -f 4)
+          mkdir -p scrcpy/${{ matrix.platform }} sc_tmp
+          if [ "${{ matrix.platform }}" = "win" ]; then
+            curl -L "https://github.com/Genymobile/scrcpy/releases/download/$TAG/scrcpy-win64-$TAG.zip" -o sc.zip
+            unzip -q sc.zip -d sc_tmp
+          elif [ "${{ matrix.platform }}" = "mac" ]; then
+            curl -L "https://github.com/Genymobile/scrcpy/releases/download/$TAG/scrcpy-macos-x86_64-$TAG.tar.gz" -o sc.tgz
+            tar xzf sc.tgz -C sc_tmp
+          else
+            curl -L "https://github.com/Genymobile/scrcpy/releases/download/$TAG/scrcpy-linux-x86_64-$TAG.tar.gz" -o sc.tgz
+            tar xzf sc.tgz -C sc_tmp
+          fi
+          # O arquivo expande numa pasta interna (scrcpy-<plataforma>-vX.Y);
+          # copiamos o conteúdo dela para a pasta da plataforma.
+          cp -r sc_tmp/*/* scrcpy/${{ matrix.platform }}/
+          chmod +x scrcpy/${{ matrix.platform }}/scrcpy 2>/dev/null || true
+          rm -rf sc.zip sc.tgz sc_tmp
+
       - name: Gerar instalador
         run: npm run dist:${{ matrix.platform }}
         env:

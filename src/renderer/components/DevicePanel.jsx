@@ -15,6 +15,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import TvIcon from '@mui/icons-material/Tv';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import WifiIcon from '@mui/icons-material/Wifi';
+import ScreenShareIcon from '@mui/icons-material/ScreenShare';
 import PhoneMock from './PhoneMock';
 import PhoneScreen from './PhoneScreen';
 import PhoneAccessories from './PhoneAccessories';
@@ -33,6 +34,7 @@ function Spec({ label, value }) {
 export default function DevicePanel({
   device, phase, onRun, onRunRecommended, running, ready, percent, currentLabel,
   showAccessories, onOpenDexGuide, devices = [], onPickDevice, wifiStatus, onEnableWifi,
+  mirrorStatus, onStartMirror,
 }) {
   const isTv = phase === 'tv';
   const validated = phase === 'success' || phase === 'working' || isTv;
@@ -158,12 +160,28 @@ export default function DevicePanel({
             </Typography>
           )}
 
+          {/* Espelhamento (scrcpy): abre a tela do celular numa janela,
+              controlável por mouse — dispensa pegar o aparelho na mão nas
+              etapas que pedem toques. */}
+          <Button
+            variant="text" color="primary" fullWidth startIcon={<ScreenShareIcon />}
+            onClick={onStartMirror} disabled={!!mirrorStatus?.busy}
+            sx={{ mt: 1.5, fontSize: '0.82rem' }}
+          >
+            {mirrorStatus?.busy ? 'Abrindo a tela…' : 'Ver tela do celular'}
+          </Button>
+          {mirrorStatus?.error && (
+            <Typography variant="caption" color="error" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
+              {mirrorStatus.error}
+            </Typography>
+          )}
+
           {/* Etapa opcional: configurar a saída de vídeo (desativar DeX).
               Relevante para aparelhos que têm DeX; inofensivo para os demais. */}
           <Button
             variant="text" color="primary" fullWidth startIcon={<TvIcon />}
             onClick={onOpenDexGuide}
-            sx={{ mt: 1.5, fontSize: '0.82rem' }}
+            sx={{ mt: 0.5, fontSize: '0.82rem' }}
           >
             DeX vs Experiência de TV
           </Button>

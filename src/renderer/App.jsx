@@ -23,8 +23,10 @@ export default function App() {
   // serial o usuário escolheu focar.
   const [onlineDevices, setOnlineDevices] = useState([]);
   const [preferredSerial, setPreferredSerial] = useState(null);
-  // Conexão Wi-Fi: null | { ip } | { error }.
+  // Conexão Wi-Fi: null | { busy } | { ip } | { error }.
   const [wifiStatus, setWifiStatus] = useState(null);
+  // Espelhamento da tela (scrcpy): null | { busy } | { error }.
+  const [mirrorStatus, setMirrorStatus] = useState(null);
   // Diálogo de check-up (verificação dos ajustes aplicados).
   const [checkupOpen, setCheckupOpen] = useState(false);
   const [selected, setSelected] = useState({});
@@ -210,6 +212,21 @@ export default function App() {
     }
   }, [device]);
 
+  // Abre a janela de espelhamento (scrcpy) do aparelho atual.
+  const startMirror = useCallback(async () => {
+    if (!device) return;
+    setMirrorStatus({ busy: true });
+    try {
+      const res = await window.api.startMirror(
+        device.serial,
+        `${device.model || 'Celular'} — DexArmor`
+      );
+      setMirrorStatus(res.ok ? null : { error: res.error });
+    } catch (e) {
+      setMirrorStatus({ error: String(e.message || e) });
+    }
+  }, [device]);
+
   // Monta e salva o relatório de configuração (texto) da última execução.
   const saveReport = useCallback(async () => {
     const statusLabel = { done: 'OK', error: 'ERRO', warning: 'AVISO', guide: 'AVISO', pending: 'PENDENTE', running: 'EM ANDAMENTO' };
@@ -258,6 +275,7 @@ export default function App() {
             onOpenDexGuide={() => setDexGuide(true)}
             devices={onlineDevices} onPickDevice={setPreferredSerial}
             wifiStatus={wifiStatus} onEnableWifi={enableWifi}
+            mirrorStatus={mirrorStatus} onStartMirror={startMirror}
           />
         </Box>
 

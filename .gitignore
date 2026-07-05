@@ -12,3 +12,7 @@ platform-tools/*/*.dll
 apks/**/*.apk
 apks/**/*.apkm
 apks/**/*.xapk
+
+# Binários do scrcpy (espelhamento de tela) — baixados à parte, ver scrcpy/README.txt
+scrcpy/*/*
+!scrcpy/*/README.txt

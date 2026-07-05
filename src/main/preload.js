@@ -43,4 +43,7 @@ contextBridge.exposeInMainWorld('api', {
 
   // Salva o relatório de configuração em arquivo de texto.
   saveReport: (text) => ipcRenderer.invoke('report:save', text),
+
+  // Espelha a tela do celular numa janela (scrcpy), controlável por mouse.
+  startMirror: (serial, title) => ipcRenderer.invoke('scrcpy:start', serial, title),
 });

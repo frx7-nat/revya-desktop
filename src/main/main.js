@@ -9,6 +9,7 @@ const adb = require('../adb/adb');
 const { checkDevices } = require('../adb/adbOrchestrator');
 const { runTask, revertEntry, verifyTask } = require('./runner');
 const revertStore = require('./revertStore');
+const scrcpy = require('./scrcpy');
 
 // O registro de reversão é indexado pelo serial DE FÁBRICA (ro.serialno),
 // não pelo serial de transporte do adb: na conexão Wi-Fi o transporte vira
@@ -151,6 +152,10 @@ ipcMain.handle('adb:enableWifi', async (_e, serial) => {
   return { ip, wifiSerial: `${ip}:5555` };
 });
 
+// Espelhamento da tela do aparelho (scrcpy) numa janela nativa controlável
+// por mouse/teclado. Um por aparelho; a janela fecha junto com o app.
+ipcMain.handle('scrcpy:start', (_e, serial, title) => scrcpy.start(serial, title));
+
 // Salva um relatório de configuração em arquivo de texto (o renderer monta o
 // conteúdo; aqui só abrimos o diálogo de salvar e gravamos).
 ipcMain.handle('report:save', async (_e, text) => {
@@ -221,3 +226,6 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
+
+// Fecha as janelas de espelhamento junto com o app.
+app.on('quit', () => scrcpy.stopAll());

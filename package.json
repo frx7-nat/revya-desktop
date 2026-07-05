@@ -49,6 +49,11 @@
         "filter": ["**/*"]
       },
       {
+        "from": "scrcpy/${os}",
+        "to": "scrcpy",
+        "filter": ["**/*", "!README.txt", "!adb", "!adb.exe", "!*.1"]
+      },
+      {
         "from": "apks",
         "to": "apks",
         "filter": ["**/*"]
