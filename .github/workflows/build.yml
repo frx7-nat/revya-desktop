@@ -1,0 +1,110 @@
+# .github/workflows/build.yml
+# Gera os instaladores das três plataformas automaticamente.
+#
+# Dispara em duas situações:
+#   - quando você publica uma tag de versão (ex.: v0.1.0) -> cria um Release
+#     no GitHub com os instaladores anexados;
+#   - manualmente, pelo botão "Run workflow" na aba Actions (para testar sem
+#     criar release).
+#
+# Cada plataforma roda na sua própria máquina virtual (o .dmg do Mac SÓ pode
+# ser gerado no macOS — por isso a matriz com três sistemas).
+
+name: Build installers
+
+on:
+  push:
+    tags:
+      - 'v*'            # dispara em tags como v0.1.0, v1.2.3
+  workflow_dispatch: {} # permite rodar manualmente pela interface
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false  # se uma plataforma falhar, as outras continuam
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+          - os: macos-latest
+            platform: mac
+          - os: ubuntu-latest
+            platform: linux
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      # IMPORTANTE: os binários ADB e os APKs NÃO ficam no Git (ver .gitignore).
+      # Este passo baixa o platform-tools oficial do Google para a plataforma
+      # da vez, para o instalador sair completo. Os APKs, como são offline e
+      # podem ter licenças próprias, você adiciona por outro caminho (ver README
+      # do workflow). Sem eles, o app builda e roda, mas sem APKs embutidos.
+      - name: Baixar platform-tools (ADB)
+        shell: bash
+        run: |
+          set -e
+          mkdir -p platform-tools/${{ matrix.platform }}
+          if [ "${{ matrix.platform }}" = "win" ]; then
+            URL="https://dl.google.com/android/repository/platform-tools-latest-windows.zip"
+          elif [ "${{ matrix.platform }}" = "mac" ]; then
+            URL="https://dl.google.com/android/repository/platform-tools-latest-darwin.zip"
+          else
+            URL="https://dl.google.com/android/repository/platform-tools-latest-linux.zip"
+          fi
+          curl -L "$URL" -o pt.zip
+          unzip -q pt.zip -d pt_tmp
+          # Copia só o necessário (adb + DLLs no Windows) para a pasta da plataforma.
+          if [ "${{ matrix.platform }}" = "win" ]; then
+            cp pt_tmp/platform-tools/adb.exe platform-tools/win/
+            cp pt_tmp/platform-tools/AdbWinApi.dll platform-tools/win/ 2>/dev/null || true
+            cp pt_tmp/platform-tools/AdbWinUsbApi.dll platform-tools/win/ 2>/dev/null || true
+          else
+            cp pt_tmp/platform-tools/adb platform-tools/${{ matrix.platform }}/
+            chmod +x platform-tools/${{ matrix.platform }}/adb
+          fi
+          rm -rf pt.zip pt_tmp
+
+      - name: Gerar instalador
+        run: npm run dist:${{ matrix.platform }}
+        env:
+          # Token padrão do Actions, usado pelo electron-builder para publicar
+          # no Release quando a execução vem de uma tag.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Subir os instaladores como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: dexarmor-${{ matrix.platform }}
+          # Instaladores gerados ficam em release/ (definido no package.json).
+          path: |
+            release/*.exe
+            release/*.dmg
+            release/*.AppImage
+            release/*.deb
+          if-no-files-found: warn
+
+      # Quando a execução vem de uma tag (vX.Y.Z), anexa os instaladores a um
+      # GitHub Release com o mesmo nome da tag.
+      - name: Publicar no Release (apenas em tags)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.exe
+            release/*.dmg
+            release/*.AppImage
+            release/*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

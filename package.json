@@ -1,0 +1,79 @@
+{
+  "name": "dexarmor",
+  "version": "0.1.0",
+  "description": "Transforma celulares Samsung em dispositivos de mídia para TV via ADB",
+  "main": "src/main/main.js",
+  "scripts": {
+    "dev:vite": "vite",
+    "dev:electron": "wait-on tcp:5173 && electron . --dev",
+    "dev": "concurrently -k -n VITE,ELECTRON -c cyan,yellow \"npm:dev:vite\" \"npm:dev:electron\"",
+    "build:renderer": "vite build",
+    "start": "npm run build:renderer && electron .",
+    "dist": "npm run build:renderer && electron-builder",
+    "dist:win": "npm run build:renderer && electron-builder --win",
+    "dist:mac": "npm run build:renderer && electron-builder --mac",
+    "dist:linux": "npm run build:renderer && electron-builder --linux"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "vite": "^5.3.1",
+    "wait-on": "^7.2.0"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.20",
+    "@mui/icons-material": "^5.15.20",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "build": {
+    "appId": "com.dexarmor.app",
+    "productName": "DexArmor",
+    "publish": null,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/main/**/*",
+      "src/adb/**/*",
+      "dist/renderer/**/*",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "platform-tools/${os}",
+        "to": "platform-tools",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "apks",
+        "to": "apks",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": ["nsis", "portable"],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    },
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["x64", "arm64"] }],
+      "category": "public.app-category.utilities"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Utility",
+      "maintainer": "DexArmor"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+release/
+*.log
+.DS_Store
+
+# Binários e APKs não vão para o controle de versão (são grandes / licenciados).
+# Mantenha as pastas, mas ignore o conteúdo pesado.
+platform-tools/*/adb
+platform-tools/*/adb.exe
+platform-tools/*/*.dll
+apks/**/*.apk
+apks/**/*.apkm
+apks/**/*.xapk
