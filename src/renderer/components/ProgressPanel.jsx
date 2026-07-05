@@ -11,6 +11,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
 const VERIFICATION_STEPS = [
   'No celular, abra o app Google Play',
@@ -77,12 +78,22 @@ const ICON = {
   warning: <WarningAmberIcon fontSize="small" sx={{ color: 'warning.main' }} />,
 };
 
-export default function ProgressPanel({ log, percent, active }) {
+export default function ProgressPanel({ log, percent, active, onSaveReport }) {
   return (
     <Box sx={{ width: 320, p: 2.5, height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
-        Progresso
-      </Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+        <Typography variant="subtitle2" color="text.secondary">
+          Progresso
+        </Typography>
+        {/* Ao fim de uma execução, permite salvar o relatório em .txt. */}
+        {onSaveReport && (
+          <Button size="small" startIcon={<SaveAltIcon sx={{ fontSize: 15 }} />}
+            onClick={onSaveReport}
+            sx={{ fontSize: '0.72rem', textTransform: 'none', py: 0, minWidth: 0 }}>
+            Salvar relatório
+          </Button>
+        )}
+      </Stack>
 
       {active && (
         <LinearProgress variant="determinate" value={percent} sx={{ mb: 2, height: 6, borderRadius: 3 }} />

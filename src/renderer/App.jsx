@@ -12,20 +12,21 @@ import ProgressPanel from './components/ProgressPanel';
 import CloseDialog from './components/CloseDialog';
 import DexGuideDialog from './components/DexGuideDialog';
 import ResetDialog from './components/ResetDialog';
-import { TASK_GROUPS } from './data/tasks';
-
-// Achata todas as tasks selecionáveis: as diretas dos grupos comuns e os
-// apps dentro das categorias do grupo "install".
-const ALL_TASKS = TASK_GROUPS.flatMap((g) =>
-  g.categories
-    ? g.categories.flatMap((c) => c.apps)
-    : (g.tasks || [])
-);
+import CheckupDialog from './components/CheckupDialog';
+import { ALL_TASKS, RECOMMENDED_TASK_IDS } from './data/tasks';
 
 export default function App() {
   const [device, setDevice] = useState(null);
   const [cablePresent, setCablePresent] = useState(false); // cabo ligado mas não autorizado
   const [scanning, setScanning] = useState(false);
+  // Todos os aparelhos online (para o seletor quando há mais de um) e qual
+  // serial o usuário escolheu focar.
+  const [onlineDevices, setOnlineDevices] = useState([]);
+  const [preferredSerial, setPreferredSerial] = useState(null);
+  // Conexão Wi-Fi: null | { ip } | { error }.
+  const [wifiStatus, setWifiStatus] = useState(null);
+  // Diálogo de check-up (verificação dos ajustes aplicados).
+  const [checkupOpen, setCheckupOpen] = useState(false);
   const [selected, setSelected] = useState({});
   const [log, setLog] = useState([]);
   const [running, setRunning] = useState(false);
@@ -65,15 +66,19 @@ export default function App() {
     setScanning(true);
     try {
       const devices = await window.api.listDevices();
-      const online = devices.find((d) => d.state === 'device');
+      const online = devices.filter((d) => d.state === 'device');
       // 'unauthorized' = cabo conectado, faltou o usuário tocar em "Permitir".
       const pending = devices.find((d) => d.state === 'unauthorized');
-      if (online) {
+      setOnlineDevices(online);
+      // Respeita a escolha do usuário quando há mais de um aparelho; senão,
+      // fica com o primeiro da lista.
+      const target = online.find((d) => d.serial === preferredSerial) || online[0];
+      if (target) {
         setCablePresent(true);
         // Mesmo aparelho de antes: não reconsulta as propriedades a cada
         // ciclo de polling (o describeDevice faz várias chamadas ADB).
-        if (!device || device.serial !== online.serial) {
-          const info = await window.api.describeDevice(online.serial);
+        if (!device || device.serial !== target.serial) {
+          const info = await window.api.describeDevice(target.serial);
           setDevice(info);
         }
       } else {
@@ -86,7 +91,7 @@ export default function App() {
     } finally {
       setScanning(false);
     }
-  }, [device]);
+  }, [device, preferredSerial]);
 
   // Atualiza a contagem de reversões disponíveis para o aparelho atual.
   const refreshRevertCount = useCallback(async () => {
@@ -140,9 +145,10 @@ export default function App() {
     return () => clearInterval(t);
   }, [running, scan]);
 
-  const run = useCallback(async () => {
-    if (!device) return;
-    const queue = ALL_TASKS.filter((t) => selected[t.id]);
+  // Núcleo da execução: recebe a fila explicitamente, para servir tanto ao
+  // fluxo manual (checkboxes) quanto à configuração recomendada (1 clique).
+  const runQueue = useCallback(async (queue) => {
+    if (!device || queue.length === 0) return;
     setRunning(true);
     setPercent(0);
     setLog(queue.map((t) => ({ id: t.id, label: t.label, status: 'pending' })));
@@ -173,7 +179,49 @@ export default function App() {
     setRunning(false);
     setSelected({});
     refreshRevertCount(); // novas reversões podem ter sido registradas
-  }, [device, selected, refreshRevertCount]);
+  }, [device, refreshRevertCount]);
+
+  // Fluxo manual: aplica o que está marcado nos checkboxes.
+  const run = useCallback(() => {
+    return runQueue(ALL_TASKS.filter((t) => selected[t.id]));
+  }, [runQueue, selected]);
+
+  // Configuração recomendada: seleciona o preset curado (pulando o que já foi
+  // concluído), reflete nos checkboxes para o usuário ver, e executa direto.
+  const runRecommended = useCallback(() => {
+    const queue = ALL_TASKS.filter(
+      (t) => RECOMMENDED_TASK_IDS.includes(t.id) && !completed[t.id]
+    );
+    setSelected(Object.fromEntries(queue.map((t) => [t.id, true])));
+    return runQueue(queue);
+  }, [runQueue, completed]);
+
+  // Ativa a conexão por Wi-Fi para o aparelho atual. Em sucesso, o usuário
+  // pode desplugar o cabo — o polling continua encontrando o aparelho pelo
+  // serial "ip:5555" e o registro de reversão não muda (serial estável).
+  const enableWifi = useCallback(async () => {
+    if (!device) return;
+    setWifiStatus({ busy: true });
+    try {
+      const res = await window.api.enableWifi(device.serial);
+      setWifiStatus({ ip: res.ip });
+    } catch (e) {
+      setWifiStatus({ error: String(e.message || e) });
+    }
+  }, [device]);
+
+  // Monta e salva o relatório de configuração (texto) da última execução.
+  const saveReport = useCallback(async () => {
+    const statusLabel = { done: 'OK', error: 'ERRO', warning: 'AVISO', guide: 'AVISO', pending: 'PENDENTE', running: 'EM ANDAMENTO' };
+    const lines = [
+      'DexArmor — Relatório de configuração',
+      `Aparelho: ${device?.model || 'desconhecido'} (${device?.serial || '-'})`,
+      `Android: ${device?.android || '-'}  |  Data: ${new Date().toLocaleString()}`,
+      '',
+      ...log.map((e) => `[${statusLabel[e.status] || e.status}] ${e.label}${e.detail ? ` — ${e.detail}` : ''}`),
+    ];
+    try { await window.api.saveReport(lines.join('\n')); } catch { /* usuário cancelou */ }
+  }, [device, log]);
 
   const ready = Object.values(selected).some(Boolean);
   const hasCompleted = Object.values(completed).some(Boolean);
@@ -197,21 +245,27 @@ export default function App() {
             view={leftView} onViewChange={setLeftView}
             onOpenDexGuide={() => setDexGuide(true)}
             canReset={revertCount > 0} onOpenReset={() => setResetOpen(true)}
+            onOpenCheckup={() => setCheckupOpen(true)}
           />
         </Paper>
 
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <DevicePanel
             device={device} phase={phase} scanning={scanning} onRefresh={scan}
-            onRun={run} running={running} ready={ready}
+            onRun={run} onRunRecommended={runRecommended} running={running} ready={ready}
             percent={percent} currentLabel={currentLabel}
             showAccessories={leftView === 'accessories'}
             onOpenDexGuide={() => setDexGuide(true)}
+            devices={onlineDevices} onPickDevice={setPreferredSerial}
+            wifiStatus={wifiStatus} onEnableWifi={enableWifi}
           />
         </Box>
 
         <Paper square sx={{ borderLeft: '1px solid', borderColor: 'divider', borderRadius: 0 }}>
-          <ProgressPanel log={log} percent={percent} active={running || log.length > 0} />
+          <ProgressPanel
+            log={log} percent={percent} active={running || log.length > 0}
+            onSaveReport={!running && log.length > 0 ? saveReport : null}
+          />
         </Paper>
       </Box>
 
@@ -230,6 +284,12 @@ export default function App() {
         open={resetOpen} serial={device?.serial}
         onClose={() => setResetOpen(false)}
         onReverted={handleReverted}
+      />
+
+      {/* Check-up: verifica se os ajustes aplicados continuam valendo. */}
+      <CheckupDialog
+        open={checkupOpen} serial={device?.serial}
+        onClose={() => { setCheckupOpen(false); refreshRevertCount(); }}
       />
     </ThemeProvider>
   );

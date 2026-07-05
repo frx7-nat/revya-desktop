@@ -19,9 +19,10 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import TvIcon from '@mui/icons-material/Tv';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import { TASK_GROUPS, ACCESSORY_GROUPS } from '../data/tasks';
 
-const KIND_COLOR = { remove: 'error', install: 'primary', setting: 'success', home: 'success', settings: 'success', rotate: 'success', wmsize: 'success' };
+const KIND_COLOR = { remove: 'error', install: 'primary', setting: 'success', home: 'success', settings: 'success', rotate: 'success', wmsize: 'success', dnd: 'success' };
 
 // Uma linha de task: checkbox + (opcional) indicador "?" que expande a
 // explicação curta do porquê daquela personalização.
@@ -157,7 +158,7 @@ function AccessoriesView() {
   );
 }
 
-export default function TaskPanel({ selected, completed, onToggle, disabled, view: viewProp, onViewChange, onOpenDexGuide, canReset, onOpenReset }) {
+export default function TaskPanel({ selected, completed, onToggle, disabled, view: viewProp, onViewChange, onOpenDexGuide, canReset, onOpenReset, onOpenCheckup }) {
   // Estado interno é fallback; se o pai controla (viewProp), usamos o dele.
   const [viewLocal, setViewLocal] = useState('mods'); // 'mods' | 'accessories'
   const view = viewProp ?? viewLocal;
@@ -187,6 +188,17 @@ export default function TaskPanel({ selected, completed, onToggle, disabled, vie
             sx={{ mb: 1.2, py: 1, fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.02em' }}
           >
             Desativar DeX
+          </Button>
+
+          {/* Check-up: verifica se os ajustes aplicados continuam valendo.
+              Compartilha o mesmo gatilho do reset (há algo registrado). */}
+          <Button
+            fullWidth variant="outlined" color="primary" startIcon={<TroubleshootIcon />}
+            onClick={onOpenCheckup} disabled={!canReset}
+            sx={{ mb: 1.2, py: 1, fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.02em',
+              opacity: canReset ? 1 : 0.5 }}
+          >
+            Check-up do aparelho
           </Button>
 
           {/* Reverter alterações: só fica clicável quando há algo aplicado

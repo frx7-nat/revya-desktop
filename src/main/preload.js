@@ -32,4 +32,15 @@ contextBridge.exposeInMainWorld('api', {
   revertCount: (serial) => ipcRenderer.invoke('revert:count', serial),
   revertList: (serial) => ipcRenderer.invoke('revert:list', serial),
   revertOne: (serial, taskId) => ipcRenderer.invoke('revert:one', serial, taskId),
+  revertExport: (serial) => ipcRenderer.invoke('revert:export', serial),
+  revertImport: (serial) => ipcRenderer.invoke('revert:import', serial),
+
+  // Check-up: verifica se um ajuste aplicado continua valendo no aparelho.
+  verifyTask: (serial, task) => ipcRenderer.invoke('adb:verifyTask', serial, task),
+
+  // Conexão por Wi-Fi (dispensa o cabo depois do primeiro pareamento).
+  enableWifi: (serial) => ipcRenderer.invoke('adb:enableWifi', serial),
+
+  // Salva o relatório de configuração em arquivo de texto.
+  saveReport: (text) => ipcRenderer.invoke('report:save', text),
 });

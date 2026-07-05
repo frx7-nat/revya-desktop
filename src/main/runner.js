@@ -6,8 +6,20 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const https = require('https');
+const crypto = require('crypto');
 const { execFile } = require('child_process');
 const adb = require('../adb/adb');
+
+// Hash SHA-256 de um arquivo, para conferir a integridade de APKs baixados.
+function sha256File(filePath) {
+  return new Promise((resolve, reject) => {
+    const hash = crypto.createHash('sha256');
+    fs.createReadStream(filePath)
+      .on('data', (chunk) => hash.update(chunk))
+      .on('end', () => resolve(hash.digest('hex')))
+      .on('error', reject);
+  });
+}
 
 // Baixa um APK de uma URL para uma pasta temporária e devolve o caminho local.
 // Segue redirecionamentos simples (302), comuns em repositórios de APK.
@@ -141,7 +153,16 @@ async function runTask(serial, task) {
         }
       } else if (src.type === 'url') {
         // Baixa o APK do repositório para uma pasta temporária e instala.
+        // Se a task traz um sha256 esperado, o arquivo é conferido antes de
+        // tocar no aparelho — proteção contra download corrompido/adulterado.
         apkPath = await downloadApk(src.url);
+        if (src.sha256) {
+          const got = await sha256File(apkPath);
+          if (got.toLowerCase() !== String(src.sha256).toLowerCase()) {
+            fs.unlink(apkPath, () => {});
+            throw new Error('O arquivo baixado não confere com a assinatura esperada (sha256). Instalação cancelada por segurança.');
+          }
+        }
       } else {
         throw new Error(`Origem de APK desconhecida: ${src.type}`);
       }
@@ -273,6 +294,19 @@ async function runTask(serial, task) {
         revert: { kind: 'wmsize', hadOverride: !!before.override, override: before.override },
       };
     }
+    case 'dnd': {
+      // Ativa o Não Perturbe em modo prioridade (alarmes e chamadas marcadas
+      // como favoritas ainda passam). O estado anterior vem do zen_mode.
+      const prev = normalizePrev((await adb.getSetting(serial, 'global', 'zen_mode')).trim());
+      await adb.setDnd(serial, 'priority');
+      // Confirma lendo o zen_mode de volta — em Android antigo o subcomando
+      // pode não existir e falhar silenciosamente.
+      const now = (await adb.getSetting(serial, 'global', 'zen_mode')).trim();
+      if (now === '0' || now === '' || now === 'null') {
+        throw new Error('O sistema não ativou o Não Perturbe (este Android pode não suportar via ADB).');
+      }
+      return { detail: 'Não perturbe ativado', revert: { kind: 'dnd', prev } };
+    }
     default:
       throw new Error(`Tipo de task desconhecido: ${task.kind}`);
   }
@@ -350,9 +384,80 @@ async function revertEntry(serial, entry) {
       }
       return 'Resolução restaurada';
     }
+    case 'dnd': {
+      // Restaura o modo anterior do Não Perturbe a partir do zen_mode salvo.
+      const map = { 1: 'priority', 2: 'none', 3: 'alarms' };
+      await adb.setDnd(serial, map[r.prev] || 'off');
+      return 'Não perturbe restaurado';
+    }
     default:
       throw new Error(`Tipo de reversão desconhecido: ${r.kind}`);
   }
 }
 
-module.exports = { runTask, revertEntry };
+// Verifica, SEM alterar nada, se o efeito de uma task continua valendo no
+// aparelho — atualizações do One UI e reinícios às vezes desfazem ajustes.
+// Retorna { ok, detail? } para o check-up da UI mostrar o que se perdeu.
+async function verifyTask(serial, task) {
+  switch (task.kind) {
+    case 'remove': {
+      const back = [];
+      for (const pkg of task.pkgs) {
+        if (await adb.hasPackage(serial, pkg)) back.push(pkg);
+      }
+      return back.length
+        ? { ok: false, detail: `${back.length} de ${task.pkgs.length} apps voltaram` }
+        : { ok: true };
+    }
+    case 'install': {
+      if (!task.pkg) return { ok: true, detail: 'Sem pacote declarado para conferir' };
+      return (await adb.hasPackage(serial, task.pkg))
+        ? { ok: true }
+        : { ok: false, detail: 'O app não está mais instalado' };
+    }
+    case 'setting': {
+      const cur = (await adb.getSetting(serial, task.ns, task.key)).trim();
+      return cur === String(task.value)
+        ? { ok: true }
+        : { ok: false, detail: `Valor atual: ${cur || '(vazio)'}` };
+    }
+    case 'settings': {
+      for (const { key, value } of task.keys) {
+        const cur = (await adb.getSetting(serial, task.ns, key)).trim();
+        if (cur !== String(value)) {
+          return { ok: false, detail: `A chave ${key} mudou (${cur || 'vazio'})` };
+        }
+      }
+      return { ok: true };
+    }
+    case 'home': {
+      const home = await adb.getCurrentHome(serial);
+      return home && home.includes(task.pkg)
+        ? { ok: true }
+        : { ok: false, detail: `Launcher atual: ${home || 'desconhecido'}` };
+    }
+    case 'rotate': {
+      const accel = (await adb.getSetting(serial, 'system', 'accelerometer_rotation')).trim();
+      const rot = (await adb.getSetting(serial, 'system', 'user_rotation')).trim();
+      return accel === '0' && rot === '1'
+        ? { ok: true }
+        : { ok: false, detail: 'A rotação foi alterada' };
+    }
+    case 'wmsize': {
+      const size = await adb.getDisplaySize(serial);
+      return size.override === `${task.width}x${task.height}`
+        ? { ok: true }
+        : { ok: false, detail: `Resolução atual: ${size.override || size.physical || '?'}` };
+    }
+    case 'dnd': {
+      const zen = (await adb.getSetting(serial, 'global', 'zen_mode')).trim();
+      return zen !== '0' && zen !== 'null' && zen !== ''
+        ? { ok: true }
+        : { ok: false, detail: 'O Não Perturbe está desligado' };
+    }
+    default:
+      return { ok: true, detail: 'Sem verificação para este tipo' };
+  }
+}
+
+module.exports = { runTask, revertEntry, verifyTask };

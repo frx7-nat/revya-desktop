@@ -155,6 +155,19 @@ export const TASK_GROUPS = [
         ns: 'system', key: 'screen_off_timeout', value: 2147483647,
         info: 'A TV não deve apagar sozinha durante o uso.' },
 
+      // Proteção de bateria do One UI: limita a carga a ~85%. Essencial para
+      // um aparelho que vive 24h no carregador — evita degradação e calor.
+      // OBS: a chave existe no One UI moderno; em aparelhos sem o recurso a
+      // escrita pode até passar sem efeito real (limitação do Android).
+      { id: 'tw-battery', label: 'Proteger a bateria (carga até 85%)', kind: 'setting',
+        ns: 'global', key: 'protect_battery', value: 1,
+        info: 'Plugado 24h na tomada, o celular degrada a bateria rápido. Este ajuste do One UI limita a carga a 85%, alongando muito a vida útil.' },
+
+      // Não Perturbe via gerenciador de notificações (cmd notification).
+      // Evita notificação de mensagem/ligação aparecendo por cima do filme.
+      { id: 'tw-dnd', label: 'Não perturbe (modo TV)', kind: 'dnd',
+        info: 'Silencia notificações e chamadas que apareceriam na TV, por cima do conteúdo e na frente de todo mundo.' },
+
       { id: 'tw-updates', label: 'Desativar atualizações automáticas', kind: 'remove',
         pkgs: [
           'com.wssyncmldm',                 // SamsungDM / FOTA agent
@@ -229,6 +242,32 @@ export const TASK_GROUPS = [
       // mais efeito. O comportamento hoje é gerenciado pelo próprio sistema.
     ],
   },
+];
+
+// ---------------------------------------------------------------------------
+// Todas as tasks selecionáveis, achatadas: as diretas dos grupos comuns e os
+// apps dentro das categorias do grupo "install". Fonte única para App,
+// diálogos e preset — a ordem daqui é a ordem de execução.
+// ---------------------------------------------------------------------------
+export const ALL_TASKS = TASK_GROUPS.flatMap((g) =>
+  g.categories
+    ? g.categories.flatMap((c) => c.apps)
+    : (g.tasks || [])
+);
+
+// ---------------------------------------------------------------------------
+// CONFIGURAÇÃO RECOMENDADA — o conjunto aplicado pelo botão de 1 clique.
+// Critério: só o que é seguro e desejável em QUALQUER aparelho/TV. Ficam de
+// fora decisões que dependem do usuário: resolução (varia por TV), remoção do
+// bloqueio de tela (segurança), gestos (gosto) e os apps de streaming (cada
+// um assina os seus). A ordem de execução vem de ALL_TASKS (launcher instala
+// antes de virar padrão).
+// ---------------------------------------------------------------------------
+export const RECOMMENDED_TASK_IDS = [
+  'rm-bixby', 'rm-store', 'rm-office', 'rm-social',
+  'lnch-projectivy',
+  'tw-screen', 'tw-battery', 'tw-updates', 'tw-anim', 'tw-font',
+  'tw-rotate', 'tw-dnd', 'tw-sound', 'tw-home',
 ];
 
 // ---------------------------------------------------------------------------

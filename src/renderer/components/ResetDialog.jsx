@@ -15,6 +15,8 @@ import ErrorIcon from '@mui/icons-material/Error';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 const SlideUp = React.forwardRef(function SlideUp(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -34,13 +36,38 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
   const [log, setLog] = useState([]);
 
   // Ao abrir, carrega a lista do que será revertido.
+  const reload = () => {
+    window.api.revertList(serial).then(setEntries).catch(() => setEntries([]));
+  };
   useEffect(() => {
     if (open && serial) {
       setPhase('confirm');
       setLog([]);
-      window.api.revertList(serial).then(setEntries).catch(() => setEntries([]));
+      reload();
     }
-  }, [open, serial]);
+  }, [open, serial]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Exporta/importa o registro de reversão (JSON). O registro mora NESTE
+  // computador; exportar permite desfazer as alterações a partir de outro.
+  const [transferMsg, setTransferMsg] = useState(null);
+  const doExport = async () => {
+    setTransferMsg(null);
+    try {
+      const saved = await window.api.revertExport(serial);
+      if (saved) setTransferMsg('Registro exportado.');
+    } catch (e) { setTransferMsg(String(e.message || e)); }
+  };
+  const doImport = async () => {
+    setTransferMsg(null);
+    try {
+      const count = await window.api.revertImport(serial);
+      if (count != null) {
+        setTransferMsg(`Importado — ${count} ${count === 1 ? 'item' : 'itens'} no registro.`);
+        reload();
+        onReverted && onReverted(); // atualiza contagem/travas no App
+      }
+    } catch (e) { setTransferMsg(String(e.message || e)); }
+  };
 
   const runRevert = async () => {
     setPhase('running');
@@ -125,6 +152,26 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
                 Reverter tudo
               </Button>
             </Stack>
+
+            {/* Levar o registro para outro computador (ou trazer de um). */}
+            <Stack direction="row" spacing={1} justifyContent="center" sx={{ mt: 1.5 }}>
+              <Button size="small" variant="text" startIcon={<FileDownloadIcon sx={{ fontSize: 14 }} />}
+                onClick={doExport} disabled={entries.length === 0}
+                sx={{ fontSize: '0.72rem', textTransform: 'none', color: 'text.secondary' }}>
+                Exportar registro
+              </Button>
+              <Button size="small" variant="text" startIcon={<FileUploadIcon sx={{ fontSize: 14 }} />}
+                onClick={doImport}
+                sx={{ fontSize: '0.72rem', textTransform: 'none', color: 'text.secondary' }}>
+                Importar registro
+              </Button>
+            </Stack>
+            {transferMsg && (
+              <Typography variant="caption" color="text.secondary"
+                sx={{ display: 'block', textAlign: 'center', mt: 0.5, fontSize: '0.72rem' }}>
+                {transferMsg}
+              </Typography>
+            )}
           </Box>
         )}
 

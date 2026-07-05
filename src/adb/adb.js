@@ -199,6 +199,43 @@ async function getDisplaySize(serial) {
   return { physical: phys ? phys[1] : null, override: over ? over[1] : null };
 }
 
+// Ativa/ajusta o Não Perturbe pelo gerenciador de notificações.
+// Modos aceitos: 'on' | 'priority' | 'none' | 'alarms' | 'off'.
+// O estado atual é lido pelo setting global 'zen_mode'
+// (0=desligado, 1=prioridade, 2=silêncio total, 3=só alarmes).
+async function setDnd(serial, mode) {
+  return adb(['-s', serial, 'shell', 'cmd', 'notification', 'set_dnd', mode]);
+}
+
+// Serial "de fábrica" do aparelho (ro.serialno). Estável entre USB e Wi-Fi —
+// na conexão TCP o serial de transporte vira "ip:porta", mas este não muda.
+async function getSerialNo(serial) {
+  return adb(['-s', serial, 'shell', 'getprop', 'ro.serialno']);
+}
+
+// Descobre o IP do aparelho na rede Wi-Fi. Tenta a rota padrão (traz o campo
+// src) e cai para o endereço da interface wlan0.
+async function getWifiIp(serial) {
+  try {
+    const out = await adb(['-s', serial, 'shell', 'ip', 'route']);
+    const m = /\bsrc\s+(\d+\.\d+\.\d+\.\d+)/.exec(out);
+    if (m) return m[1];
+  } catch { /* tenta o fallback abaixo */ }
+  const out2 = await adb(['-s', serial, 'shell', 'ip', '-f', 'inet', 'addr', 'show', 'wlan0']).catch(() => '');
+  const m2 = /inet\s+(\d+\.\d+\.\d+\.\d+)/.exec(out2);
+  return m2 ? m2[1] : null;
+}
+
+// Reinicia o adbd do aparelho escutando em TCP (modo Wi-Fi).
+async function enableTcpip(serial, port = 5555) {
+  return adb(['-s', serial, 'tcpip', String(port)]);
+}
+
+// Conecta a um aparelho por TCP ('ip:porta'). Devolve a saída crua do adb.
+async function connectTcp(hostPort) {
+  return adb(['connect', hostPort]);
+}
+
 // Confirma se um pacote existe no aparelho. A comparação é por linha exata:
 // 'pm list packages com.mubi' também lista 'com.mubi.pro', e um includes()
 // simples daria falso positivo.
@@ -224,6 +261,11 @@ module.exports = {
   getCurrentHome,
   deleteSetting,
   hasPackage,
+  setDnd,
+  getSerialNo,
+  getWifiIp,
+  enableTcpip,
+  connectTcp,
   setFixToUserRotation,
   setDisplaySize,
   getDisplaySize,
