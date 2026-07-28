@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const adb = require('../adb/adb');
 const { checkDevices } = require('../adb/adbOrchestrator');
-const { runTask, revertEntry, verifyTask, verifyRevert, captureTask, captureLooksLikeTv, ensureScreenReady, installApkFile, REVERT_KINDS } = require('./runner');
+const { runTask, revertEntry, verifyTask, verifyRevert, captureTask, captureLooksLikeTv, ensureScreenReady, installApkFile, REVERT_KINDS, CAPTURABLE_KINDS } = require('./runner');
 const revertStore = require('./revertStore');
 const settingsStore = require('./settingsStore');
 const mainI18n = require('../i18n/runtime.cjs');
@@ -211,6 +211,38 @@ ipcMain.handle('revert:one', async (_e, serial, taskId) => {
 // dois modos. Quem decide o que é "de modo" é o renderer (catálogo); o main
 // só executa sobre as entradas indicadas.
 
+// Qual task usar: a do PERFIL SALVO ou a do CATÁLOGO ATUAL?
+//
+// A resposta depende do tipo, e o critério é se aquele tipo pode ter virado
+// perfil vivo. `entry.task` só é perfil vivo para os tipos que o `captureTask`
+// refotografa (CAPTURABLE_KINDS). Nesses, ele reflete o que o usuário
+// personalizou e DEVE vencer o catálogo — é a funcionalidade "sua interface
+// vira o novo perfil".
+//
+// Para os demais (`home`, `dnd`), o `captureTask` sempre devolve `null`: o
+// `entry.task` nunca é atualizado e fica congelado como o catálogo era no dia
+// da primeira aplicação. Deixá-lo vencer significa que **nenhuma mudança de
+// catálogo chega a um aparelho já provisionado**, em nenhuma ida ao modo TV —
+// e não só na primeira.
+//
+// O caso concreto que motivou isto (registro de 15/07/2026 ainda nesta
+// máquina): `tw-home` com `pkg: com.spocky.projengmenu`. Depois que o catálogo
+// passou a usar o launcher próprio, aquele aparelho voltaria ao Projectivy
+// indefinidamente — em silêncio se o Projectivy ainda estivesse instalado, ou
+// falhando com "launcher não instalado" se não estivesse.
+//
+// O `fallbackTask` vem do renderer com a entrada ATUAL do catálogo. Quando ele
+// não existe (task saiu do catálogo), o `entry.task` ainda serve de último
+// recurso — melhor reaplicar algo conhecido do que não ter o que reaplicar.
+//
+// Efeito colateral desejado: como o `sleepOneImpl` regrava `patch.task` com o
+// que escolheu aqui, um registro desatualizado se CORRIGE SOZINHO na próxima
+// ida ao modo celular. Não é preciso migrar registro nenhum.
+function preferredTask(entry, fallbackTask) {
+  if (entry.task && CAPTURABLE_KINDS.has(entry.task.kind)) return entry.task;
+  return fallbackTask || entry.task || null;
+}
+
 // Adormece UMA entrada: fotografa o modo TV como está AGORA (o perfil vivo —
 // personalizações feitas ao longo dos dias viram o novo perfil), devolve o
 // aparelho ao estado celular registrado e marca a entrada como dormant.
@@ -229,7 +261,7 @@ async function sleepOneImpl(serial, storeKey, taskId, fallbackTask, { force = fa
   const entry = data.entries.find((x) => x.taskId === taskId);
   if (!entry) throw new Error(t('main.entryNotFound'));
   if (entry.dormant && !force) return t('main.alreadyPhoneMode');
-  const baseTask = entry.task || fallbackTask || null;
+  const baseTask = preferredTask(entry, fallbackTask);
   // 1) Snapshot do perfil TV (não fatal: se a leitura falhar, mantém o atual).
   let snapshot = null;
   if (layer !== 'original' && baseTask && !entry.dormant) {
@@ -270,7 +302,7 @@ async function wakeOneImpl(serial, storeKey, taskId, fallbackTask) {
   const data = revertStore.read(storeKey);
   const entry = data.entries.find((x) => x.taskId === taskId);
   if (!entry) throw new Error(t('main.entryNotFound'));
-  const task = entry.task || fallbackTask;
+  const task = preferredTask(entry, fallbackTask);
   if (!task) throw new Error(t('main.noProfileToReapply'));
   // Dormente = ida LIMPA ao modo TV (o aparelho está em estado de celular).
   // Não dormente = RETOMADA de uma ida que falhou no meio: parte dos valores
@@ -485,7 +517,7 @@ ipcMain.handle('mode:verifyOne', async (_e, serial, direction, taskId, fallbackT
   if (!entry) return { ok: true, detail: t('main.check.noJournal') };
   try {
     if (direction === 'tv') {
-      const task = entry.task || fallbackTask;
+      const task = preferredTask(entry, fallbackTask);
       if (!task) return { ok: true, detail: t('main.check.noProfile') };
       return await verifyTask(serial, task);
     }
@@ -540,7 +572,7 @@ ipcMain.handle('profiles:save', async (_e, serial, name, items = []) => {
   for (const { taskId, fallbackTask } of items) {
     const entry = data.entries.find((x) => x.taskId === taskId);
     if (!entry || entry.dormant) continue; // só o que está ATIVO na tela agora
-    const baseTask = entry.task || fallbackTask;
+    const baseTask = preferredTask(entry, fallbackTask);
     if (!baseTask) continue;
     // Fotografa o valor ATUAL no aparelho (giros de tela e ajustes recentes
     // entram); leitura indisponível não trava — fica o último perfil conhecido.

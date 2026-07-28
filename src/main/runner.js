@@ -895,6 +895,24 @@ function captureLooksLikeTv(task, revert) {
 //     resolução/dpi foi limpo, ou o valor voltou ao estado original pré-modo-TV
 //     (originalRevert). Nesses casos o perfil é preservado, para uma
 //     atualização do One UI ou um reinício não "contaminar" o modo TV salvo.
+// Tipos que o `captureTask` abaixo SABE refotografar. Espelha exatamente os
+// `case` do switch — quem acrescentar um caso lá precisa acrescentar aqui.
+//
+// Serve para responder uma pergunta que o `main.js` precisa fazer: o
+// `entry.task` guardado é um PERFIL VIVO ou uma CÓPIA CONGELADA do catálogo?
+//
+// Para os tipos daqui, é perfil vivo: o usuário personalizou, foi fotografado,
+// e o perfil deve vencer o catálogo. Para os demais o `captureTask` sempre
+// devolve `null`, então o `entry.task` nunca é atualizado — fica exatamente
+// como o catálogo era no dia da primeira aplicação, e vencer o catálogo atual
+// é sempre errado.
+//
+// Foi assim que o `tw-home` de um aparelho provisionado antes de 25/07/2026
+// continuou apontando para `com.spocky.projengmenu` depois que o catálogo
+// passou a instalar o launcher próprio: o valor congelado ganhava do atual em
+// TODA ida ao modo TV, não só na primeira.
+const CAPTURABLE_KINDS = new Set(['setting', 'settings', 'wmsize', 'density', 'rotate']);
+
 async function captureTask(serial, task, originalRevert) {
   switch (task.kind) {
     case 'setting': {
@@ -982,4 +1000,4 @@ async function captureTask(serial, task, originalRevert) {
   }
 }
 
-module.exports = { runTask, revertEntry, verifyTask, verifyRevert, captureTask, captureLooksLikeTv, ensureScreenReady, installApkFile, REVERT_KINDS };
+module.exports = { runTask, revertEntry, verifyTask, verifyRevert, captureTask, captureLooksLikeTv, ensureScreenReady, installApkFile, REVERT_KINDS, CAPTURABLE_KINDS };
