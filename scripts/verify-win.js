@@ -56,6 +56,25 @@ if (exes.length === 0) {
   process.exit(1);
 }
 
+// Empacota cada .exe num ZIP para o TRANSPORTE.
+//
+// Motivo: `.exe` não assinado em trânsito é mexido pelos antivírus das DUAS
+// pontas — o daqui e o do PC de destino. Dentro do ZIP ele deixa de ser
+// executável aos olhos deles. E o ZIP tem CRC por arquivo: se algo se
+// corromper no caminho, a EXTRAÇÃO falha alto, em vez de entregar um .exe
+// quebrado que só vai reclamar na hora de instalar (que foi o que aconteceu).
+function zipar(exe) {
+  const zip = exe.replace(/\.exe$/, '.zip');
+  try {
+    fs.rmSync(zip, { force: true });
+    execFileSync('7z', ['a', '-tzip', '-mx=1', zip, exe], { stdio: 'ignore' });
+    const out = execFileSync('7z', ['t', zip], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    return /Everything is Ok/.test(out) ? zip : null;
+  } catch {
+    return null;
+  }
+}
+
 console.log(`\n  Instaláveis Windows em ${DIR}\n`);
 let algumFalhou = false;
 for (const nome of exes) {
@@ -67,16 +86,26 @@ for (const nome of exes) {
   console.log(`     integridade  ${estado}`);
   console.log(`     tamanho      ${mb} MB`);
   console.log(`     SHA-256      ${sha256(full)}`);
+  const zip = estado === 'ok' ? zipar(full) : null;
+  if (zip) {
+    console.log(`     ZIP p/ enviar  ${path.basename(zip)}`);
+    console.log(`     SHA-256 do ZIP ${sha256(zip)}`);
+  }
   console.log('');
 }
 
-console.log('  No Windows, ANTES de instalar:');
-console.log('     Get-FileHash arquivo.exe -Algorithm SHA256');
-console.log('  Hash diferente = o arquivo se corrompeu no caminho. Não insista.');
+console.log('  COMO LEVAR PARA O WINDOWS');
+console.log('     1. Transfira o .ZIP, não o .exe — o .exe solto é mexido pelos');
+console.log('        antivírus das duas pontas; dentro do ZIP, não.');
+console.log('     2. No Windows, confira o hash do ZIP ANTES de extrair:');
+console.log('           Get-FileHash arquivo.zip -Algorithm SHA256');
+console.log('        Diferente = corrompeu no caminho. Não adianta extrair.');
+console.log('     3. Extraia. Se a extração acusar erro de CRC, o mesmo vale.');
 console.log('');
 console.log('  Copie DESTA pasta, nunca de release/ nem de ~/dexarmor-instaladores/:');
 console.log('  o antivírus apaga o instalador NSIS em qualquer lugar da pasta pessoal.');
-console.log('  Se ele sumir antes de você copiar, use o -portable (nunca foi apagado).');
+console.log('  Se ele sumir antes de você copiar, use o -portable — ele nunca foi');
+console.log('  apagado, não instala, não desinstala e não tem checagem para falhar.');
 console.log('');
 
 process.exit(algumFalhou ? 1 : 0);
