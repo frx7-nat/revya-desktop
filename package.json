@@ -120,6 +120,7 @@
       ],
       "category": "Utility",
       "maintainer": "DexArmor"
-    }
+    },
+    "afterPack": "scripts/after-pack.js"
   }
 }
