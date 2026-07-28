@@ -112,3 +112,33 @@ ls -lah release/DexArmor-*-x64*.exe
 Windows exibe o alerta SmartScreen ("O Windows protegeu o seu PC" → "Mais
 informações" → "Executar assim mesmo"). Para eliminar isso nos clientes finais,
 avaliar um certificado de code signing.
+
+---
+
+## ✅ VALIDADO EM WINDOWS REAL — 28/07/2026
+
+Até esta data o `.exe` era um artefato que se **acreditava** correto por
+inspeção a partir do Mac: `file` no payload (`PE32+ x86-64`), tamanho do
+blockmap, listagem do `win-unpacked`. Nada disso prova que o programa abre e
+funciona — só que o arquivo tem a forma certa.
+
+A usuária instalou e usou num PC Windows: **funciona igual ao macOS.**
+
+Isso fecha uma dúvida que estava aberta desde 22/07 e que nenhuma verificação
+feita do lado do Mac podia responder. Vale registrar o que a validação cobre e
+o que não cobre:
+
+| coberto | não coberto |
+| --- | --- |
+| Instalação pelo NSIS e abertura do app | o `.exe` **portable** (só o instalador foi testado) |
+| Interface completa, nos dois idiomas | Windows-on-ARM (o build é só x64, por decisão) |
+| Paridade de comportamento com o macOS | o SmartScreen continua aparecendo — é esperado, não é defeito |
+
+**A build testada** é a de 28/07 14:07, que traz: i18n completo com as ~35
+correções da manhã, formatação de número por idioma, e o APK do launcher em
+`versionCode 3` assinado com a chave de release (`CN=DexArmor`).
+
+> **O que isso muda no risco do produto.** O DexArmor deixou de ser
+> "provavelmente multiplataforma" para ser multiplataforma verificado. O adb, o
+> scrcpy e o caminho de instalação do APK são as partes mais dependentes de
+> sistema operacional, e são justamente as que o teste exercitou.
