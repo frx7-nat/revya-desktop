@@ -108,6 +108,49 @@ ls -lah release/DexArmor-*-x64*.exe
 #   DexArmor-0.1.0-x64-portable.exe  (portable)
 ```
 
+---
+
+## ⚠️ A SAÍDA DO BUILD WINDOWS MUDOU DE PASTA (28/07/2026)
+
+```json
+"dist:win": "... electron-builder --win --config.directories.output=../dexarmor-instaladores"
+```
+
+O `npm run dist:win` **não escreve mais em `release/`**. Sai em
+`~/dexarmor-instaladores/` (o `..` resolve a partir da raiz do projeto).
+
+**Por quê — medido, não suposto.** O Kaspersky desta máquina **apaga o
+instalador NSIS** minutos depois de o `electron-builder` criá-lo em `release/`.
+Ficou provado quando o `.exe` sumiu e o `.exe.blockmap` do mesmo build
+permaneceu ao lado. O alvo **portable sobrevive**; só o `nsis` é apagado —
+instalador NSIS não assinado é vetor clássico de malware e a heurística é
+agressiva com ele.
+
+**Por que isso arruinava os testes no Windows.** A usuária copiava o `.exe` de
+`release/` para o PC e recebia:
+
+> NSIS Error — Installer integrity check has failed.
+
+Não era download ruim nem mídia danificada: era um arquivo que o antivírus já
+havia começado a modificar/apagar na origem. O alvo `nsis` mantém `CRCCheck`
+ligado e se autoverifica ao iniciar; o `portable` roda com `CRCCheck off` (ver o
+script gerado no `builder-debug.yml`), e por isso não reclamava — o que fazia o
+problema parecer intermitente.
+
+**Regra de operação:**
+
+1. Nunca copiar o `.exe` de `release/` — lá o arquivo tem vida de minutos.
+2. Conferir o SHA-256 nas DUAS pontas antes de instalar:
+   `Get-FileHash arquivo.exe -Algorithm SHA256` no PowerShell.
+3. Se o hash não bater, o arquivo se corrompeu. Insistir na instalação só perde
+   tempo.
+
+> Isso reclassifica a exclusão no Kaspersky (item 5 do `PENDENCIAS`): deixou de
+> ser conveniência de desenvolvimento e virou **impedimento de distribuição** —
+> o antivírus corrompe o entregável antes de ele sair da máquina.
+
+---
+
 **Observação para distribuição:** o `.exe` sai **sem assinatura digital**, então
 o Windows exibe o alerta SmartScreen ("O Windows protegeu o seu PC" → "Mais
 informações" → "Executar assim mesmo"). Para eliminar isso, avaliar um
