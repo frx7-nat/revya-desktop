@@ -71,7 +71,14 @@ export const TASK_GROUPS = [
         // catálogo sem nunca chegar ao aparelho.
         //   2 (27/07/2026) — tela "contribua" + categorias com.arvio.tv e
         //                    com.farmerbb.secondscreen.free
-        minVersionCode: 2,
+        //   3 (28/07/2026) — i18n pt/en do launcher e PayPal por idioma;
+        //                    primeiro APK assinado com a chave de RELEASE.
+        //                    A v2 era de debug: assinatura diferente NÃO
+        //                    atualiza por cima (INSTALL_FAILED_UPDATE_
+        //                    INCOMPATIBLE). Aparelho com a v2 instalada
+        //                    precisa desinstalar antes — ver ASSINATURA.md
+        //                    no changeset do launcher.
+        minVersionCode: 3,
         source: { type: 'local', dir: 'launchers', apk: '{Launcher} DexArmor TV.apk' } },
 
       // O Projectivy saiu em 25/07/2026, substituído pelo launcher próprio;
