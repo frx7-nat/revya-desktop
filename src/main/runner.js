@@ -310,7 +310,7 @@ async function runTask(serial, task) {
       // algo que não era nosso — e, no caso do launcher, deixaria o aparelho
       // sem tela inicial. Atualização não gera reversão.
       const revert = (task.pkg && !jaInstalado) ? { kind: 'uninstall', pkg: task.pkg } : null;
-      return { detail: jaInstalado ? 'Atualizado' : 'Instalado', revert };
+      return { detail: t(jaInstalado ? 'runner.updated' : 'runner.installed'), revert };
     }
     case 'setting': {
       // Captura o valor anterior ANTES de escrever, para poder reverter.
