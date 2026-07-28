@@ -23,6 +23,7 @@ import SquareIcon from './SquareIcon';
 import { ALL_TASKS } from '../data/tasks';
 import { friendlyError } from '../utils/errors';
 import { useT } from '../i18n';
+import { num } from '../utils/locale';
 
 const TOK = { surfaceSoft: '#0d0d0d', hairlineStrong: '#262626', hairline: '#3c3c3c' };
 
@@ -56,15 +57,15 @@ function appLabel(t, pkg) {
   return BRAND_LABELS[pkg] || pkg.split('.').filter(Boolean).pop();
 }
 
-function mb(bytes) {
+function mb(bytes, language) {
   if (bytes == null) return '—';
   const g = bytes / 1024 ** 3;
-  if (g >= 1) return `${g.toFixed(1).replace('.', ',')} GB`;
+  if (g >= 1) return `${num(g, language)} GB`;
   return `${Math.max(1, Math.round(bytes / 1024 ** 2))} MB`;
 }
 
 export default function CleanupPanel({ serial, disabled, onDone }) {
-  const { t } = useT();
+  const { t, language } = useT();
   const [busy, setBusy] = useState(false);
   const [elapsed, setElapsed] = useState(0);      // cronômetro da parada
   const [preview, setPreview] = useState([]);     // o que está sendo liberado
@@ -139,7 +140,7 @@ export default function CleanupPanel({ serial, disabled, onDone }) {
       >
         {busy ? (
           <Typography component="span" variant="overline" sx={{ fontSize: '0.7rem', fontWeight: 700, lineHeight: 1 }}>
-            {t('cleanup.running', { seconds: elapsed.toFixed(1).replace('.', ',') })}
+            {t('cleanup.running', { seconds: num(elapsed, language) })}
           </Typography>
         ) : t('cleanup.action')}
       </Button>
@@ -169,7 +170,7 @@ export default function CleanupPanel({ serial, disabled, onDone }) {
             <CheckCircleIcon sx={{ fontSize: 13, color: 'success.main' }} />
             <Typography variant="caption" sx={{ fontSize: '0.68rem', color: 'text.primary' }}>
               {t('cleanup.doneLine', {
-                seconds: result.seconds.toFixed(1).replace('.', ','),
+                seconds: num(result.seconds, language),
                 result: result.freedBytes != null && result.freedBytes > 50 * 1024 * 1024
                   ? t('cleanup.freed', { value: mb(result.freedBytes) })
                   : t('cleanup.alreadyClean'),

@@ -17,15 +17,17 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import SquareIcon from './SquareIcon';
 import { useT } from '../i18n';
+import { num } from '../utils/locale';
 
 const TOK = {
   surfaceSoft: '#0d0d0d', hairlineStrong: '#262626', hairline: '#3c3c3c',
   dataBlue: '#1c69d4', warning: '#f4b400', red: '#e22718',
 };
 
-function gb(bytes) {
+// Separador decimal segue o IDIOMA — ver src/renderer/utils/locale.js.
+function gb(bytes, language) {
   if (bytes == null) return '—';
-  return `${(bytes / 1024 ** 3).toFixed(1).replace('.', ',')} GB`;
+  return `${num(bytes / 1024 ** 3, language)} GB`;
 }
 
 function tempColor(t) {
@@ -63,7 +65,7 @@ function SpecCell({ value, label, sub, valueColor }) {
 // Gráfico de linha da temperatura: série única (um tom, sem legenda — o
 // rótulo da seção nomeia a série), traço de 2px, linha-base recessiva.
 function TempSparkline({ history }) {
-  const { t } = useT();
+  const { t, language } = useT();
   if (history.length < 2) {
     return (
       <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.62rem' }}>
@@ -87,7 +89,7 @@ function TempSparkline({ history }) {
     <Box>
       <svg width="100%" height={H} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none"
         role="img" aria-label={t('health.chartAria', { minutes, min, max })}>
-        <title>{t('health.chartTitle', { minutes, min: String(min).replace('.', ','), max: String(max).replace('.', ',') })}</title>
+        <title>{t('health.chartTitle', { minutes, min: num(min, language), max: num(max, language) })}</title>
         {/* linha-base recessiva (hairline), não um eixo chamativo */}
         <line x1="0" y1={H - 1} x2={W} y2={H - 1} stroke={TOK.hairlineStrong} strokeWidth="1" vectorEffect="non-scaling-stroke" />
         <polyline points={pts} fill="none" stroke={TOK.dataBlue} strokeWidth="2"
@@ -134,7 +136,7 @@ const SEV_ICON = {
 };
 
 export default function HealthPanel({ serial, active, refreshKey = 0 }) {
-  const { t } = useT();
+  const { t, language } = useT();
   const [health, setHealth] = useState(null);
   const [failed, setFailed] = useState(false);
   // Histórico de temperatura para o gráfico (uma amostra por leitura; ~12
@@ -204,7 +206,7 @@ export default function HealthPanel({ serial, active, refreshKey = 0 }) {
               label={t('health.battery')}
             />
             <SpecCell
-              value={battery?.tempC != null ? `${String(battery.tempC).replace('.', ',')}°C` : '—'}
+              value={battery?.tempC != null ? `${num(battery.tempC, language)}°C` : '—'}
               sub={battery?.tempC != null ? (battery.tempC >= 42 ? t('health.subHot') : battery.tempC >= 38 ? t('health.subWarm') : t('health.subNormal')) : null}
               label={t('health.temperature')}
               valueColor={tempColor(battery?.tempC)}
@@ -221,7 +223,7 @@ export default function HealthPanel({ serial, active, refreshKey = 0 }) {
                 {t('health.storage')}
               </Typography>
               <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.64rem' }}>
-                {t('health.storageFree', { free: gb(storage?.freeBytes), total: gb(storage?.totalBytes) })}
+                {t('health.storageFree', { free: gb(storage?.freeBytes, language), total: gb(storage?.totalBytes, language) })}
               </Typography>
             </Stack>
             {usedPct != null && (

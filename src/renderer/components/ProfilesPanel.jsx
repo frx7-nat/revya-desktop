@@ -23,14 +23,18 @@ import SaveIcon from '@mui/icons-material/Save';
 import SquareIcon from './SquareIcon';
 import { friendlyError } from '../utils/errors';
 import { useT } from '../i18n';
+import { decimal, shortDate } from '../utils/locale';
 import RichText from '../i18n/RichText';
 
 const TOK = { surfaceSoft: '#0d0d0d', hairlineStrong: '#262626', hairline: '#3c3c3c' };
 
 // Resumo amigável do que um perfil carrega, a partir das tasks salvas.
-// Recebe `t` (tradução) e usa `list` para as tasks — antes a variável das
-// tasks se chamava `t`, que agora é o nome do tradutor.
-function profileChips(t, profile) {
+// Recebe `t` (tradução) e `language` por PARÂMETRO: é função pura, não
+// componente — `useT()` aqui violaria as regras do React, e ler `language` do
+// escopo de fora daria ReferenceError em tempo de execução, sem erro no build.
+// Usa `list` para as tasks — antes a variável das tasks se chamava `t`, que
+// agora é o nome do tradutor.
+function profileChips(t, language, profile) {
   const list = profile.tasks || [];
   const chips = [];
   const res = list.find((x) => x.kind === 'wmsize');
@@ -45,7 +49,7 @@ function profileChips(t, profile) {
   const rot = list.find((x) => x.kind === 'rotate');
   if (rot && Number.isInteger(rot.rotation)) chips.push(t('profiles.chip.rotation', { deg: rot.rotation * 90 }));
   const font = list.find((x) => x.kind === 'setting' && x.key === 'font_scale');
-  if (font) chips.push(t('profiles.chip.font', { value: String(font.value).replace('.', ',') }));
+  if (font) chips.push(t('profiles.chip.font', { value: decimal(font.value, language) }));
   const counted = [res, den, rot, font].filter(Boolean).length;
   const rest = list.length - counted;
   if (rest > 0) chips.push(t(rest === 1 ? 'profiles.chip.moreOne' : 'profiles.chip.moreMany', { n: rest }));
@@ -209,10 +213,7 @@ export default function ProfilesPanel({
                     {p.name}
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.62rem' }}>
-                    {t('profiles.savedAt', {
-                      date: new Date(p.updatedAt || p.createdAt)
-                        .toLocaleDateString(language === 'pt' ? 'pt-BR' : 'en-US'),
-                    })}
+                    {t('profiles.savedAt', { date: shortDate(p.updatedAt || p.createdAt, language) })}
                   </Typography>
                 </Box>
                 {confirmDeleteId === p.id ? (
@@ -231,9 +232,9 @@ export default function ProfilesPanel({
                 )}
               </Stack>
 
-              {profileChips(t, p).length > 0 && (
+              {profileChips(t, language, p).length > 0 && (
                 <Stack direction="row" spacing={0.5} useFlexGap flexWrap="wrap" sx={{ mt: 0.7, mb: 0.9 }}>
-                  {profileChips(t, p).map((c) => (
+                  {profileChips(t, language, p).map((c) => (
                     <Chip key={c} label={c} size="small" variant="outlined"
                       sx={{ height: 18, borderColor: TOK.hairline, color: 'text.secondary',
                         '& .MuiChip-label': { px: 0.7, fontSize: '0.6rem' } }} />

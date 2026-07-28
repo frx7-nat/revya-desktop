@@ -642,10 +642,17 @@ ipcMain.handle('health:get', async (_e, serial) => {
 // operação segura por natureza, fora do registro de reversão.
 
 // Bytes -> texto amigável para o registro em disco.
+// O separador decimal segue o idioma: vírgula em português é decimal, em
+// inglês é separador de MILHAR — "1,50 GB" num registro em inglês se lê como
+// mil e quinhentos.
 function fmtBytes(b) {
   if (b == null) return '—';
   const g = b / 1024 ** 3;
-  if (g >= 1) return `${g.toFixed(2).replace('.', ',')} GB`;
+  if (g >= 1) {
+    return `${g.toLocaleString(mainI18n.getLanguage() === 'pt' ? 'pt-BR' : 'en-US', {
+      minimumFractionDigits: 2, maximumFractionDigits: 2,
+    })} GB`;
+  }
   return `${Math.max(1, Math.round(b / 1024 ** 2))} MB`;
 }
 
