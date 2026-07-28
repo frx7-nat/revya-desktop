@@ -1,0 +1,952 @@
+{
+  "language": {
+    "label": "Idioma",
+    "pt": "Português",
+    "en": "English"
+  },
+  "taskGroups": {
+    "debloat": {
+      "title": "Remover apps",
+      "subtitle": "Desinstala por usuário (reversível em reset)"
+    },
+    "install": {
+      "title": "Instalar o launcher de TV",
+      "subtitle": "A cara do modo TV",
+      "notice": "Apps de streaming, navegador, jogos e emuladores não vêm com o DexArmor — você instala os que quiser, a partir dos arquivos que já tem.",
+      "noticeAction": "Como instalar apps e enviar arquivos"
+    },
+    "tweaks": {
+      "title": "Personalizar sistema",
+      "subtitle": "Ajustes para uso em TV"
+    }
+  },
+  "tasks": {
+    "rm-bixby": {
+      "label": "Bixby"
+    },
+    "rm-store": {
+      "label": "Galaxy Store"
+    },
+    "rm-office": {
+      "label": "Apps de escritório"
+    },
+    "rm-social": {
+      "label": "Redes sociais pré-instaladas"
+    },
+    "lnch-dexarmor": {
+      "label": "DexArmor TV (launcher)"
+    },
+    "tw-screen": {
+      "label": "Manter tela sempre ligada",
+      "info": "A TV não deve apagar sozinha durante o uso."
+    },
+    "tw-battery": {
+      "label": "Proteger a bateria (carga até 85%)",
+      "info": "Plugado 24h na tomada, o celular degrada a bateria rápido. Este ajuste do One UI limita a carga a 85%, alongando muito a vida útil."
+    },
+    "tw-dnd": {
+      "label": "Não perturbe (modo TV)",
+      "info": "Silencia notificações e chamadas que apareceriam na TV, por cima do conteúdo e na frente de todo mundo."
+    },
+    "tw-updates": {
+      "label": "Desativar atualizações automáticas",
+      "info": "Uma atualização do sistema pode desfazer toda a configuração. Por segurança, mantenha o aparelho como está."
+    },
+    "tw-anim": {
+      "label": "Reduzir animações",
+      "info": "Navegação mais rápida e direta na tela grande."
+    },
+    "tw-font": {
+      "label": "Fonte maior (padrão TV)",
+      "info": "Texto maior para leitura confortável à distância do sofá."
+    },
+    "tw-font-big": {
+      "label": "Fonte bem maior",
+      "info": "Para TVs menores ou sofás mais distantes."
+    },
+    "tw-font-normal": {
+      "label": "Fonte no tamanho normal",
+      "info": "Volta a fonte ao tamanho padrão do celular, se as opções maiores não agradarem."
+    },
+    "tw-rotate": {
+      "label": "Forçar tela na horizontal",
+      "info": "Mantém tudo em paisagem na TV, mesmo apps que abririam em pé. Se a tela ficar na posição errada, use o botão \"Girar tela\" do controle remoto até acertar."
+    },
+    "tw-gestures": {
+      "label": "Navegação por gestos",
+      "info": "Troca os botões por gestos, liberando espaço na tela."
+    },
+    "tw-lock": {
+      "label": "Remover bloqueio de tela",
+      "info": "Liga direto no conteúdo, sem pedir senha pelo controle."
+    },
+    "tw-home": {
+      "label": "Usar launcher de TV como padrão",
+      "info": "O celular abre direto na tela de TV, não no sistema do Android."
+    },
+    "tw-res-fhd": {
+      "label": "Resolução Full HD (1080p)",
+      "info": "Para TVs Full HD (1920x1080). A resolução mais comum."
+    },
+    "tw-res-2k": {
+      "label": "Resolução 2K (1440p)",
+      "info": "Para monitores e TVs 2K/QHD (2560x1440)."
+    },
+    "tw-res-4k": {
+      "label": "Resolução 4K (2160p)",
+      "info": "Para TVs 4K/UHD (3840x2160). Só use se a TV for realmente 4K."
+    },
+    "tw-dpi-default": {
+      "label": "Interface no tamanho padrão",
+      "info": "Textos, ícones e menus na escala ideal para a resolução escolhida — o padrão de uma TV."
+    },
+    "tw-dpi-small": {
+      "label": "Interface menor",
+      "info": "Textos, ícones e menus 20% menores, para quem prefere mais conteúdo na tela."
+    },
+    "tw-dpi-large": {
+      "label": "Interface maior",
+      "info": "Textos, ícones e menus 20% maiores — mais fáceis de ler de longe."
+    },
+    "tw-sound": {
+      "label": "Silenciar sons de toque",
+      "info": "Sem o clique a cada toque, melhor para a sala."
+    }
+  },
+  "runner": {
+    "locked": "O aparelho está bloqueado. Desbloqueie a tela do celular e toque em \"Tentar de novo\".",
+    "applied": "Aplicado",
+    "appliedCount": "Aplicado ({n} ajustes)",
+    "resolution": "Resolução {w}x{h}",
+    "resolutionWithDensity": "Resolução {w}x{h} · {dpi}dpi",
+    "densityApplied": "Interface em {dpi}dpi",
+    "dndOn": "Não perturbe ativado",
+    "alreadyUpdated": "Já atualizado (versão {version})",
+    "empty": "(vazio)",
+    "emptyShort": "vazio",
+    "unknown": "desconhecido",
+    "verify": {
+      "appsBack": "{back} de {total} apps voltaram",
+      "noPackage": "Sem pacote declarado para conferir",
+      "notInstalled": "O app não está mais instalado",
+      "outdated": "Versão desatualizada ({version}) — reaplique para atualizar",
+      "currentValue": "Valor atual: {value}",
+      "keyChanged": "A chave {key} mudou ({value})",
+      "confirmedOnScreen": "Confirmado pelo app na tela",
+      "currentLauncher": "Launcher atual: {launcher}",
+      "autoRotateBack": "A rotação automática voltou a ligar",
+      "rotationChanged": "A rotação foi alterada",
+      "currentResolution": "Resolução atual: {value}",
+      "currentDensity": "Densidade atual: {value}dpi",
+      "noTvResolution": "A resolução de TV não está mais aplicada",
+      "dndOff": "O Não Perturbe está desligado",
+      "noCheck": "Sem verificação para este tipo"
+    },
+    "revertVerify": {
+      "keyNotBack": "A chave {key} não voltou ({value})",
+      "rotationNotBack": "A rotação não voltou ao estado do celular",
+      "dndNotBack": "O Não Perturbe não voltou ao estado do celular",
+      "noCheck": "Sem conferência para este tipo"
+    },
+    "error": {
+      "noApkInBundle": "Nenhum APK encontrado no pacote",
+      "needResolution": "Aplique primeiro uma resolução de TV (Full HD, 2K ou 4K) — o tamanho da interface é calculado a partir dela.",
+      "noApkSource": "App sem origem de APK definida",
+      "apkNotFound": "APK não encontrado: {path}",
+      "checksumMismatch": "O arquivo baixado não confere com a assinatura esperada (sha256). Instalação cancelada por segurança.",
+      "unknownSource": "Origem de APK desconhecida: {type}",
+      "noLauncherPkg": "Launcher padrão não configurado (defina o pacote)",
+      "launcherNotInstalled": "Launcher não está instalado — marque para instalar primeiro",
+      "launcherKept": "O sistema manteve o launcher antigo. No celular, toque no botão Início e escolha o launcher de TV como padrão.",
+      "launcherKeptTv": "O sistema manteve o launcher de TV. No celular, toque no botão Início e escolha o launcher da Samsung (One UI Home) como padrão.",
+      "dndFailed": "O sistema não ativou o Não Perturbe (este Android pode não suportar via ADB).",
+      "unknownTaskKind": "Tipo de task desconhecido: {kind}",
+      "noRevertInfo": "Sem informação de reversão",
+      "partialReactivate": "Reativados {ok}/{total}",
+      "unknownRevertKind": "Tipo de reversão desconhecido: {kind}"
+    },
+    "reactivated": "Reativados ({n})",
+    "rotationRestored": "Rotação restaurada",
+    "resolutionRestored": "Resolução restaurada",
+    "dndRestored": "Não perturbe restaurado",
+    "homeSet": "Definido como tela inicial",
+    "homeSetTapHome": "Definido como tela inicial — toque em Início no aparelho para abri-lo",
+    "landscapeForced": "Paisagem forçada",
+    "landscapeApplied": "Paisagem aplicada (alguns apps podem ainda abrir em pé neste aparelho)",
+    "launcherRestored": "Launcher restaurado",
+    "launcherRestoredTapHome": "Launcher restaurado — toque em Início no aparelho para abri-lo"
+  },
+  "errors": {
+    "noSpace": "O celular está sem espaço para receber este arquivo. Libere espaço (você pode usar a Limpeza do DexArmor) e tente de novo.",
+    "disconnected": "O celular desconectou durante o envio. Reconecte o cabo (ou o Wi-Fi) e tente de novo.",
+    "interrupted": "O envio foi interrompido no meio (o celular pode ter desconectado, entrado em suspensão ou o cabo pode ter oscilado). Reconecte o aparelho e tente de novo. Se acontecer de novo, troque o cabo ou a porta USB, ou use a conexão por Wi-Fi.",
+    "permissionDenied": "O celular não permitiu gravar aqui. Confira se a transferência de arquivos está autorizada no aparelho e tente de novo.",
+    "playProtect": "O Android bloqueou a instalação por segurança. No celular, abra o Google Play → perfil → Play Protect → Configurações e desative \"Verificar apps com o Play Protect\". Depois arraste o arquivo de novo.",
+    "alreadyInstalled": "Já existe uma versão deste app no celular com assinatura diferente. Desinstale a versão atual pelo aparelho e tente instalar de novo.",
+    "invalidApk": "Este arquivo não é um APK válido para instalar.",
+    "timeout": "O envio demorou demais e foi interrompido. Verifique a conexão com o celular e tente de novo."
+  },
+  "main": {
+    "revertEntryNotFound": "Entrada de reversão não encontrada",
+    "restoredNotOriginal": "{result} (o aparelho não estava no estado original — restaurado)",
+    "alreadyUndone": "Já estava desfeito (modo celular)",
+    "entryNotFound": "Entrada não encontrada no registro",
+    "alreadyPhoneMode": "Já estava no modo celular",
+    "noProfileToReapply": "Sem perfil salvo para reaplicar este ajuste",
+    "obstacle": {
+      "disconnected": "O aparelho desconectou no meio do caminho. Confira o cabo (ou o Wi-Fi) e toque em \"Tentar de novo\" — a troca continua de onde parou.",
+      "unauthorized": "O celular está pedindo autorização. Desbloqueie o aparelho, toque em \"Permitir\" na tela dele e tente de novo.",
+      "launcherMissing": "O launcher de TV não está mais instalado neste aparelho.",
+      "busy": "Já existe uma troca em andamento neste aparelho. Conclua-a antes de iniciar outra.",
+      "identity": "O aparelho conectado mudou. Reconecte o aparelho certo e toque em \"Tentar de novo\".",
+      "notResponding": "O aparelho não está respondendo. Confira o cabo (ou o Wi-Fi) e toque em \"Tentar de novo\"."
+    },
+    "check": {
+      "noJournal": "Sem registro para conferir",
+      "noProfile": "Sem perfil para conferir",
+      "noState": "Sem estado para conferir"
+    },
+    "profile": {
+      "needName": "Dê um nome ao perfil — por exemplo: \"Sala 4K\" ou \"Quarto Full HD\".",
+      "nothingToSave": "Nada para salvar ainda — aplique os ajustes de interface (resolução, rotação, tamanho…) e deixe a tela do seu jeito primeiro."
+    },
+    "cleanup": {
+      "title": "DexArmor — Registro de limpeza",
+      "date": "Data: {date}",
+      "device": "Aparelho: {device}",
+      "freeBefore": "Espaço livre antes:  {value}",
+      "freeAfter": "Espaço livre depois: {value}",
+      "freed": "Total liberado:      {value}",
+      "perApp": "Cache liberado por app:",
+      "noPerApp": "Sem detalhamento por app neste aparelho.",
+      "onlyCache": "Apenas arquivos temporários (cache) foram removidos.",
+      "noDataDeleted": "Nenhum dado, login ou configuração foi apagado."
+    },
+    "wifi": {
+      "blockedMacOS": "O computador bloqueou o acesso ao celular pela rede. No macOS, abra Ajustes do Sistema → Privacidade e Segurança → Rede local, permita o DexArmor e tente de novo. Confira também se o computador e o celular estão na mesma rede Wi-Fi.",
+      "failed": "Não foi possível conectar por Wi-Fi ({reason})",
+      "noAnswer": "sem resposta",
+      "notOnWifi": "O aparelho não está em uma rede Wi-Fi. Conecte-o à mesma rede do computador e tente de novo."
+    },
+    "dialog": {
+      "saveReport": "Salvar relatório de configuração",
+      "exportJournal": "Exportar registro de reversão",
+      "importJournal": "Importar registro de reversão"
+    },
+    "import": {
+      "nothingToExport": "Não há reversões para exportar",
+      "notDexArmor": "Arquivo inválido: não é um registro de reversão do DexArmor.",
+      "tooManyEntries": "Registro com entradas demais ({n}). Importação recusada por segurança.",
+      "malformedEntry": "Registro inválido: uma das entradas está malformada.",
+      "noTaskId": "Registro inválido: entrada sem identificador (taskId) válido.",
+      "badLabel": "Registro inválido: rótulo da entrada \"{taskId}\" fora do padrão.",
+      "unknownRevertKind": "Registro inválido: a entrada \"{taskId}\" tem um tipo de reversão desconhecido{detail}.",
+      "badPhoneProfile": "Registro inválido: a entrada \"{taskId}\" tem um perfil celular com tipo desconhecido.",
+      "unreadable": "Não foi possível ler o arquivo escolhido.",
+      "tooLarge": "Arquivo grande demais para ser um registro de reversão do DexArmor.",
+      "notJson": "Arquivo inválido: não é um JSON legível."
+    }
+  },
+  "taskPanel": {
+    "tab": {
+      "mods": "Modificações",
+      "profiles": "Perfis",
+      "accessories": "Acessórios"
+    },
+    "adjustable": "ajustável",
+    "whyDoThis": "Por que fazer isso?",
+    "whatIsThis": "O que é isto?",
+    "undo": "Desfazer",
+    "revertOne": "Reverter uma alteração específica",
+    "phoneModeSuffix": " (modo celular)",
+    "journal": {
+      "title": "Diário de trocas",
+      "loading": "Carregando…",
+      "empty": "Nada registrado ainda — as próximas trocas de modo aparecem aqui.",
+      "switchReset": "Reset de interface",
+      "switchToPhone": "Volta ao modo celular",
+      "switchToTv": "Ativação do modo TV",
+      "stopped": "{dir} — interrompida",
+      "summary": "{dir} — {parts}",
+      "done": "{n} ok",
+      "warn": "{n} com aviso",
+      "skipped": "{n} pulado(s)",
+      "blocked": "{n} bloqueado(s)",
+      "noItems": "sem itens",
+      "captureDiscarded": "Proteção: um retrato do celular com cara de TV foi descartado",
+      "dormantRestored": "Reversão: o aparelho não estava no estado original — restaurado",
+      "fingerprintCheck": "Conferência da troca: {detail}",
+      "checkDone": "concluída",
+      "retry": "Canal instável: uma tentativa foi refeita{detail}",
+      "journalRecovered": "Proteção: o registro corrompeu e foi recuperado do backup",
+      "invariant": "Alerta interno: invariante violada{detail}"
+    },
+    "mirror": {
+      "opening": "Abrindo a tela…",
+      "label": "Espelhar tela do celular",
+      "help": "Acompanhe o que acontece no seu celular diretamente pelo computador."
+    },
+    "wifi": {
+      "connected": "Conectado por Wi-Fi",
+      "enabling": "Ativando o modo sem fio…",
+      "label": "Modo sem fio (Wi-Fi)",
+      "help": "Configure o celular sem cabo, pela rede Wi-Fi: faça ajustes no conforto da sua cama ou do sofá, direto do notebook, com o aparelho já instalado na TV. O cabo USB só é necessário para ativar este modo — e de novo caso o celular seja desligado ou reiniciado.",
+      "connectedAt": "Conectado por Wi-Fi em {ip} — você já pode desplugar o cabo."
+    },
+    "mode": {
+      "toPhone": "Voltar ao modo celular",
+      "toTv": "Ativar modo TV",
+      "help": "Alterna entre o modo TV e o modo celular em segundos. Nada é desinstalado: apps, launcher e logins ficam no aparelho, e o modo TV é salvo como você o deixou — inclusive ajustes que você mudou depois."
+    },
+    "checkup": "Check-up do aparelho",
+    "maintenance": "Manutenção",
+    "fullReset": "Reversão completa",
+    "interfaceReset": {
+      "label": "Restaurar interface do celular",
+      "help": "A interface do celular ficou estranha mesmo depois de voltar ao modo celular? Isto devolve a interface original da primeira configuração — resolução, tamanho, fonte, rotação e launcher. Apps, arquivos e o seu modo TV salvo continuam no lugar."
+    },
+    "profileHint": "A interface está do seu jeito? Guarde-a como um perfil para voltar a ela com um clique.",
+    "accessories": {
+      "intro": "Acessórios testados no canal. Abrem no navegador — nada é instalado no aparelho.",
+      "empty": "Nenhum acessório cadastrado ainda.",
+      "soon": "em breve"
+    }
+  },
+  "modeSwitch": {
+    "tv": {
+      "title": "Ativar modo TV",
+      "body": "Reaplica o seu modo TV exatamente como você o deixou da última vez — resolução, launcher padrão, rotação e demais ajustes. Leva poucos segundos e não instala nada de novo.",
+      "action": "Ativar modo TV",
+      "runningTitle": "Ativando o modo TV…",
+      "doneTitle": "Modo TV ativado"
+    },
+    "phone": {
+      "title": "Voltar ao modo celular",
+      "body": "Devolve os ajustes originais de celular em segundos. Nada é desinstalado — apps, launcher e logins continuam no aparelho — e o seu modo TV fica salvo como está agora, para a próxima ativação voltar ao mesmo ponto.",
+      "action": "Voltar ao modo celular",
+      "runningTitle": "Voltando ao modo celular…",
+      "doneTitle": "Modo celular ativo"
+    },
+    "reset": {
+      "title": "Restaurar interface original",
+      "body": "Devolve a interface de celular ao estado gravado na primeira configuração — resolução, tamanho da interface, fonte, rotação e launcher padrão. Use quando o celular ficou com a tela \"torta\" mesmo depois de voltar ao modo celular. Nada é desinstalado, e o seu modo TV salvo continua disponível para a próxima ativação.",
+      "action": "Restaurar interface",
+      "runningTitle": "Restaurando a interface original…",
+      "doneTitle": "Interface original restaurada"
+    },
+    "resume": {
+      "title": "Concluir a troca de modo",
+      "later": "Deixar para depois",
+      "bodyOne": "A última troca ficou no meio do caminho. Falta 1 ajuste para o aparelho ficar 100% em {mode}. Nada é refeito — só o que ficou pendente.",
+      "bodyMany": "A última troca ficou no meio do caminho. Faltam {n} ajustes para o aparelho ficar 100% em {mode}. Nada é refeito — só o que ficou pendente."
+    },
+    "modePhone": "modo celular",
+    "modeTv": "modo TV",
+    "cancel": "Cancelar",
+    "activateNow": "Ativar agora",
+    "close": "Fechar",
+    "countdownTitle": "Ativando o modo TV em {n}s",
+    "countdownBody": "A ponte automática está ligada para este aparelho. Se você conectou o celular para usá-lo como celular, é só cancelar — nada será alterado.",
+    "autoTvLabel": "Ativar o modo TV automaticamente quando este aparelho conectar",
+    "nothingToSwitch": "Nada para alternar.",
+    "pausedTitle": "Um instante — precisamos de você",
+    "fixNow": "Corrigir agora",
+    "fixing": "Corrigindo…",
+    "retry": "Tentar de novo",
+    "skipItem": "Pular este item",
+    "stopHere": "Parar por aqui",
+    "reinstallAndContinue": "Reinstalar o launcher e continuar",
+    "reinstalling": "Reinstalando o launcher de TV… isso pode levar um minuto.",
+    "reinstallFailed": "A reinstalação falhou: {error}. Confira a conexão e tente de novo.",
+    "notConfirmed": "Não confirmou — {detail}",
+    "divergentValue": "valor divergente",
+    "stillDivergent": "Ainda divergente — {detail}",
+    "skippedByUser": "Pulado a seu pedido — dá para tentar de novo pelo mesmo botão",
+    "verifiedAll": "{verified}/{checked} conferidos no aparelho",
+    "verifiedSome": "{verified}/{checked} ok · {failed} divergente(s) — use \"Corrigir agora\"",
+    "summary": {
+      "restored": "Interface restaurada",
+      "backToPhone": "De volta ao celular",
+      "tvApplied": "Modo TV aplicado",
+      "line": "{what}: {done} de {total} {unit}.",
+      "unitOne": "ajuste",
+      "unitMany": "ajustes",
+      "checkLine": "Conferência final: {verified} {unit} no aparelho{tail}",
+      "checkUnitOne": "ajuste confirmado",
+      "checkUnitMany": "ajustes confirmados",
+      "checkTailFail": " · {n} {verb} — use \"Corrigir agora\".",
+      "checkTailOk": ".",
+      "checkVerbOne": "não confirmou",
+      "checkVerbMany": "não confirmaram",
+      "pendingStopped": "O que ficou pendente não foi alterado. Na próxima conexão deste aparelho, o DexArmor oferece concluir a troca de onde parou.",
+      "pendingAlready": "Tudo o que estava na fila já havia alternado.",
+      "attentionOne": "{n} item precisa de atenção — veja os avisos acima. Você pode tentar de novo pelo mesmo botão; o que já alternou não é refeito.",
+      "attentionMany": "{n} itens precisam de atenção — veja os avisos acima. Você pode tentar de novo pelo mesmo botão; o que já alternou não é refeito."
+    },
+    "resumeNow": "Concluir agora",
+    "switchStopped": "Troca interrompida"
+  },
+  "diagnostics": {
+    "ready": {
+      "title": "Galaxy pronto",
+      "message": "Dispositivo autorizado e respondendo. Pode iniciar a configuração.",
+      "steps": []
+    },
+    "unauthorized": {
+      "title": "Autorize o computador no telefone",
+      "message": "O DexArmor encontrou seu Galaxy, mas ele ainda não confia neste computador. Isso é normal na primeira conexão.",
+      "steps": [
+        "Desbloqueie a tela do seu Galaxy (o aviso só aparece com a tela desbloqueada).",
+        "Toque em \"Permitir\" no aviso \"Permitir depuração USB?\".",
+        "Marque \"Sempre permitir deste computador\" antes de tocar em Permitir.",
+        "Se o aviso não aparecer: puxe a barra de notificações e mude o modo USB de \"Apenas carga\" para \"Transferência de arquivos (MTP)\"."
+      ]
+    },
+    "offline": {
+      "title": "Dispositivo não está respondendo",
+      "message": "O Galaxy aparece, mas não está respondendo aos comandos. Geralmente é o serviço do ADB travado, cabo ruim ou o aparelho em estado estranho.",
+      "steps": [
+        "Aguarde — o DexArmor vai reiniciar a conexão automaticamente.",
+        "Se continuar, troque o cabo USB ou a porta do computador.",
+        "Desconecte e reconecte o telefone."
+      ]
+    },
+    "noPermissions": {
+      "title": "Sem permissão para acessar o dispositivo",
+      "message": "O computador detectou o Galaxy mas não consegue acessá-lo. Costuma ser o serviço do ADB travado ou o driver USB ausente/desatualizado (Windows).",
+      "steps": [
+        "Aguarde — o DexArmor vai reiniciar o serviço do ADB automaticamente.",
+        "No Windows: reinstale o driver USB da Samsung e tente de novo.",
+        "No Mac/Linux: reconecte o cabo após o reinício do serviço."
+      ]
+    },
+    "noDevices": {
+      "title": "Nenhum Galaxy detectado",
+      "message": "O computador não está enxergando nenhum dispositivo.",
+      "steps": [
+        "Confirme que o cabo está conectado — e que é um cabo de DADOS, não só de carga.",
+        "Ative a Depuração USB: Configurações → Opções de desenvolvedor → Depuração USB.",
+        "Se as Opções de desenvolvedor não aparecem: Configurações → Sobre o telefone → toque 7 vezes em \"Número da versão\".",
+        "No Windows, instale o driver USB da Samsung se o aparelho não aparecer."
+      ]
+    },
+    "otherMode": {
+      "title": "Telefone em modo especial",
+      "message": "O Galaxy está em um modo que não permite a configuração agora (recovery, bootloader ou similar).",
+      "steps": [
+        "Reinicie o telefone normalmente até o sistema Android carregar.",
+        "Reconecte e tente de novo."
+      ]
+    },
+    "unknown": {
+      "title": "Estado não reconhecido",
+      "message": "O dispositivo retornou um estado que o DexArmor ainda não conhece. Reinicie o telefone e a conexão e tente novamente.",
+      "steps": [
+        "Desconecte e reconecte o telefone.",
+        "Reinicie o aparelho se o problema continuar."
+      ]
+    },
+    "adbMissing": {
+      "title": "ADB não encontrado",
+      "message": "O DexArmor não encontrou o ADB no sistema. Ele é necessário para se comunicar com o Galaxy.",
+      "steps": [
+        "Verifique se o ADB foi empacotado junto com o aplicativo.",
+        "Se você instalou manualmente, confirme que a pasta platform-tools está no PATH."
+      ]
+    }
+  },
+  "dest": {
+    "download": "Downloads",
+    "movies": "Filmes",
+    "music": "Músicas",
+    "roms": "ROMs de jogos"
+  },
+  "sendOverlay": {
+    "hint": {
+      "download": "Arquivos em geral",
+      "movies": "Vídeos e filmes",
+      "music": "Áudio e playlists",
+      "roms": "Para emuladores instalados"
+    },
+    "noPath": "Não consegui ler o caminho do arquivo",
+    "apkOnly": "Este alvo instala apenas aplicativos (.apk, .apkm ou .xapk) — solte arquivos comuns nas pastas",
+    "installed": "Instalado no celular",
+    "connectFirst": {
+      "title": "Conecte o celular primeiro",
+      "body": "Para enviar arquivos ou instalar APKs, o aparelho precisa estar conectado e autorizado."
+    },
+    "drop": {
+      "title": "Solte para enviar ao celular",
+      "body": "Escolha o destino soltando o arquivo direto no alvo.",
+      "apkTitle": "Instalar no celular",
+      "apkBody": "Solte um aplicativo (.apk, .apkm ou .xapk) aqui para instalá-lo direto"
+    },
+    "noSpace": {
+      "title": "Espaço insuficiente no celular",
+      "apk": "Este aplicativo ocupa {needed}, mas o celular só tem {free} livres. Libere espaço (você pode usar a {cleanup} do DexArmor) e tente de novo.",
+      "files": "Estes arquivos ocupam {needed}, mas o celular só tem {free} livres. Libere espaço (você pode usar a {cleanup} do DexArmor) e tente de novo.",
+      "cleanup": "Limpeza",
+      "ok": "Entendi"
+    },
+    "preparing": "Preparando envio…",
+    "sending": "Enviando {current} de {total}…",
+    "doneAll": "Envio concluído",
+    "doneError": "Envio não concluído",
+    "doneCancelled": "Envio cancelado",
+    "checkingSpace": "Verificando espaço no celular…",
+    "installingApk": "Instalando o aplicativo no celular… pode levar alguns instantes. Não feche o DexArmor.",
+    "sentPercent": "{percent}%{size} enviado",
+    "sentOf": " de {size}",
+    "transferring": "Transferindo{size}… ({elapsed}) Arquivos grandes podem levar alguns minutos — não feche o DexArmor.",
+    "cancel": "Cancelar",
+    "cancelling": "Cancelando…"
+  },
+  "cleanup": {
+    "title": "Pit stop · limpeza",
+    "helpAria": "O que a limpeza faz?",
+    "help": "Remove só os arquivos temporários dos apps (cache), que crescem com o uso dos streamings. Nenhum dado, login ou configuração é apagado. Cada limpeza fica registrada em Documentos › DexArmor.",
+    "action": "Liberar espaço",
+    "running": "No box… {seconds} s",
+    "freeing": "Liberando cache",
+    "doneLine": "Parada concluída em {seconds} s — {result}",
+    "freed": "{value} liberados.",
+    "alreadyClean": "já estava em ordem.",
+    "logSaved": "Registro salvo em Documentos › DexArmor › registros-limpeza",
+    "open": "Abrir",
+    "app": {
+      "gms": "Serviços do Google"
+    }
+  },
+  "checkup": {
+    "title": "Check-up do aparelho",
+    "intro": "Conferindo se os ajustes aplicados continuam valendo — atualizações do sistema e reinícios às vezes desfazem configurações.",
+    "fromOldCatalog": "Ajuste de uma versão anterior do catálogo",
+    "notActive": "O ajuste não está mais ativo",
+    "emptyDormant": "O aparelho está em modo celular — os ajustes do modo TV estão adormecidos e não entram no check-up.",
+    "emptyNone": "Nenhum ajuste registrado neste aparelho ainda.",
+    "allOk": "Tudo certo: {ok} de {total} ajustes continuam ativos.",
+    "driftOne": "{n} ajuste não está mais ativo.",
+    "driftMany": "{n} ajustes não estão mais ativos.",
+    "dormantOne": "{n} ajuste do modo TV está adormecido (modo celular) e não foi conferido.",
+    "dormantMany": "{n} ajustes do modo TV estão adormecidos (modo celular) e não foram conferidos.",
+    "howToFix": "Para reaplicar um ajuste perdido: desfaça-o na barra lateral (em “Reverter uma alteração específica”) e marque-o de novo na lista de modificações.",
+    "close": "Fechar"
+  },
+  "profiles": {
+    "title": "Perfis de interface",
+    "intro": "Um perfil guarda a interface do jeito que ela está agora — resolução, tamanho, rotação, fonte e demais ajustes — para você voltar a ela com um clique.",
+    "step1": "Na aba {mods}, ajuste a interface até ficar boa: resolução, tamanho da interface, fonte, rotação (os itens marcados como {adjustable} podem ser trocados à vontade).",
+    "step2": "Ficou do seu jeito? Dê um nome e toque em {save}, logo abaixo.",
+    "step3": "Pronto: aplique qualquer perfil salvo com um clique — hoje, amanhã ou quando trocar de TV. Regravar com o mesmo nome atualiza o perfil.",
+    "namePlaceholder": "Nome do perfil — ex.: \"Sala 4K\"",
+    "save": "Salvar interface atual",
+    "saving": "Fotografando a interface…",
+    "saved": "Perfil \"{name}\" salvo. Quando quiser voltar a esta interface, é um clique em Aplicar.",
+    "applied": "Perfil \"{name}\" aplicado — acompanhe a conferência na lateral direita.",
+    "needDevice": "Conecte o aparelho para salvar e aplicar perfis.",
+    "nothingToSnapshot": "Ainda não há ajustes de interface ativos para fotografar — comece pela aba Modificações (ou ative o modo TV).",
+    "savedTitle": "Perfis salvos",
+    "none": "Nenhum perfil salvo ainda. O primeiro que você salvar aparece aqui.",
+    "apply": "Aplicar este perfil",
+    "applying": "Aplicando…",
+    "deleteConfirm": "Excluir?",
+    "deleteAria": "Excluir o perfil {name}",
+    "chip": {
+      "densitySmall": "interface menor",
+      "densityLarge": "interface maior",
+      "densityDefault": "interface padrão",
+      "rotation": "giro {deg}°",
+      "font": "fonte {value}x",
+      "moreOne": "+{n} ajuste",
+      "moreMany": "+{n} ajustes"
+    }
+  },
+  "remote": {
+    "back": "Voltar",
+    "up": "Para cima",
+    "home": "Tela inicial",
+    "left": "Para a esquerda",
+    "ok": "Confirmar (OK)",
+    "right": "Para a direita",
+    "volDown": "Diminuir volume",
+    "down": "Para baixo",
+    "volUp": "Aumentar volume",
+    "playPause": "Tocar / pausar o que está passando",
+    "rotateHelp": "Tela na posição errada? Gira um quarto de volta por clique, até acertar — a posição certa fica salva no modo TV",
+    "rotate": "GIRAR TELA"
+  },
+  "health": {
+    "chartAria": "Temperatura nos últimos {minutes} minutos, entre {min} e {max} graus",
+    "chartTitle": "Últimos {minutes} min · mín {min}°C · máx {max}°C",
+    "collecting": "Coletando o histórico de temperatura…",
+    "tooHot": "Muito quente: dê um descanso ao aparelho ou melhore a ventilação atrás da TV.",
+    "warm": "Aquecido: evite deixar o aparelho abafado ou no sol.",
+    "unplugged": "Fora da tomada: para uso como TV, mantenha o carregador ligado.",
+    "notCharging": "Na tomada mas sem carregar: confira o cabo e o carregador.",
+    "needDevice": "Conecte o aparelho para acompanhar bateria, temperatura e espaço livre.",
+    "readFailed": "Não foi possível ler os dados agora — tentando de novo…",
+    "reading": "Lendo os dados do aparelho…",
+    "allGood": "Tudo certo por aqui."
+  },
+  "tvRes": {
+    "title": "Qual é a resolução da sua TV?",
+    "intro": "A tela do celular é mais alargada que a da TV. Ajustando a resolução para o formato 16:9 da sua TV, o conteúdo preenche a tela sem cortes nem faixas pretas.",
+    "note": {
+      "fhd": "A mais comum — maioria das TVs.",
+      "2k": "Monitores e TVs QHD.",
+      "4k": "Só se a TV for realmente 4K."
+    },
+    "dontKnow": "Não sei — usar Full HD",
+    "dontKnowNote": "A opção segura para a maioria das TVs.",
+    "skip": "Continuar sem ajustar a resolução",
+    "densityTitle": "Tamanho da interface",
+    "densityIntro": "Com a resolução {res}, escolha como textos, ícones e menus vão aparecer na TV. Dá para mudar depois, na barra lateral esquerda, em “Personalizar sistema”.",
+    "densityDefault": "Padrão (recomendado)",
+    "densityDefaultNote": "A escala ideal para ver do sofá — é a que seria aplicada ({dpi} dpi).",
+    "densityLarger": "Maior",
+    "densityLargerNote": "Textos, ícones e menus 20% maiores — mais fáceis de ler de longe ({dpi} dpi).",
+    "densitySmaller": "Menor",
+    "densitySmallerNote": "Textos, ícones e menus 20% menores, para quem prefere mais conteúdo na tela ({dpi} dpi).",
+    "backToResolution": "Voltar para a resolução"
+  },
+  "progress": {
+    "playProtect": {
+      "steps": [
+        "No celular, abra o app Google Play",
+        "Toque no ícone de perfil (canto superior direito)",
+        "Acesse Play Protect → ⚙️ Configurações",
+        "Desative \"Verificar apps com o Play Protect\"",
+        "Volte aqui e clique em Aplicar mudanças novamente"
+      ],
+      "show": "Como liberar no celular →",
+      "hide": "Ocultar guia"
+    },
+    "shellTitle": "Sua carapaça, seu controle.",
+    "shellBody": "O DexArmor é a estrutura — cada ajuste aplicado é uma peça da personalização que você constrói. Não gostou de uma peça? Toque em {undo} ao lado dela: sai na hora, sem desmontar o resto.",
+    "empty": "Nenhuma operação ainda. As etapas aparecem aqui durante a execução."
+  },
+  "reset": {
+    "title": "Reversão completa",
+    "intro": "Isto vai desfazer TUDO o que foi aplicado neste aparelho, devolvendo-o ao estado anterior. Para desfazer só um item, use “Reverter uma alteração específica”, na barra lateral. Será desfeito:",
+    "nothing": "Nada a reverter.",
+    "interfaceOnly": "Só a interface do celular ficou estranha? Não precisa desfazer tudo: restaure a interface original da primeira configuração — apps, arquivos e o modo TV salvo continuam no lugar.",
+    "interfaceReset": "Restaurar interface do celular",
+    "dexWarning": "O modo DeX, se você o desativou, precisa ser religado manualmente nas configurações do aparelho. Em último caso, o reset de fábrica do celular reverte tudo com segurança.",
+    "sessionEnd": "Ao reverter tudo, o registro guardado desta configuração é apagado — modo TV salvo, histórico e preferências — e o DexArmor começa uma nova sessão do zero, como no primeiro uso. Os apps e arquivos pessoais do celular não são afetados.",
+    "cancel": "Cancelar",
+    "confirm": "Reverter tudo",
+    "export": "Exportar registro",
+    "import": "Importar registro",
+    "exported": "Registro exportado.",
+    "close": "Fechar",
+    "running": "Revertendo…",
+    "done": "Reversão concluída",
+    "summary": "Revertido: {done} de {total} {unit}.",
+    "unitOne": "item",
+    "unitMany": "itens",
+    "warnOne": "{n} item precisa de um passo seu — veja os avisos acima. Se preferir reverter tudo de uma vez, o reset de fábrica do aparelho é a garantia.",
+    "warnMany": "{n} itens precisam de um passo seu — veja os avisos acima. Se preferir reverter tudo de uma vez, o reset de fábrica do aparelho é a garantia.",
+    "newSession": "Nova sessão iniciada — o registro anterior foi apagado. O aparelho pode ser configurado do zero quando você quiser."
+  },
+  "close": {
+    "title": "Antes de ir…",
+    "p1": "Usar uma TV pode requerer os acessórios corretos para uma melhor experiência.",
+    "p2": "Em acessórios, há uma lista de indicações que podem expandir significativamente o uso do seu dispositivo.",
+    "p3": "Comprando por lá você ainda contribui imensamente com o projeto. Abraços!",
+    "see": "Ver acessórios",
+    "closeAnyway": "Fechar mesmo assim"
+  },
+  "device": {
+    "phoneMode": "Modo celular",
+    "recommended": "Configuração recomendada",
+    "applyManual": "Aplicar seleção manual",
+    "applying": "Aplicando…",
+    "dragHint": "Arraste arquivos ou APKs para esta janela para enviá-los ao celular",
+    "recommendedHelp": "Aplica o conjunto ideal para TV em um clique — só perguntamos a resolução da sua TV. Bloqueio de tela, gestos e limpeza de apps você escolhe à esquerda.",
+    "orSelect": "Ou selecione modificações à esquerda e aplique por aqui.",
+    "applyMore": "Aplicar mais ajustes",
+    "picker": "Aparelho",
+    "unknownDevice": "Dispositivo",
+    "pendingPhone": "Troca de modo incompleta — concluir volta ao celular",
+    "pendingTv": "Troca de modo incompleta — concluir ativação da TV"
+  },
+  "status": {
+    "ready": "Pronto",
+    "actionNeeded": "Ação necessária",
+    "blocked": "Bloqueado",
+    "querying": "Procurando dispositivos…",
+    "recovering": "Reiniciando a conexão…",
+    "requerying": "Verificando de novo…",
+    "recovered": "A conexão foi reiniciada automaticamente.",
+    "start": "Iniciar configuração"
+  },
+  "dexGuide": {
+    "title": "DeX ou Experiência de TV?",
+    "how": "Como desativar o DeX",
+    "disable": "Desativar o DeX",
+    "pickVersion": "Escolha a versão do seu aparelho."
+  },
+  "controlCenter": {
+    "title": "Central de controle",
+    "subtitle": "Telemetria e manutenção do aparelho"
+  },
+  "connect": {
+    "title": "Conecte seu Galaxy",
+    "body": "Ligue o aparelho ao computador pelo cabo USB. A tela atualiza sozinha assim que ele for detectado."
+  },
+  "app": {
+    "undone": "Desfeito — o aparelho voltou ao estado anterior",
+    "undoFailed": "Não foi possível desfazer: {error}",
+    "playProtectBlocked": "Android bloqueou por segurança. Veja o guia →",
+    "signatureMismatch": "Já existe uma versão instalada com assinatura diferente.",
+    "needDeviceForProfile": "Conecte o aparelho para salvar um perfil.",
+    "reportTitle": "DexArmor — Relatório de configuração",
+    "reportDevice": "Aparelho: {model} ({serial})",
+    "unknownModel": "desconhecido"
+  },
+  "phoneScreen": {
+    "validated": "Aparelho validado.",
+    "next": "Avançar",
+    "almost": "Quase lá",
+    "authorize": "Cabo conectado. Na tela do celular, toque em \"Permitir\" para autorizar este computador.",
+    "preparing": "Preparando seu TV box",
+    "ready": "Seu TV box está pronto"
+  },
+  "scrcpy": {
+    "windowTitle": "DexArmor — Tela do celular",
+    "notFound": "scrcpy não encontrado. Coloque os binários em scrcpy/ (veja o README da pasta) ou instale o scrcpy no sistema.",
+    "exited": "scrcpy encerrou com código {code}"
+  },
+  "tutorial": {
+    "s1": {
+      "title": "Abra os Ajustes",
+      "body": "No celular, entre em Ajustes › Sobre o telefone › Informações do software."
+    },
+    "s2": {
+      "title": "Ative o modo desenvolvedor",
+      "body": "Toque 7 vezes em \"Número da versão\" até aparecer \"Modo desenvolvedor ativado\"."
+    },
+    "s3": {
+      "title": "Ligue a depuração USB",
+      "body": "Volte aos Ajustes › Opções do desenvolvedor e ative \"Depuração USB\"."
+    },
+    "s4": {
+      "title": "Conecte o cabo",
+      "body": "Ligue o celular ao computador com o cabo USB. Uma janela de permissão vai aparecer na tela do aparelho."
+    },
+    "s5": {
+      "title": "Autorize este computador",
+      "body": "Marque \"Sempre permitir\" e toque em Permitir. Pronto — o resto é com a gente."
+    },
+    "stepOf": "PASSO {n} DE {total}"
+  },
+  "contribute": {
+    "tabLabel": "Contribua com o projeto",
+    "title": "Contribua com o projeto",
+    "message": "O DexArmor é gratuito, mas nada impede que os esforços sejam recompensados. Se te ajudei e você descobriu um novo uso do seu celular, fique à vontade para retribuir.",
+    "footnote": "Contribuir é opcional — nada no programa depende disso.",
+    "qr": {
+      "pix": {
+        "label": "Pix",
+        "hint": "Aponte a câmera do seu banco"
+      },
+      "paypal": {
+        "label": "PayPal",
+        "hint": "Cartão e outras moedas"
+      }
+    }
+  },
+  "adb": {
+    "settingRejected": "Sistema não aceitou a alteração ({key}). Pode exigir permissão extra neste aparelho.",
+    "pushExited": "adb push saiu com código {code}",
+    "pushStalled": "O envio travou (sem progresso por muito tempo). Confira o cabo ou o Wi-Fi e tente de novo."
+  },
+  "firstGuide": {
+    "title": "Bem-vindo ao DexArmor",
+    "intro": "Antes de começar, vale entender o jeito certo de usar o programa — são 2 minutos que evitam dor de cabeça depois.",
+    "s1": {
+      "title": "1. Monte primeiro o setup de TV",
+      "body": "Use a Configuração recomendada e ajuste resolução, tamanho da interface, fonte e rotação até a imagem ficar perfeita na SUA TV. Os ajustes de interface podem ser refeitos quantas vezes precisar nesta fase."
+    },
+    "s2": {
+      "title": "2. Ficou ideal? Salve e permaneça",
+      "body": "Quando a interface estiver do seu jeito, salve-a como um perfil (aba Perfis). A partir daí, evite remexer nos ajustes de interface: muitas mudanças repetidas podem sobrepor configurações e atrapalhar a alternância entre os modos celular e TV."
+    },
+    "s3": {
+      "title": "3. Depois, alimente o setup",
+      "body": "O dia a dia é adicionar conteúdo, não mexer na interface: arraste aplicativos (.apk), filmes, músicas e ROMs direto para a janela do DexArmor — eles vão para o celular na hora. O programa não traz apps de terceiros: os que você quiser, você instala."
+    },
+    "s4": {
+      "title": "4. Se a tela do celular desandar",
+      "body": "Voltou ao modo celular e a interface ficou estranha? Use \"Restaurar interface do celular\", na coluna esquerda — devolve a interface original sem apagar nada do aparelho nem o seu modo TV."
+    },
+    "action": "Entendi, vamos começar"
+  },
+  "dex": {
+    "intro": "Alguns aparelhos Samsung têm o modo DeX. Ao conectar no HDMI, o DeX abre sozinho e assume a tela — e isso atrapalha a experiência de TV que acabamos de montar.",
+    "dexMode": {
+      "title": "Modo DeX",
+      "desc": "Abre uma área de trabalho parecida com um computador. Pensado para produtividade, com janelas e mouse — não para assistir TV no sofá."
+    },
+    "tvMode": {
+      "title": "Experiência de TV",
+      "desc": "Abre direto no launcher de TV, com navegação simples pelo controle. É o que queremos para usar o aparelho como uma TV box."
+    },
+    "conclusion": "Por isso, em aparelhos com DeX, é preciso desativar a abertura automática dele. Sem DeX no caminho, o celular abre direto na interface de TV ao ligar no HDMI.",
+    "note": "Os nomes das opções podem variar um pouco conforme o modelo e a versão. Se não encontrar pelo caminho acima, busque por \"DeX\" na busca dos Ajustes.",
+    "hdmiWarning": "O menu do DeX só aparece nas configurações com o aparelho já conectado à TV pelo HDMI. Sem o cabo ligado, a opção fica indisponível — por isso o ideal é fazer este passo ao final, já com o celular na TV.",
+    "ui67": {
+      "label": "One UI 6 / 7",
+      "hint": "Android 14 / 15 — a maioria dos aparelhos hoje",
+      "s1": {
+        "title": "Abra os Ajustes",
+        "body": "No celular, vá em Ajustes › Dispositivos conectados."
+      },
+      "s2": {
+        "title": "Entre no Samsung DeX",
+        "body": "Toque em \"Samsung DeX\"."
+      },
+      "s3": {
+        "title": "Desligue a abertura automática",
+        "body": "Desative \"Iniciar automaticamente quando o HDMI for conectado\"."
+      },
+      "s4": {
+        "title": "Pronto",
+        "body": "Agora, ao conectar no HDMI, o aparelho abre na interface de TV em vez do DeX."
+      }
+    },
+    "ui8": {
+      "label": "One UI 8",
+      "hint": "Android 16 — aparelhos mais recentes",
+      "s1": {
+        "title": "Abra os Ajustes",
+        "body": "No celular, vá em Ajustes › Dispositivos conectados › Samsung DeX."
+      },
+      "s2": {
+        "title": "Entre em \"Tela conectada\"",
+        "body": "Toque em \"Tela conectada\" (Connected display)."
+      },
+      "s3": {
+        "title": "Escolha \"Espelhar\"",
+        "body": "Selecione \"Espelhar\" em vez de \"Estender\". Espelhar abre a interface de TV; estender abre o DeX."
+      },
+      "s4": {
+        "title": "Pronto",
+        "body": "O aparelho passa a espelhar a tela ao conectar no HDMI, abrindo direto no launcher de TV."
+      }
+    },
+    "nodex": {
+      "label": "Meu aparelho não tem DeX",
+      "hint": "Ex.: Galaxy Z Flip e modelos de entrada",
+      "s1": {
+        "title": "Nada a fazer",
+        "body": "Sem DeX, o aparelho já abre direto na interface de TV ao conectar no HDMI. Pode pular esta etapa."
+      }
+    }
+  },
+  "sideload": {
+    "title": "Instalar apps e enviar arquivos",
+    "intro": "O DexArmor transforma o celular em TV, mas não vem com aplicativos de terceiros: streaming, navegador, jogos e emuladores são escolha sua. Instalar qualquer um deles leva alguns segundos — é arrastar e soltar.",
+    "s1": {
+      "title": "1. Tenha o arquivo no computador",
+      "body": "Um aplicativo Android é um arquivo .apk. Baixe-o de uma fonte confiável (a loja de apps do próprio celular, o site oficial do aplicativo ou repositórios conhecidos) e deixe-o à mão."
+    },
+    "s2": {
+      "title": "2. Arraste para a janela do DexArmor",
+      "body": "Com o celular conectado, arraste o arquivo para qualquer ponto desta janela. A tela inteira vira uma área de destino com os alvos possíveis — não precisa abrir nada antes."
+    },
+    "s3": {
+      "title": "3. Solte em \"Instalar no celular\"",
+      "body": "É o alvo grande no topo, para arquivos .apk. O aplicativo é instalado direto no aparelho e aparece no launcher de TV, junto com os outros."
+    },
+    "s4": {
+      "title": "4. Arquivos vão nos alvos de baixo",
+      "body": "Filmes, músicas, ROMs e arquivos em geral: solte na pasta correspondente (Filmes, Músicas, ROMs de jogos, Downloads). Vários de uma vez também funciona, com progresso e opção de cancelar."
+    },
+    "notes": [
+      "Na primeira instalação, o Android pode pedir uma confirmação na tela do celular. É normal: autorize e o DexArmor segue daí.",
+      "Arquivos .apkm e .xapk (pacotes com várias partes) também são aceitos.",
+      "Sem espaço no celular? O DexArmor avisa antes de começar — use a Limpeza, na coluna da direita, e tente de novo."
+    ],
+    "action": "Entendi"
+  },
+  "accessories": {
+    "cat": {
+      "ac-caixas": "Caixas de Som",
+      "ac-fones": "Fones de Ouvido",
+      "ac-headphone": "Headphone",
+      "ac-smartwatches": "Smartwatches",
+      "ac-carregadores": "Carregadores",
+      "ac-joysticks": "Joysticks",
+      "ac-hub": "Hub USB-C / HDMI",
+      "ac-osmo360": "Como equipo minha DJI Osmo 360",
+      "ac-notebook": "Notebook e Setup",
+      "ac-controle-tv": "Controle de TV",
+      "ac-fotografia": "Meu Setup de Fotografia"
+    },
+    "note": {
+      "ac-caixas-motion": "Som potente e portátil com graves reforçados",
+      "ac-fones-p30i": "In-ear TWS com cancelamento de ruído adaptativo",
+      "ac-fones-lib4nc": "TWS compacto e robusto para quem busca qualidade",
+      "ac-fones-bp1": "Para você quer quer grave e bateria",
+      "ac-fones-wm01": "O menor in ear que já testei",
+      "ac-head-q30": "Cancelamento de ruído híbrido, over-ear",
+      "ac-head-q20i": "ANC com ótimo custo-benefício",
+      "ac-watch-bip6": "Entrada com ótimo custo-benefício — tem análise escrita nas Anotações do site",
+      "ac-watch-bal2": "Foco em saúde e esportes, tela AMOLED grande",
+      "ac-watch-act2": "Compacto e leve para o dia a dia e treinos",
+      "ac-carr-100w": "Carrega Macbook, celular e acessórios — GaN",
+      "ac-carr-30w": "Compacto para celular e fones",
+      "ac-carr-estacao": "Estação de mesa para carregar vários dispositivos de uma vez",
+      "ac-hub-baseus": "Múltiplas portas com saída HDMI — para notebook e Macbook",
+      "ac-hub-vention": "Compacto e versátil com HDMI e USB",
+      "ac-osmo-cage": "Protege a câmera contra quedas e arranhões",
+      "ac-osmo-bastao": "Leve e resistente, alcança ângulos altos",
+      "ac-osmo-engate": "Troca acessórios em segundos",
+      "ac-osmo-peito": "Filmagens em primeira pessoa estáveis",
+      "ac-osmo-pelicula": "Protege as lentes e a tela",
+      "ac-nb-pes": "Colados há 2 anos no notebook, já faz parte da estrutura",
+      "ac-nb-switch": "Alterna entre Macbook e Mac mini no mesmo monitor (uso num Gawfolk 2K)",
+      "ac-ctrl-g60s": "Air mouse com giroscópio e comando de voz",
+      "ac-ctrl-rii": "Compacto e universal para TV Box e Smart TV"
+    },
+    "soon": {
+      "ac-joysticks": "Ainda testando os joysticks e controles que merecem entrar na lista."
+    },
+    "intro": "Acessórios testados no canal. Abrem no navegador — nada é instalado no aparelho.",
+    "disclosure": "Alguns links são de afiliado (AliExpress e Mercado Livre). Você paga o mesmo preço e a compra ajuda a manter o canal. Só entra aqui o que foi testado.",
+    "label": {
+      "ac-caixas-motion": "Anker Soundcore Motion+",
+      "ac-fones-p30i": "Anker Soundcore P30i",
+      "ac-fones-lib4nc": "Anker Liberty 4 NC",
+      "ac-fones-bp1": "Baseus Bass BP1 Pro",
+      "ac-fones-wm01": "Baseus Encok WM01",
+      "ac-head-q30": "Anker Life Q30",
+      "ac-head-q20i": "Anker Life Q20i",
+      "ac-watch-bip6": "Amazfit Bip 6",
+      "ac-watch-bal2": "Amazfit Balance 2",
+      "ac-watch-act2": "Amazfit Active 2",
+      "ac-carr-100w": "Carregador Ugreen 100W",
+      "ac-carr-30w": "Carregador Ugreen 30W",
+      "ac-carr-estacao": "Carregador estação de mesa (6 entradas)",
+      "ac-hub-baseus": "Hub USB-C Baseus",
+      "ac-hub-vention": "Hub USB-C Vention",
+      "ac-osmo-cage": "Cage de proteção",
+      "ac-osmo-bastao": "Bastão de Fibra de Carbono 3m",
+      "ac-osmo-engate": "Engate rápido",
+      "ac-osmo-peito": "Suporte de peito",
+      "ac-osmo-pelicula": "Película de proteção",
+      "ac-nb-pes": "Pés para notebook",
+      "ac-nb-switch": "Switch HDMI",
+      "ac-ctrl-g60s": "Controle New G60S Pro",
+      "ac-ctrl-rii": "Controle de TV Rii",
+      "ac-foto-tripe": "Tripé",
+      "ac-foto-bolsa-lentes": "Bolsa para lentes",
+      "ac-foto-bolsa-lateral": "Bolsa Lateral",
+      "ac-foto-gatilho-cinto": "Gatilho para cinto",
+      "ac-foto-alca": "Alça para câmera",
+      "ac-foto-gatilhos": "Gatilhos rápidos",
+      "ac-foto-cinto": "Cinto Multiuso"
+    }
+  }
+}

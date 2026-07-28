@@ -13,6 +13,7 @@ import TvIcon from '@mui/icons-material/Tv';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import CableIcon from '@mui/icons-material/Cable';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useT } from '../i18n';
 
 // Transição de entrada: sobe suavemente.
 const SlideUp = React.forwardRef(function SlideUp(props, ref) {
@@ -20,6 +21,7 @@ const SlideUp = React.forwardRef(function SlideUp(props, ref) {
 });
 
 export default function CloseDialog({ open, onSeeAccessories, onConfirmClose }) {
+  const { t } = useT();
   return (
     <Dialog
       open={open}
@@ -63,34 +65,31 @@ export default function CloseDialog({ open, onSeeAccessories, onConfirmClose }) 
         </Box>
 
         <Typography variant="h6" sx={{ fontSize: '1.1rem', mb: 2 }}>
-          Antes de ir…
+          {t('close.title')}
         </Typography>
 
         {/* Texto solicitado, em três parágrafos curtos. */}
         <Stack spacing={1.5} sx={{ mb: 3.5 }}>
           <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.86rem', lineHeight: 1.55 }}>
-            Usar uma TV pode requerer os acessórios corretos para uma melhor
-            experiência.
+            {t('close.p1')}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.86rem', lineHeight: 1.55 }}>
-            Em acessórios, há uma lista de indicações que podem expandir
-            significativamente o uso do seu dispositivo.
+            {t('close.p2')}
           </Typography>
           <Typography variant="body2" sx={{ fontSize: '0.86rem', lineHeight: 1.55, color: 'text.primary' }}>
-            Comprando por lá você ainda contribui imensamente com o projeto.
-            Abraços! <FavoriteIcon sx={{ fontSize: 14, color: 'primary.main', verticalAlign: 'middle', ml: 0.3 }} />
+            {t('close.p3')} <FavoriteIcon sx={{ fontSize: 14, color: 'primary.main', verticalAlign: 'middle', ml: 0.3 }} />
           </Typography>
         </Stack>
 
         <Stack spacing={1.2}>
           <Button variant="contained" color="primary" size="large" fullWidth
             onClick={onSeeAccessories} sx={{ py: 1.3, fontSize: '0.95rem' }}>
-            Ver acessórios
+            {t('close.see')}
           </Button>
           <Button variant="text" color="inherit" fullWidth
             onClick={onConfirmClose}
             sx={{ color: 'text.secondary', fontSize: '0.82rem', '&:hover': { color: 'text.primary' } }}>
-            Fechar mesmo assim
+            {t('close.closeAnyway')}
           </Button>
         </Stack>
       </DialogContent>

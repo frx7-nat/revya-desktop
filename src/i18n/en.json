@@ -1,0 +1,952 @@
+{
+  "language": {
+    "label": "Language",
+    "pt": "Português",
+    "en": "English"
+  },
+  "taskGroups": {
+    "debloat": {
+      "title": "Remove apps",
+      "subtitle": "Uninstalls per user (undone by a reset)"
+    },
+    "install": {
+      "title": "Install the TV launcher",
+      "subtitle": "The face of TV mode",
+      "notice": "Streaming apps, browsers, games and emulators do not come with DexArmor — you install the ones you want, from files you already have.",
+      "noticeAction": "How to install apps and send files"
+    },
+    "tweaks": {
+      "title": "Customize the system",
+      "subtitle": "Tweaks for TV use"
+    }
+  },
+  "tasks": {
+    "rm-bixby": {
+      "label": "Bixby"
+    },
+    "rm-store": {
+      "label": "Galaxy Store"
+    },
+    "rm-office": {
+      "label": "Office apps"
+    },
+    "rm-social": {
+      "label": "Pre-installed social apps"
+    },
+    "lnch-dexarmor": {
+      "label": "DexArmor TV (launcher)"
+    },
+    "tw-screen": {
+      "label": "Keep the screen always on",
+      "info": "The TV should not switch itself off while you are watching."
+    },
+    "tw-battery": {
+      "label": "Protect the battery (charge up to 85%)",
+      "info": "Plugged in around the clock, a phone wears its battery out fast. This One UI setting caps the charge at 85%, greatly extending its life."
+    },
+    "tw-dnd": {
+      "label": "Do not disturb (TV mode)",
+      "info": "Silences notifications and calls that would pop up on the TV, over your content and in front of everyone."
+    },
+    "tw-updates": {
+      "label": "Turn off automatic updates",
+      "info": "A system update can undo the whole setup. To be safe, keep the device as it is."
+    },
+    "tw-anim": {
+      "label": "Reduce animations",
+      "info": "Faster, more direct navigation on the big screen."
+    },
+    "tw-font": {
+      "label": "Larger font (TV default)",
+      "info": "Bigger text for comfortable reading from the couch."
+    },
+    "tw-font-big": {
+      "label": "Much larger font",
+      "info": "For smaller TVs or couches further away."
+    },
+    "tw-font-normal": {
+      "label": "Normal font size",
+      "info": "Returns the font to the phone's default size, if the larger options don't work for you."
+    },
+    "tw-rotate": {
+      "label": "Force landscape orientation",
+      "info": "Keeps everything in landscape on the TV, even apps that would open upright. If the screen ends up the wrong way round, use the \"Rotate screen\" button on the remote until it's right."
+    },
+    "tw-gestures": {
+      "label": "Gesture navigation",
+      "info": "Swaps the buttons for gestures, freeing up screen space."
+    },
+    "tw-lock": {
+      "label": "Remove the screen lock",
+      "info": "Goes straight to your content, without asking for a password via the remote."
+    },
+    "tw-home": {
+      "label": "Use the TV launcher as default",
+      "info": "The phone opens straight into the TV screen, not into Android."
+    },
+    "tw-res-fhd": {
+      "label": "Full HD resolution (1080p)",
+      "info": "For Full HD TVs (1920x1080). The most common resolution."
+    },
+    "tw-res-2k": {
+      "label": "2K resolution (1440p)",
+      "info": "For 2K/QHD monitors and TVs (2560x1440)."
+    },
+    "tw-res-4k": {
+      "label": "4K resolution (2160p)",
+      "info": "For 4K/UHD TVs (3840x2160). Only use this if the TV really is 4K."
+    },
+    "tw-dpi-default": {
+      "label": "Default interface size",
+      "info": "Text, icons and menus at the right scale for the chosen resolution — the TV standard."
+    },
+    "tw-dpi-small": {
+      "label": "Smaller interface",
+      "info": "Text, icons and menus 20% smaller, for those who prefer more content on screen."
+    },
+    "tw-dpi-large": {
+      "label": "Larger interface",
+      "info": "Text, icons and menus 20% larger — easier to read from a distance."
+    },
+    "tw-sound": {
+      "label": "Mute touch sounds",
+      "info": "No click on every tap — better for the living room."
+    }
+  },
+  "runner": {
+    "locked": "The device is locked. Unlock the phone screen and tap \"Try again\".",
+    "applied": "Applied",
+    "appliedCount": "Applied ({n} settings)",
+    "resolution": "Resolution {w}x{h}",
+    "resolutionWithDensity": "Resolution {w}x{h} · {dpi}dpi",
+    "densityApplied": "Interface at {dpi}dpi",
+    "dndOn": "Do not disturb on",
+    "alreadyUpdated": "Already up to date (version {version})",
+    "empty": "(empty)",
+    "emptyShort": "empty",
+    "unknown": "unknown",
+    "verify": {
+      "appsBack": "{back} of {total} apps came back",
+      "noPackage": "No package declared to check",
+      "notInstalled": "The app is no longer installed",
+      "outdated": "Outdated version ({version}) — reapply to update",
+      "currentValue": "Current value: {value}",
+      "keyChanged": "The {key} key changed ({value})",
+      "confirmedOnScreen": "Confirmed by the app on screen",
+      "currentLauncher": "Current launcher: {launcher}",
+      "autoRotateBack": "Auto-rotate switched itself back on",
+      "rotationChanged": "The rotation was changed",
+      "currentResolution": "Current resolution: {value}",
+      "currentDensity": "Current density: {value}dpi",
+      "noTvResolution": "The TV resolution is no longer applied",
+      "dndOff": "Do not disturb is off",
+      "noCheck": "No check for this type"
+    },
+    "revertVerify": {
+      "keyNotBack": "The {key} key did not come back ({value})",
+      "rotationNotBack": "The rotation did not return to the phone state",
+      "dndNotBack": "Do not disturb did not return to the phone state",
+      "noCheck": "No check for this type"
+    },
+    "error": {
+      "noApkInBundle": "No APK found in the bundle",
+      "needResolution": "Apply a TV resolution first (Full HD, 2K or 4K) — the interface size is calculated from it.",
+      "noApkSource": "App has no APK source defined",
+      "apkNotFound": "APK not found: {path}",
+      "checksumMismatch": "The downloaded file does not match the expected signature (sha256). Install cancelled for safety.",
+      "unknownSource": "Unknown APK source: {type}",
+      "noLauncherPkg": "Default launcher not configured (set the package)",
+      "launcherNotInstalled": "Launcher is not installed — select it for install first",
+      "launcherKept": "The system kept the old launcher. On the phone, tap the Home button and choose the TV launcher as default.",
+      "launcherKeptTv": "The system kept the TV launcher. On the phone, tap the Home button and choose the Samsung launcher (One UI Home) as default.",
+      "dndFailed": "The system did not turn on Do not disturb (this Android may not support it via ADB).",
+      "unknownTaskKind": "Unknown task type: {kind}",
+      "noRevertInfo": "No revert information",
+      "partialReactivate": "Reactivated {ok}/{total}",
+      "unknownRevertKind": "Unknown revert type: {kind}"
+    },
+    "reactivated": "Reactivated ({n})",
+    "rotationRestored": "Rotation restored",
+    "resolutionRestored": "Resolution restored",
+    "dndRestored": "Do not disturb restored",
+    "homeSet": "Set as home screen",
+    "homeSetTapHome": "Set as home screen — tap Home on the device to open it",
+    "landscapeForced": "Landscape forced",
+    "landscapeApplied": "Landscape applied (some apps may still open upright on this device)",
+    "launcherRestored": "Launcher restored",
+    "launcherRestoredTapHome": "Launcher restored — tap Home on the device to open it"
+  },
+  "errors": {
+    "noSpace": "Your phone has run out of space for this file. Free up some space (you can use DexArmor's Cleanup) and try again.",
+    "disconnected": "The phone disconnected during the transfer. Reconnect the cable (or Wi-Fi) and try again.",
+    "interrupted": "The transfer was cut short (the phone may have disconnected, gone to sleep, or the cable may have wobbled). Reconnect the device and try again. If it happens again, switch cable or USB port, or use the Wi-Fi connection.",
+    "permissionDenied": "The phone refused to write here. Check that file transfer is allowed on the device and try again.",
+    "playProtect": "Android blocked the install for security. On the phone, open Google Play → profile → Play Protect → Settings and turn off \"Scan apps with Play Protect\". Then drag the file over again.",
+    "alreadyInstalled": "A version of this app is already on the phone, signed with a different key. Uninstall the current version on the device and try again.",
+    "invalidApk": "This file is not a valid APK to install.",
+    "timeout": "The transfer took too long and was cut off. Check the connection to the phone and try again."
+  },
+  "main": {
+    "revertEntryNotFound": "Revert entry not found",
+    "restoredNotOriginal": "{result} (the device was not in its original state — restored)",
+    "alreadyUndone": "Already undone (phone mode)",
+    "entryNotFound": "Entry not found in the journal",
+    "alreadyPhoneMode": "Already in phone mode",
+    "noProfileToReapply": "No saved profile to reapply this setting",
+    "obstacle": {
+      "disconnected": "The device disconnected midway. Check the cable (or Wi-Fi) and tap \"Try again\" — the switch resumes where it stopped.",
+      "unauthorized": "The phone is asking for authorization. Unlock the device, tap \"Allow\" on its screen and try again.",
+      "launcherMissing": "The TV launcher is no longer installed on this device.",
+      "busy": "A switch is already running on this device. Finish it before starting another.",
+      "identity": "The connected device changed. Reconnect the right device and tap \"Try again\".",
+      "notResponding": "The device is not responding. Check the cable (or Wi-Fi) and tap \"Try again\"."
+    },
+    "check": {
+      "noJournal": "No journal to check",
+      "noProfile": "No profile to check",
+      "noState": "No state to check"
+    },
+    "profile": {
+      "needName": "Give the profile a name — for example: \"Living room 4K\" or \"Bedroom Full HD\".",
+      "nothingToSave": "Nothing to save yet — apply the interface settings (resolution, rotation, size…) and get the screen the way you want it first."
+    },
+    "cleanup": {
+      "title": "DexArmor — Cleanup log",
+      "date": "Date: {date}",
+      "device": "Device: {device}",
+      "freeBefore": "Free space before: {value}",
+      "freeAfter": "Free space after:  {value}",
+      "freed": "Total freed:       {value}",
+      "perApp": "Cache freed per app:",
+      "noPerApp": "No per-app breakdown on this device.",
+      "onlyCache": "Only temporary files (cache) were removed.",
+      "noDataDeleted": "No data, logins or settings were deleted."
+    },
+    "wifi": {
+      "blockedMacOS": "Your computer blocked network access to the phone. On macOS, open System Settings → Privacy & Security → Local Network, allow DexArmor and try again. Also check that the computer and the phone are on the same Wi-Fi network.",
+      "failed": "Could not connect over Wi-Fi ({reason})",
+      "noAnswer": "no answer",
+      "notOnWifi": "The device is not on a Wi-Fi network. Connect it to the same network as the computer and try again."
+    },
+    "dialog": {
+      "saveReport": "Save configuration report",
+      "exportJournal": "Export revert journal",
+      "importJournal": "Import revert journal"
+    },
+    "import": {
+      "nothingToExport": "There are no reverts to export",
+      "notDexArmor": "Invalid file: this is not a DexArmor revert journal.",
+      "tooManyEntries": "Journal has too many entries ({n}). Import refused for safety.",
+      "malformedEntry": "Invalid journal: one of the entries is malformed.",
+      "noTaskId": "Invalid journal: entry without a valid identifier (taskId).",
+      "badLabel": "Invalid journal: label of entry \"{taskId}\" is out of spec.",
+      "unknownRevertKind": "Invalid journal: entry \"{taskId}\" has an unknown revert type{detail}.",
+      "badPhoneProfile": "Invalid journal: entry \"{taskId}\" has a phone profile of unknown type.",
+      "unreadable": "Could not read the chosen file.",
+      "tooLarge": "File too large to be a DexArmor revert journal.",
+      "notJson": "Invalid file: not readable JSON."
+    }
+  },
+  "taskPanel": {
+    "tab": {
+      "mods": "Modifications",
+      "profiles": "Profiles",
+      "accessories": "Accessories"
+    },
+    "adjustable": "adjustable",
+    "whyDoThis": "Why do this?",
+    "whatIsThis": "What is this?",
+    "undo": "Undo",
+    "revertOne": "Revert a specific change",
+    "phoneModeSuffix": " (phone mode)",
+    "journal": {
+      "title": "Switch journal",
+      "loading": "Loading…",
+      "empty": "Nothing recorded yet — your next mode switches will show up here.",
+      "switchReset": "Interface reset",
+      "switchToPhone": "Back to phone mode",
+      "switchToTv": "TV mode activation",
+      "stopped": "{dir} — interrupted",
+      "summary": "{dir} — {parts}",
+      "done": "{n} ok",
+      "warn": "{n} with warning",
+      "skipped": "{n} skipped",
+      "blocked": "{n} blocked",
+      "noItems": "no items",
+      "captureDiscarded": "Safeguard: a phone snapshot that looked like TV was discarded",
+      "dormantRestored": "Revert: the device was not in its original state — restored",
+      "fingerprintCheck": "Switch check: {detail}",
+      "checkDone": "done",
+      "retry": "Unstable channel: one attempt was retried{detail}",
+      "journalRecovered": "Safeguard: the journal was corrupted and recovered from backup",
+      "invariant": "Internal alert: invariant violated{detail}"
+    },
+    "mirror": {
+      "opening": "Opening the screen…",
+      "label": "Mirror the phone screen",
+      "help": "Follow what happens on your phone straight from the computer."
+    },
+    "wifi": {
+      "connected": "Connected over Wi-Fi",
+      "enabling": "Turning on wireless mode…",
+      "label": "Wireless mode (Wi-Fi)",
+      "help": "Set the phone up without a cable, over Wi-Fi: make adjustments from the comfort of your bed or couch, straight from the laptop, with the device already mounted at the TV. The USB cable is only needed to turn this mode on — and again if the phone is switched off or restarted.",
+      "connectedAt": "Connected over Wi-Fi at {ip} — you can unplug the cable now."
+    },
+    "mode": {
+      "toPhone": "Back to phone mode",
+      "toTv": "Activate TV mode",
+      "help": "Switches between TV mode and phone mode in seconds. Nothing is uninstalled: apps, launcher and logins stay on the device, and TV mode is saved exactly as you left it — including tweaks you changed later."
+    },
+    "checkup": "Device check-up",
+    "maintenance": "Maintenance",
+    "fullReset": "Full revert",
+    "interfaceReset": {
+      "label": "Restore the phone interface",
+      "help": "Does the phone interface still look odd even after going back to phone mode? This restores the original interface from the first setup — resolution, size, font, rotation and launcher. Apps, files and your saved TV mode stay put."
+    },
+    "profileHint": "Is the interface just the way you want it? Save it as a profile to come back to it with one click.",
+    "accessories": {
+      "intro": "Accessories tested on the channel. They open in your browser — nothing is installed on the device.",
+      "empty": "No accessories listed yet.",
+      "soon": "coming soon"
+    }
+  },
+  "modeSwitch": {
+    "tv": {
+      "title": "Activate TV mode",
+      "body": "Reapplies your TV mode exactly as you left it last time — resolution, default launcher, rotation and the rest. It takes a few seconds and installs nothing new.",
+      "action": "Activate TV mode",
+      "runningTitle": "Activating TV mode…",
+      "doneTitle": "TV mode active"
+    },
+    "phone": {
+      "title": "Back to phone mode",
+      "body": "Restores the original phone settings in seconds. Nothing is uninstalled — apps, launcher and logins stay on the device — and your TV mode is saved as it is now, so the next activation picks up from the same point.",
+      "action": "Back to phone mode",
+      "runningTitle": "Going back to phone mode…",
+      "doneTitle": "Phone mode active"
+    },
+    "reset": {
+      "title": "Restore the original interface",
+      "body": "Restores the phone interface to the state recorded during first setup — resolution, interface size, font, rotation and default launcher. Use it when the phone screen still looks off even after going back to phone mode. Nothing is uninstalled, and your saved TV mode stays available for the next activation.",
+      "action": "Restore interface",
+      "runningTitle": "Restoring the original interface…",
+      "doneTitle": "Original interface restored"
+    },
+    "resume": {
+      "title": "Finish the mode switch",
+      "later": "Leave it for later",
+      "bodyOne": "The last switch stopped halfway. 1 setting is missing for the device to be fully in {mode}. Nothing is redone — only what was left pending.",
+      "bodyMany": "The last switch stopped halfway. {n} settings are missing for the device to be fully in {mode}. Nothing is redone — only what was left pending."
+    },
+    "modePhone": "phone mode",
+    "modeTv": "TV mode",
+    "cancel": "Cancel",
+    "activateNow": "Activate now",
+    "close": "Close",
+    "countdownTitle": "Activating TV mode in {n}s",
+    "countdownBody": "The automatic bridge is on for this device. If you plugged the phone in to use it as a phone, just cancel — nothing will be changed.",
+    "autoTvLabel": "Activate TV mode automatically when this device connects",
+    "nothingToSwitch": "Nothing to switch.",
+    "pausedTitle": "One moment — we need you",
+    "fixNow": "Fix now",
+    "fixing": "Fixing…",
+    "retry": "Try again",
+    "skipItem": "Skip this item",
+    "stopHere": "Stop here",
+    "reinstallAndContinue": "Reinstall the launcher and continue",
+    "reinstalling": "Reinstalling the TV launcher… this may take a minute.",
+    "reinstallFailed": "The reinstall failed: {error}. Check the connection and try again.",
+    "notConfirmed": "Not confirmed — {detail}",
+    "divergentValue": "value differs",
+    "stillDivergent": "Still differs — {detail}",
+    "skippedByUser": "Skipped at your request — you can try again from the same button",
+    "verifiedAll": "{verified}/{checked} confirmed on the device",
+    "verifiedSome": "{verified}/{checked} ok · {failed} differing — use \"Fix now\"",
+    "summary": {
+      "restored": "Interface restored",
+      "backToPhone": "Back on the phone",
+      "tvApplied": "TV mode applied",
+      "line": "{what}: {done} of {total} {unit}.",
+      "unitOne": "setting",
+      "unitMany": "settings",
+      "checkLine": "Final check: {verified} {unit} on the device{tail}",
+      "checkUnitOne": "setting confirmed",
+      "checkUnitMany": "settings confirmed",
+      "checkTailFail": " · {n} {verb} — use \"Fix now\".",
+      "checkTailOk": ".",
+      "checkVerbOne": "did not confirm",
+      "checkVerbMany": "did not confirm",
+      "pendingStopped": "What was left pending was not changed. The next time this device connects, DexArmor offers to finish the switch from where it stopped.",
+      "pendingAlready": "Everything in the queue had already switched.",
+      "attentionOne": "{n} item needs attention — see the warnings above. You can try again from the same button; what already switched is not redone.",
+      "attentionMany": "{n} items need attention — see the warnings above. You can try again from the same button; what already switched is not redone."
+    },
+    "resumeNow": "Finish now",
+    "switchStopped": "Switch interrupted"
+  },
+  "diagnostics": {
+    "ready": {
+      "title": "Galaxy ready",
+      "message": "Device authorized and responding. You can start the setup.",
+      "steps": []
+    },
+    "unauthorized": {
+      "title": "Authorize the computer on the phone",
+      "message": "DexArmor found your Galaxy, but it does not trust this computer yet. That is normal on the first connection.",
+      "steps": [
+        "Unlock your Galaxy's screen (the prompt only appears with the screen unlocked).",
+        "Tap \"Allow\" on the \"Allow USB debugging?\" prompt.",
+        "Tick \"Always allow from this computer\" before tapping Allow.",
+        "If the prompt does not appear: pull down the notification bar and change the USB mode from \"Charging only\" to \"File transfer (MTP)\"."
+      ]
+    },
+    "offline": {
+      "title": "Device is not responding",
+      "message": "The Galaxy shows up but is not responding to commands. Usually it is a stuck ADB service, a bad cable, or the device in an odd state.",
+      "steps": [
+        "Hold on — DexArmor will restart the connection automatically.",
+        "If it persists, change the USB cable or the computer port.",
+        "Unplug and reconnect the phone."
+      ]
+    },
+    "noPermissions": {
+      "title": "No permission to access the device",
+      "message": "The computer detected the Galaxy but cannot reach it. This is usually a stuck ADB service or a missing/outdated USB driver (Windows).",
+      "steps": [
+        "Hold on — DexArmor will restart the ADB service automatically.",
+        "On Windows: reinstall the Samsung USB driver and try again.",
+        "On Mac/Linux: reconnect the cable after the service restarts."
+      ]
+    },
+    "noDevices": {
+      "title": "No Galaxy detected",
+      "message": "The computer is not seeing any device.",
+      "steps": [
+        "Make sure the cable is connected — and that it is a DATA cable, not just a charging one.",
+        "Turn on USB Debugging: Settings → Developer options → USB debugging.",
+        "If Developer options are not there: Settings → About phone → tap \"Build number\" 7 times.",
+        "On Windows, install the Samsung USB driver if the device does not show up."
+      ]
+    },
+    "otherMode": {
+      "title": "Phone in a special mode",
+      "message": "The Galaxy is in a mode that does not allow setup right now (recovery, bootloader or similar).",
+      "steps": [
+        "Restart the phone normally until Android has loaded.",
+        "Reconnect and try again."
+      ]
+    },
+    "unknown": {
+      "title": "Unrecognized state",
+      "message": "The device returned a state DexArmor does not know yet. Restart the phone and the connection, then try again.",
+      "steps": [
+        "Unplug and reconnect the phone.",
+        "Restart the device if the problem continues."
+      ]
+    },
+    "adbMissing": {
+      "title": "ADB not found",
+      "message": "DexArmor could not find ADB on the system. It is required to talk to the Galaxy.",
+      "steps": [
+        "Check that ADB was packaged together with the application.",
+        "If you installed it manually, confirm that the platform-tools folder is on your PATH."
+      ]
+    }
+  },
+  "dest": {
+    "download": "Downloads",
+    "movies": "Movies",
+    "music": "Music",
+    "roms": "Game ROMs"
+  },
+  "sendOverlay": {
+    "hint": {
+      "download": "General files",
+      "movies": "Videos and films",
+      "music": "Audio and playlists",
+      "roms": "For installed emulators"
+    },
+    "noPath": "Could not read the file path",
+    "apkOnly": "This target only installs apps (.apk, .apkm or .xapk) — drop regular files on the folders",
+    "installed": "Installed on the phone",
+    "connectFirst": {
+      "title": "Connect the phone first",
+      "body": "To send files or install APKs, the device must be connected and authorized."
+    },
+    "drop": {
+      "title": "Drop to send to the phone",
+      "body": "Choose the destination by dropping the file straight onto the target.",
+      "apkTitle": "Install on the phone",
+      "apkBody": "Drop an app (.apk, .apkm or .xapk) here to install it directly"
+    },
+    "noSpace": {
+      "title": "Not enough space on the phone",
+      "apk": "This app needs {needed}, but the phone only has {free} free. Free up space (you can use DexArmor's {cleanup}) and try again.",
+      "files": "These files need {needed}, but the phone only has {free} free. Free up space (you can use DexArmor's {cleanup}) and try again.",
+      "cleanup": "Cleanup",
+      "ok": "Got it"
+    },
+    "preparing": "Preparing the transfer…",
+    "sending": "Sending {current} of {total}…",
+    "doneAll": "Transfer complete",
+    "doneError": "Transfer incomplete",
+    "doneCancelled": "Transfer cancelled",
+    "checkingSpace": "Checking space on the phone…",
+    "installingApk": "Installing the app on the phone… this may take a moment. Do not close DexArmor.",
+    "sentPercent": "{percent}%{size} sent",
+    "sentOf": " of {size}",
+    "transferring": "Transferring{size}… ({elapsed}) Large files can take a few minutes — do not close DexArmor.",
+    "cancel": "Cancel",
+    "cancelling": "Cancelling…"
+  },
+  "cleanup": {
+    "title": "Pit stop · cleanup",
+    "helpAria": "What does the cleanup do?",
+    "help": "Removes only the apps' temporary files (cache), which grow as you use streaming services. No data, logins or settings are deleted. Every cleanup is logged in Documents › DexArmor.",
+    "action": "Free up space",
+    "running": "In the box… {seconds} s",
+    "freeing": "Freeing cache",
+    "doneLine": "Stop finished in {seconds} s — {result}",
+    "freed": "{value} freed.",
+    "alreadyClean": "it was already tidy.",
+    "logSaved": "Log saved in Documents › DexArmor › registros-limpeza",
+    "open": "Open",
+    "app": {
+      "gms": "Google services"
+    }
+  },
+  "checkup": {
+    "title": "Device check-up",
+    "intro": "Checking whether the applied settings still hold — system updates and restarts sometimes undo configurations.",
+    "fromOldCatalog": "Setting from an earlier catalog version",
+    "notActive": "The setting is no longer active",
+    "emptyDormant": "The device is in phone mode — TV mode settings are dormant and are not part of the check-up.",
+    "emptyNone": "No settings recorded on this device yet.",
+    "allOk": "All good: {ok} of {total} settings are still active.",
+    "driftOne": "{n} setting is no longer active.",
+    "driftMany": "{n} settings are no longer active.",
+    "dormantOne": "{n} TV mode setting is dormant (phone mode) and was not checked.",
+    "dormantMany": "{n} TV mode settings are dormant (phone mode) and were not checked.",
+    "howToFix": "To reapply a lost setting: undo it in the sidebar (under “Revert a specific change”) and tick it again in the modifications list.",
+    "close": "Close"
+  },
+  "profiles": {
+    "title": "Interface profiles",
+    "intro": "A profile stores the interface exactly as it is right now — resolution, size, rotation, font and the rest — so you can come back to it with one click.",
+    "step1": "On the {mods} tab, adjust the interface until it looks right: resolution, interface size, font, rotation (items marked {adjustable} can be changed freely).",
+    "step2": "Happy with it? Give it a name and tap {save}, just below.",
+    "step3": "Done: apply any saved profile with one click — today, tomorrow or when you change TV. Saving again with the same name updates the profile.",
+    "namePlaceholder": "Profile name — e.g. \"Living room 4K\"",
+    "save": "Save current interface",
+    "saving": "Taking a snapshot…",
+    "saved": "Profile \"{name}\" saved. Whenever you want this interface back, it's one click on Apply.",
+    "applied": "Profile \"{name}\" applied — follow the check on the right-hand side.",
+    "needDevice": "Connect the device to save and apply profiles.",
+    "nothingToSnapshot": "There are no active interface settings to snapshot yet — start on the Modifications tab (or activate TV mode).",
+    "savedTitle": "Saved profiles",
+    "none": "No profiles saved yet. The first one you save will show up here.",
+    "apply": "Apply this profile",
+    "applying": "Applying…",
+    "deleteConfirm": "Delete?",
+    "deleteAria": "Delete the profile {name}",
+    "chip": {
+      "densitySmall": "smaller interface",
+      "densityLarge": "larger interface",
+      "densityDefault": "default interface",
+      "rotation": "{deg}° turn",
+      "font": "font {value}x",
+      "moreOne": "+{n} setting",
+      "moreMany": "+{n} settings"
+    }
+  },
+  "remote": {
+    "back": "Back",
+    "up": "Up",
+    "home": "Home screen",
+    "left": "Left",
+    "ok": "Confirm (OK)",
+    "right": "Right",
+    "volDown": "Volume down",
+    "down": "Down",
+    "volUp": "Volume up",
+    "playPause": "Play / pause what's showing",
+    "rotateHelp": "Screen the wrong way round? Turns a quarter turn per click until it's right — the correct position is saved in TV mode",
+    "rotate": "ROTATE SCREEN"
+  },
+  "health": {
+    "chartAria": "Temperature over the last {minutes} minutes, between {min} and {max} degrees",
+    "chartTitle": "Last {minutes} min · min {min}°C · max {max}°C",
+    "collecting": "Collecting the temperature history…",
+    "tooHot": "Too hot: give the device a rest or improve the ventilation behind the TV.",
+    "warm": "Warm: avoid leaving the device in a stuffy spot or in the sun.",
+    "unplugged": "Unplugged: for TV use, keep the charger connected.",
+    "notCharging": "Plugged in but not charging: check the cable and the charger.",
+    "needDevice": "Connect the device to follow battery, temperature and free space.",
+    "readFailed": "Could not read the data right now — retrying…",
+    "reading": "Reading the device data…",
+    "allGood": "All good here."
+  },
+  "tvRes": {
+    "title": "What is your TV's resolution?",
+    "intro": "The phone screen is wider than the TV's. By setting the resolution to your TV's 16:9 shape, the content fills the screen with no cropping and no black bars.",
+    "note": {
+      "fhd": "The most common — most TVs.",
+      "2k": "QHD monitors and TVs.",
+      "4k": "Only if the TV really is 4K."
+    },
+    "dontKnow": "I don't know — use Full HD",
+    "dontKnowNote": "The safe choice for most TVs.",
+    "skip": "Continue without changing the resolution",
+    "densityTitle": "Interface size",
+    "densityIntro": "With the {res} resolution, choose how text, icons and menus will look on the TV. You can change it later in the left sidebar, under “Customize the system”.",
+    "densityDefault": "Default (recommended)",
+    "densityDefaultNote": "The right scale for couch viewing — the one that would be applied ({dpi} dpi).",
+    "densityLarger": "Larger",
+    "densityLargerNote": "Text, icons and menus 20% larger — easier to read from a distance ({dpi} dpi).",
+    "densitySmaller": "Smaller",
+    "densitySmallerNote": "Text, icons and menus 20% smaller, for those who prefer more content on screen ({dpi} dpi).",
+    "backToResolution": "Back to the resolution"
+  },
+  "progress": {
+    "playProtect": {
+      "steps": [
+        "On the phone, open the Google Play app",
+        "Tap the profile icon (top right)",
+        "Go to Play Protect → ⚙️ Settings",
+        "Turn off \"Scan apps with Play Protect\"",
+        "Come back here and click Apply changes again"
+      ],
+      "show": "How to allow it on the phone →",
+      "hide": "Hide guide"
+    },
+    "shellTitle": "Your shell, your call.",
+    "shellBody": "DexArmor is the frame — every setting applied is one piece of the setup you are building. Don't like a piece? Tap {undo} next to it: it comes off right away, without dismantling the rest.",
+    "empty": "Nothing has run yet. Steps appear here during execution."
+  },
+  "reset": {
+    "title": "Full revert",
+    "intro": "This will undo EVERYTHING applied to this device, returning it to its previous state. To undo a single item, use “Revert a specific change” in the sidebar. This will be undone:",
+    "nothing": "Nothing to revert.",
+    "interfaceOnly": "Is it only the phone interface that looks off? You don't need to undo everything: restore the original interface from the first setup — apps, files and your saved TV mode stay put.",
+    "interfaceReset": "Restore the phone interface",
+    "dexWarning": "DeX mode, if you turned it off, has to be switched back on manually in the device settings. As a last resort, a factory reset on the phone reverts everything safely.",
+    "sessionEnd": "When you revert everything, the stored record of this setup is deleted — saved TV mode, history and preferences — and DexArmor starts a fresh session, as on first use. The phone's apps and personal files are not affected.",
+    "cancel": "Cancel",
+    "confirm": "Revert everything",
+    "export": "Export journal",
+    "import": "Import journal",
+    "exported": "Journal exported.",
+    "close": "Close",
+    "running": "Reverting…",
+    "done": "Revert complete",
+    "summary": "Reverted: {done} of {total} {unit}.",
+    "unitOne": "item",
+    "unitMany": "items",
+    "warnOne": "{n} item needs a step from you — see the warnings above. If you'd rather revert everything at once, a factory reset on the device is the guarantee.",
+    "warnMany": "{n} items need a step from you — see the warnings above. If you'd rather revert everything at once, a factory reset on the device is the guarantee.",
+    "newSession": "New session started — the previous record was deleted. The device can be set up from scratch whenever you like."
+  },
+  "close": {
+    "title": "Before you go…",
+    "p1": "Using a TV may call for the right accessories for a better experience.",
+    "p2": "Under accessories there is a list of suggestions that can significantly expand what your device can do.",
+    "p3": "Buying through those links also contributes enormously to the project. Cheers!",
+    "see": "See accessories",
+    "closeAnyway": "Close anyway"
+  },
+  "device": {
+    "phoneMode": "Phone mode",
+    "recommended": "Recommended setup",
+    "applyManual": "Apply manual selection",
+    "applying": "Applying…",
+    "dragHint": "Drag files or APKs onto this window to send them to the phone",
+    "recommendedHelp": "Applies the ideal TV set in one click — we only ask for your TV's resolution. Screen lock, gestures and app cleanup are up to you, on the left.",
+    "orSelect": "Or pick modifications on the left and apply them here.",
+    "applyMore": "Apply more settings",
+    "picker": "Device",
+    "unknownDevice": "Device",
+    "pendingPhone": "Mode switch incomplete — finish going back to phone",
+    "pendingTv": "Mode switch incomplete — finish activating TV"
+  },
+  "status": {
+    "ready": "Ready",
+    "actionNeeded": "Action needed",
+    "blocked": "Blocked",
+    "querying": "Looking for devices…",
+    "recovering": "Restarting the connection…",
+    "requerying": "Checking again…",
+    "recovered": "The connection was restarted automatically.",
+    "start": "Start setup"
+  },
+  "dexGuide": {
+    "title": "DeX or TV Experience?",
+    "how": "How to turn DeX off",
+    "disable": "Turn DeX off",
+    "pickVersion": "Choose your device's version."
+  },
+  "controlCenter": {
+    "title": "Control center",
+    "subtitle": "Device telemetry and maintenance"
+  },
+  "connect": {
+    "title": "Connect your Galaxy",
+    "body": "Plug the device into the computer with the USB cable. The screen updates on its own as soon as it is detected."
+  },
+  "app": {
+    "undone": "Undone — the device is back to its previous state",
+    "undoFailed": "Could not undo: {error}",
+    "playProtectBlocked": "Android blocked it for security. See the guide →",
+    "signatureMismatch": "A version is already installed with a different signature.",
+    "needDeviceForProfile": "Connect the device to save a profile.",
+    "reportTitle": "DexArmor — Setup report",
+    "reportDevice": "Device: {model} ({serial})",
+    "unknownModel": "unknown"
+  },
+  "phoneScreen": {
+    "validated": "Device validated.",
+    "next": "Continue",
+    "almost": "Almost there",
+    "authorize": "Cable connected. On the phone screen, tap \"Allow\" to authorize this computer.",
+    "preparing": "Preparing your TV box",
+    "ready": "Your TV box is ready"
+  },
+  "scrcpy": {
+    "windowTitle": "DexArmor — Phone screen",
+    "notFound": "scrcpy not found. Put the binaries in scrcpy/ (see the folder README) or install scrcpy on your system.",
+    "exited": "scrcpy exited with code {code}"
+  },
+  "tutorial": {
+    "s1": {
+      "title": "Open Settings",
+      "body": "On the phone, go to Settings › About phone › Software information."
+    },
+    "s2": {
+      "title": "Turn on developer mode",
+      "body": "Tap \"Build number\" 7 times until \"Developer mode turned on\" appears."
+    },
+    "s3": {
+      "title": "Turn on USB debugging",
+      "body": "Go back to Settings › Developer options and turn on \"USB debugging\"."
+    },
+    "s4": {
+      "title": "Connect the cable",
+      "body": "Plug the phone into the computer with the USB cable. A permission prompt will appear on the device screen."
+    },
+    "s5": {
+      "title": "Authorize this computer",
+      "body": "Tick \"Always allow\" and tap Allow. Done — we take it from here."
+    },
+    "stepOf": "STEP {n} OF {total}"
+  },
+  "contribute": {
+    "tabLabel": "Support the project",
+    "title": "Support the project",
+    "message": "DexArmor is free, but there's nothing wrong with rewarding the effort. If it helped you and you found a new use for your phone, feel free to give something back.",
+    "footnote": "Contributing is optional — nothing in the program depends on it.",
+    "qr": {
+      "pix": {
+        "label": "Pix",
+        "hint": "Scan with your banking app (Brazil)"
+      },
+      "paypal": {
+        "label": "PayPal",
+        "hint": "Card and other currencies"
+      }
+    }
+  },
+  "adb": {
+    "settingRejected": "The system did not accept the change ({key}). It may need extra permission on this device.",
+    "pushExited": "adb push exited with code {code}",
+    "pushStalled": "The transfer stalled (no progress for a long time). Check the cable or Wi-Fi and try again."
+  },
+  "firstGuide": {
+    "title": "Welcome to DexArmor",
+    "intro": "Before you start, it's worth understanding the right way to use the program — 2 minutes that save you trouble later.",
+    "s1": {
+      "title": "1. Build the TV setup first",
+      "body": "Use the Recommended setup and adjust resolution, interface size, font and rotation until the picture looks perfect on YOUR TV. Interface settings can be redone as many times as you need at this stage."
+    },
+    "s2": {
+      "title": "2. Got it right? Save it and stay there",
+      "body": "Once the interface is the way you want it, save it as a profile (Profiles tab). From then on, avoid fiddling with the interface settings: many repeated changes can stack on top of each other and disrupt switching between phone and TV modes."
+    },
+    "s3": {
+      "title": "3. Then feed the setup",
+      "body": "Day to day is about adding content, not changing the interface: drag apps (.apk), films, music and ROMs straight onto the DexArmor window — they go to the phone right away. The program ships no third-party apps: the ones you want, you install."
+    },
+    "s4": {
+      "title": "4. If the phone screen goes odd",
+      "body": "Went back to phone mode and the interface looks strange? Use \"Restore the phone interface\" in the left column — it restores the original interface without deleting anything on the device or your TV mode."
+    },
+    "action": "Got it, let's start"
+  },
+  "dex": {
+    "intro": "Some Samsung devices have DeX mode. When you plug into HDMI, DeX opens on its own and takes over the screen — which gets in the way of the TV experience we just built.",
+    "dexMode": {
+      "title": "DeX mode",
+      "desc": "Opens a desktop much like a computer's. Built for productivity, with windows and a mouse — not for watching TV from the couch."
+    },
+    "tvMode": {
+      "title": "TV experience",
+      "desc": "Opens straight into the TV launcher, with simple remote navigation. This is what we want to use the device as a TV box."
+    },
+    "conclusion": "So on devices with DeX, its automatic launch has to be turned off. With DeX out of the way, the phone opens straight into the TV interface when plugged into HDMI.",
+    "note": "Option names can vary a little by model and version. If you can't find it through the path above, search for \"DeX\" in the Settings search.",
+    "hdmiWarning": "The DeX menu only appears in settings once the device is already connected to the TV over HDMI. Without the cable plugged in, the option is unavailable — which is why this step is best done at the end, with the phone already on the TV.",
+    "ui67": {
+      "label": "One UI 6 / 7",
+      "hint": "Android 14 / 15 — most devices today",
+      "s1": {
+        "title": "Open Settings",
+        "body": "On the phone, go to Settings › Connected devices."
+      },
+      "s2": {
+        "title": "Go into Samsung DeX",
+        "body": "Tap \"Samsung DeX\"."
+      },
+      "s3": {
+        "title": "Turn off automatic launch",
+        "body": "Turn off \"Start automatically when HDMI is connected\"."
+      },
+      "s4": {
+        "title": "Done",
+        "body": "Now, when you plug into HDMI, the device opens the TV interface instead of DeX."
+      }
+    },
+    "ui8": {
+      "label": "One UI 8",
+      "hint": "Android 16 — newer devices",
+      "s1": {
+        "title": "Open Settings",
+        "body": "On the phone, go to Settings › Connected devices › Samsung DeX."
+      },
+      "s2": {
+        "title": "Go into \"Connected display\"",
+        "body": "Tap \"Connected display\"."
+      },
+      "s3": {
+        "title": "Choose \"Mirror\"",
+        "body": "Select \"Mirror\" instead of \"Extend\". Mirror opens the TV interface; extend opens DeX."
+      },
+      "s4": {
+        "title": "Done",
+        "body": "The device now mirrors the screen when plugged into HDMI, opening straight into the TV launcher."
+      }
+    },
+    "nodex": {
+      "label": "My device has no DeX",
+      "hint": "E.g. Galaxy Z Flip and entry-level models",
+      "s1": {
+        "title": "Nothing to do",
+        "body": "Without DeX, the device already opens straight into the TV interface over HDMI. You can skip this step."
+      }
+    }
+  },
+  "sideload": {
+    "title": "Install apps and send files",
+    "intro": "DexArmor turns the phone into a TV, but it does not come with third-party apps: streaming, browsers, games and emulators are your choice. Installing any of them takes seconds — just drag and drop.",
+    "s1": {
+      "title": "1. Have the file on the computer",
+      "body": "An Android app is a .apk file. Download it from a trusted source (the phone's own app store, the app's official site, or well-known repositories) and keep it handy."
+    },
+    "s2": {
+      "title": "2. Drag it onto the DexArmor window",
+      "body": "With the phone connected, drag the file anywhere onto this window. The whole screen becomes a drop area with the possible targets — nothing to open beforehand."
+    },
+    "s3": {
+      "title": "3. Drop it on \"Install on the phone\"",
+      "body": "That's the large target at the top, for .apk files. The app is installed straight onto the device and shows up in the TV launcher alongside the others."
+    },
+    "s4": {
+      "title": "4. Files go on the targets below",
+      "body": "Films, music, ROMs and general files: drop them on the matching folder (Movies, Music, Game ROMs, Downloads). Several at once works too, with progress and the option to cancel."
+    },
+    "notes": [
+      "On the first install, Android may ask for a confirmation on the phone screen. That's normal: allow it and DexArmor carries on from there.",
+      ".apkm and .xapk files (multi-part packages) are accepted too.",
+      "Out of space on the phone? DexArmor warns you before starting — use Cleanup, in the right-hand column, and try again."
+    ],
+    "action": "Got it"
+  },
+  "accessories": {
+    "cat": {
+      "ac-caixas": "Speakers",
+      "ac-fones": "Earbuds",
+      "ac-headphone": "Headphones",
+      "ac-smartwatches": "Smartwatches",
+      "ac-carregadores": "Chargers",
+      "ac-joysticks": "Controllers",
+      "ac-hub": "USB-C / HDMI hubs",
+      "ac-osmo360": "How I kit out my DJI Osmo 360",
+      "ac-notebook": "Laptop and desk setup",
+      "ac-controle-tv": "TV remotes",
+      "ac-fotografia": "My photography setup"
+    },
+    "note": {
+      "ac-caixas-motion": "Powerful, portable sound with reinforced bass",
+      "ac-fones-p30i": "TWS earbuds with adaptive noise cancelling",
+      "ac-fones-lib4nc": "Compact, sturdy TWS for those after quality",
+      "ac-fones-bp1": "For anyone who wants bass and battery life",
+      "ac-fones-wm01": "The smallest in-ear I have tested",
+      "ac-head-q30": "Hybrid noise cancelling, over-ear",
+      "ac-head-q20i": "ANC with great value for money",
+      "ac-watch-bip6": "Entry level with great value — there's a written review in the site's Notes",
+      "ac-watch-bal2": "Focused on health and sport, large AMOLED screen",
+      "ac-watch-act2": "Compact and light for everyday wear and training",
+      "ac-carr-100w": "Charges MacBook, phone and accessories — GaN",
+      "ac-carr-30w": "Compact, for phone and earbuds",
+      "ac-carr-estacao": "Desktop station to charge several devices at once",
+      "ac-hub-baseus": "Multiple ports with HDMI out — for laptops and MacBooks",
+      "ac-hub-vention": "Compact and versatile, with HDMI and USB",
+      "ac-osmo-cage": "Protects the camera from drops and scratches",
+      "ac-osmo-bastao": "Light and strong, reaches high angles",
+      "ac-osmo-engate": "Swap accessories in seconds",
+      "ac-osmo-peito": "Steady first-person footage",
+      "ac-osmo-pelicula": "Protects the lenses and the screen",
+      "ac-nb-pes": "Stuck on my laptop for 2 years — part of the structure by now",
+      "ac-nb-switch": "Switches between MacBook and Mac mini on the same monitor (I use a Gawfolk 2K)",
+      "ac-ctrl-g60s": "Air mouse with gyroscope and voice control",
+      "ac-ctrl-rii": "Compact and universal, for TV boxes and smart TVs"
+    },
+    "soon": {
+      "ac-joysticks": "Still testing the controllers that deserve a place on this list."
+    },
+    "intro": "Accessories tested on the channel. They open in your browser — nothing is installed on the device.",
+    "disclosure": "Some links are affiliate links (AliExpress). You pay the same price and the purchase helps keep the channel going. Only what has been tested makes it here.",
+    "label": {
+      "ac-caixas-motion": "Anker Soundcore Motion+",
+      "ac-fones-p30i": "Anker Soundcore P30i",
+      "ac-fones-lib4nc": "Anker Liberty 4 NC",
+      "ac-fones-bp1": "Baseus Bass BP1 Pro",
+      "ac-fones-wm01": "Baseus Encok WM01",
+      "ac-head-q30": "Anker Life Q30",
+      "ac-head-q20i": "Anker Life Q20i",
+      "ac-watch-bip6": "Amazfit Bip 6",
+      "ac-watch-bal2": "Amazfit Balance 2",
+      "ac-watch-act2": "Amazfit Active 2",
+      "ac-carr-100w": "Ugreen 100W charger",
+      "ac-carr-30w": "Ugreen 30W charger",
+      "ac-carr-estacao": "Desktop charging station (6 ports)",
+      "ac-hub-baseus": "Baseus USB-C hub",
+      "ac-hub-vention": "Vention USB-C hub",
+      "ac-osmo-cage": "Protective cage",
+      "ac-osmo-bastao": "3 m carbon fibre pole",
+      "ac-osmo-engate": "Quick release",
+      "ac-osmo-peito": "Chest mount",
+      "ac-osmo-pelicula": "Screen protector",
+      "ac-nb-pes": "Laptop feet",
+      "ac-nb-switch": "HDMI switch",
+      "ac-ctrl-g60s": "New G60S Pro remote",
+      "ac-ctrl-rii": "Rii TV remote",
+      "ac-foto-tripe": "Tripod",
+      "ac-foto-bolsa-lentes": "Lens pouch",
+      "ac-foto-bolsa-lateral": "Side bag",
+      "ac-foto-gatilho-cinto": "Belt clip",
+      "ac-foto-alca": "Camera strap",
+      "ac-foto-gatilhos": "Quick-release clips",
+      "ac-foto-cinto": "Multi-purpose belt"
+    }
+  }
+}

@@ -9,6 +9,7 @@ const https = require('https');
 const crypto = require('crypto');
 const { execFile } = require('child_process');
 const adb = require('../adb/adb');
+const { t } = require('../i18n/runtime.cjs');
 
 // Hash SHA-256 de um arquivo, para conferir a integridade de APKs baixados.
 function sha256File(filePath) {
@@ -84,19 +85,58 @@ function findApks(dir) {
 
 // Instala um pacote .apkm ou .xapk: extrai o ZIP, coleta os APKs internos
 // e usa adb install-multiple para split APKs ou adb install para APK único.
-async function installBundled(serial, archivePath) {
+async function installBundled(serial, archivePath, { signal } = {}) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dexarmor-'));
   try {
     await extractZip(archivePath, tmpDir);
     const apks = findApks(tmpDir);
-    if (apks.length === 0) throw new Error('Nenhum APK encontrado no pacote');
+    if (apks.length === 0) throw new Error(t('runner.error.noApkInBundle'));
     if (apks.length === 1) {
-      await adb.installApk(serial, apks[0]);
+      await adb.installApk(serial, apks[0], { signal });
     } else {
-      await adb.installMultiple(serial, apks);
+      await adb.installMultiple(serial, apks, { signal });
     }
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+}
+
+// Instala um arquivo local no aparelho, seja .apk simples ou pacote
+// .apkm/.xapk. Desativa o verificador de pacotes (Play Protect para ADB) SÓ
+// durante a instalação, guardando o valor anterior para restaurar ao final —
+// não deixamos uma proteção do sistema desligada permanentemente.
+//
+// Caminho ÚNICO de instalação do programa: usado tanto pela task do catálogo
+// (o launcher) quanto pelo arrastar-e-soltar de um APK do usuário. Os dois
+// merecem o mesmo tratamento — inclusive a tradução dos erros do Android para
+// os códigos que a interface sabe explicar.
+async function installApkFile(serial, apkPath, { signal } = {}) {
+  const prevVerifier = normalizePrev(
+    (await adb.getSetting(serial, 'global', 'verifier_verify_adb_installs').catch(() => 'null')).trim()
+  );
+  await adb.putSetting(serial, 'global', 'verifier_verify_adb_installs', 0).catch(() => {});
+
+  try {
+    const ext = path.extname(apkPath).toLowerCase();
+    if (ext === '.apkm' || ext === '.xapk') {
+      await installBundled(serial, apkPath, { signal });
+    } else {
+      await adb.installApk(serial, apkPath, { signal });
+    }
+  } catch (e) {
+    if (e.message.includes('INSTALL_FAILED_UPDATE_INCOMPATIBLE')) {
+      throw new Error('ALREADY_INSTALLED:');
+    }
+    if (e.message.includes('INSTALL_FAILED_VERIFICATION_FAILURE')) {
+      throw new Error('VERIFICATION_FAILURE:');
+    }
+    throw e;
+  } finally {
+    if (prevVerifier === null) {
+      await adb.deleteSetting(serial, 'global', 'verifier_verify_adb_installs').catch(() => {});
+    } else {
+      await adb.putSetting(serial, 'global', 'verifier_verify_adb_installs', prevVerifier).catch(() => {});
+    }
   }
 }
 
@@ -105,6 +145,84 @@ function apkDir() {
   return process.resourcesPath && !process.defaultApp
     ? path.join(process.resourcesPath, 'apks')
     : path.join(__dirname, '..', '..', 'apks');
+}
+
+// Dpi padrão de TV pareado com a resolução (pela menor dimensão do painel):
+// 1080p→320, 1440p→480, 4K→640 — os mesmos valores das tasks de resolução.
+const TV_DENSITY_BY_MIN_DIM = { 1080: 320, 1440: 480, 2160: 640 };
+
+// Launcher nativo do modo celular (One UI Home). O launcher padrão segue um
+// mapeamento FIXO por modo: modo TV = launcher do catálogo (task.pkg), modo
+// celular = este. Sem essa âncora, uma volta ao celular que falhasse deixaria
+// o launcher de TV registrado como "launcher do celular", e a alternância
+// nunca mais sairia dele.
+const PHONE_HOME_PKG = 'com.sec.android.app.launcher';
+
+// Trocar o launcher PADRÃO não troca quem está NA TELA: o launcher antigo
+// continua visível até alguém apertar Início. Este helper dá esse toque pelo
+// ADB e CONFERE o resultado lendo o app em primeiro plano, repetindo algumas
+// vezes (poucos segundos no pior caso) — a alternância de modos termina com o
+// launcher certo aberto, sem o usuário precisar pegar o aparelho.
+// Se o aparelho não expõe o primeiro plano (leitura null), toca Início 2x às
+// cegas e assume sucesso — o toque em Início é inofensivo.
+const KEYCODE_HOME = 3;
+const KEYCODE_WAKEUP = 224;
+
+// Prepara a TELA para uma alternância: acorda o display se estiver dormindo e
+// dispensa a tela de bloqueio quando não há senha. Com senha, o sistema mostra
+// a tela de desbloqueio — devolvemos o obstáculo para a interface PERGUNTAR
+// (desbloquear é decisão do usuário; segurança não se contorna por ADB).
+// Leituras indisponíveis não travam o fluxo: sem informação, seguimos.
+async function ensureScreenReady(serial) {
+  const state = await adb.getScreenState(serial);
+  if (state === 'asleep') {
+    await adb.sendKeyEvent(serial, KEYCODE_WAKEUP).catch(() => {});
+    await new Promise((r) => setTimeout(r, 1200));
+  }
+  let locked = await adb.isKeyguardShowing(serial);
+  if (locked) {
+    await adb.dismissKeyguard(serial).catch(() => {});
+    await new Promise((r) => setTimeout(r, 900));
+    locked = await adb.isKeyguardShowing(serial);
+    if (locked) {
+      return {
+        ok: false,
+        obstacle: 'locked',
+        message: t('runner.locked'),
+      };
+    }
+  }
+  return { ok: true };
+}
+
+async function ensureHomeOnScreen(serial, pkg) {
+  let fg = null;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    fg = await adb.getForegroundPackage(serial).catch(() => null);
+    if (fg === pkg) return true;
+    await adb.sendKeyEvent(serial, KEYCODE_HOME).catch(() => {});
+    await new Promise((r) => setTimeout(r, 900));
+    if (fg === null && attempt >= 1) break; // sem leitura: 2 toques bastam
+  }
+  fg = await adb.getForegroundPackage(serial).catch(() => null);
+  return fg === null || fg === pkg;
+}
+
+// Calcula o dpi alvo de uma task 'density' a partir da resolução ATUAL do
+// aparelho (override, se houver; senão a física). mode 'default' usa o dpi
+// pareado; 'small' aplica 20% a menos (elementos menores = mais conteúdo na
+// tela) e 'large' 20% a mais (elementos maiores = leitura mais fácil de longe).
+async function densityTarget(serial, mode) {
+  const size = await adb.getDisplaySize(serial);
+  const current = size.override || size.physical || '';
+  const dims = current.split('x').map(Number).filter((n) => Number.isFinite(n));
+  const base = dims.length === 2 ? TV_DENSITY_BY_MIN_DIM[Math.min(...dims)] : undefined;
+  if (!base) {
+    throw new Error(t('runner.error.needResolution'));
+  }
+  if (mode === 'small') return Math.round(base * 0.8);
+  if (mode === 'large') return Math.round(base * 1.2);
+  return base;
 }
 
 async function runTask(serial, task) {
@@ -141,7 +259,25 @@ async function runTask(serial, task) {
     case 'install': {
       let apkPath;
       const src = task.source || (task.apk ? { type: 'local', apk: task.apk } : null);
-      if (!src) throw new Error('App sem origem de APK definida');
+      if (!src) throw new Error(t('runner.error.noApkSource'));
+
+      // ATUALIZAÇÃO POR versionCode.
+      // Só vale para app que embarcamos e cuja versão conhecemos: a task
+      // declara `minVersionCode` (hoje, o launcher DexArmor TV). Sem esse
+      // campo o comportamento é o de sempre — instala/reinstala.
+      //
+      // Existir não basta como critério: um aparelho já provisionado tem o
+      // launcher instalado e ficaria preso na versão antiga para sempre. Aqui
+      // comparamos com o que está no aparelho e só reinstalamos se o nosso for
+      // mais novo. Se for igual ou mais velho, não encostamos no aparelho.
+      const jaInstalado = task.pkg ? await adb.hasPackage(serial, task.pkg) : false;
+      if (jaInstalado && task.minVersionCode) {
+        const atual = await adb.getVersionCode(serial, task.pkg);
+        if (atual !== null && atual >= task.minVersionCode) {
+          // Nada a fazer — e nada a reverter: não fomos nós que instalamos.
+          return { detail: t('runner.alreadyUpdated', { version: atual }), revert: null };
+        }
+      }
 
       if (src.type === 'local') {
         // src.dir é a subpasta de categoria (ex.: 'launchers'); opcional.
@@ -149,7 +285,7 @@ async function runTask(serial, task) {
           ? path.join(apkDir(), src.dir, src.apk)
           : path.join(apkDir(), src.apk);
         if (!fs.existsSync(apkPath)) {
-          throw new Error(`APK não encontrado: ${src.dir ? src.dir + '/' : ''}${src.apk}`);
+          throw new Error(t('runner.error.apkNotFound', { path: `${src.dir ? src.dir + '/' : ''}${src.apk}` }));
         }
       } else if (src.type === 'url') {
         // Baixa o APK do repositório para uma pasta temporária e instala.
@@ -160,47 +296,21 @@ async function runTask(serial, task) {
           const got = await sha256File(apkPath);
           if (got.toLowerCase() !== String(src.sha256).toLowerCase()) {
             fs.unlink(apkPath, () => {});
-            throw new Error('O arquivo baixado não confere com a assinatura esperada (sha256). Instalação cancelada por segurança.');
+            throw new Error(t('runner.error.checksumMismatch'));
           }
         }
       } else {
-        throw new Error(`Origem de APK desconhecida: ${src.type}`);
+        throw new Error(t('runner.error.unknownSource', { type: src.type }));
       }
 
-      // Desativa o verificador de pacotes (Play Protect para ADB) SÓ durante a
-      // instalação, guardando o valor anterior para restaurar ao final —
-      // não deixamos uma proteção do sistema desligada permanentemente.
-      const prevVerifier = normalizePrev(
-        (await adb.getSetting(serial, 'global', 'verifier_verify_adb_installs').catch(() => 'null')).trim()
-      );
-      await adb.putSetting(serial, 'global', 'verifier_verify_adb_installs', 0).catch(() => {});
+      await installApkFile(serial, apkPath);
 
-      try {
-        const ext = path.extname(apkPath).toLowerCase();
-        if (ext === '.apkm' || ext === '.xapk') {
-          await installBundled(serial, apkPath);
-        } else {
-          await adb.installApk(serial, apkPath);
-        }
-      } catch (e) {
-        if (e.message.includes('INSTALL_FAILED_UPDATE_INCOMPATIBLE')) {
-          throw new Error('ALREADY_INSTALLED:');
-        }
-        if (e.message.includes('INSTALL_FAILED_VERIFICATION_FAILURE')) {
-          throw new Error('VERIFICATION_FAILURE:');
-        }
-        throw e;
-      } finally {
-        if (prevVerifier === null) {
-          await adb.deleteSetting(serial, 'global', 'verifier_verify_adb_installs').catch(() => {});
-        } else {
-          await adb.putSetting(serial, 'global', 'verifier_verify_adb_installs', prevVerifier).catch(() => {});
-        }
-      }
-
-      // Reverter instalação = desinstalar o app que adicionamos (se tiver pkg).
-      const revert = task.pkg ? { kind: 'uninstall', pkg: task.pkg } : null;
-      return { detail: 'Instalado', revert };
+      // Reverter instalação = desinstalar o app que ADICIONAMOS. Se o app já
+      // estava no aparelho e nós só o atualizamos, desinstalar seria remover
+      // algo que não era nosso — e, no caso do launcher, deixaria o aparelho
+      // sem tela inicial. Atualização não gera reversão.
+      const revert = (task.pkg && !jaInstalado) ? { kind: 'uninstall', pkg: task.pkg } : null;
+      return { detail: jaInstalado ? 'Atualizado' : 'Instalado', revert };
     }
     case 'setting': {
       // Captura o valor anterior ANTES de escrever, para poder reverter.
@@ -208,7 +318,7 @@ async function runTask(serial, task) {
       // Escreve e confirma lendo de volta (evita falha silenciosa).
       await adb.putSettingVerified(serial, task.ns, task.key, task.value);
       return {
-        detail: 'Aplicado',
+        detail: t('runner.applied'),
         revert: { kind: 'setting', ns: task.ns, key: task.key, prev: normalizePrev(prev) },
       };
     }
@@ -235,27 +345,40 @@ async function runTask(serial, task) {
         }
       }
       return {
-        detail: `Aplicado (${applied.length} ajustes)`,
+        detail: t('runner.appliedCount', { n: applied.length }),
         revert: { kind: 'settings', ns: task.ns, keys: prevs },
       };
     }
     case 'home': {
       if (!task.pkg) {
-        throw new Error('Launcher padrão não configurado (defina o pacote)');
+        throw new Error(t('runner.error.noLauncherPkg'));
       }
       if (!(await adb.hasPackage(serial, task.pkg))) {
-        throw new Error('Launcher não está instalado — marque para instalar primeiro');
+        throw new Error(t('runner.error.launcherNotInstalled'));
       }
       const prevHome = await adb.getCurrentHome(serial);
       await adb.setHomeActivity(serial, task.pkg);
       // VERIFICA se realmente virou padrão (em alguns Galaxy não pega de 1ª).
       const nowHome = await adb.getCurrentHome(serial);
       if (nowHome && !nowHome.includes(task.pkg)) {
-        throw new Error('O sistema manteve o launcher antigo. No celular, toque no botão Início e escolha o launcher de TV como padrão.');
+        throw new Error(t('runner.error.launcherKept'));
       }
+      // Traz o launcher de TV para a TELA: sem este toque em Início, o
+      // launcher do celular continuaria visível por cima até um toque manual.
+      const onScreen = await ensureHomeOnScreen(serial, task.pkg);
+      // O modo celular volta ao launcher que ESTAVA ativo antes da troca —
+      // respeitando launchers de terceiros (mako, Nova, Niagara, etc.). O One
+      // UI Home entra só como ÂNCORA de segurança: quando o "anterior" não é
+      // legível, ou é o próprio launcher de TV (sobra de uma volta que falhou),
+      // caso em que restaurá-lo grudaria a alternância no launcher de TV.
+      const phoneHome = (prevHome && prevHome !== task.pkg)
+        ? prevHome
+        : ((await adb.hasPackage(serial, PHONE_HOME_PKG)) ? PHONE_HOME_PKG : null);
       return {
-        detail: 'Definido como tela inicial',
-        revert: prevHome ? { kind: 'home', prev: prevHome } : null,
+        detail: onScreen
+          ? t('runner.homeSet')
+          : t('runner.homeSetTapHome'),
+        revert: phoneHome ? { kind: 'home', prev: phoneHome } : null,
       };
     }
     case 'rotate': {
@@ -263,8 +386,30 @@ async function runTask(serial, task) {
       // todos os apps a respeitarem (fixed-to-user-rotation).
       const prevAccel = (await adb.getSetting(serial, 'system', 'accelerometer_rotation')).trim();
       const prevRot = (await adb.getSetting(serial, 'system', 'user_rotation')).trim();
+      // Se a task traz uma rotação EXPLÍCITA (0–3), ela tem precedência: é a
+      // posição que o usuário encontrou girando a tela até funcionar (botão
+      // "Girar tela"), salva no perfil TV — o snapshot da alternância de
+      // modos a preserva, e cada ativação do modo TV volta exatamente a ela.
+      // Sem rotação explícita, o ALVO depende do formato ATUAL do display:
+      // com uma resolução de TV já aplicada (override paisagem, ex.:
+      // 3840x2160), a orientação natural do display JÁ é deitada —
+      // user_rotation=1 giraria 90° e deixaria a tela EM PÉ (foi o que
+      // acontecia no "Corrigir agora"). Sem override, o painel do celular é
+      // em pé e 1 = 90° = paisagem. A heurística acerta na maioria dos
+      // aparelhos; nos que ela erra, o usuário corrige girando — e a posição
+      // certa vira a explícita daí em diante.
+      let target = 1;
+      if (Number.isInteger(task.rotation) && task.rotation >= 0 && task.rotation <= 3) {
+        target = task.rotation;
+      } else {
+        try {
+          const size = await adb.getDisplaySize(serial);
+          const dims = (size.override || '').split('x').map(Number);
+          if (dims.length === 2 && dims.every(Number.isFinite) && dims[0] > dims[1]) target = 0;
+        } catch { /* sem leitura: mantém o padrão do painel em pé */ }
+      }
       await adb.putSetting(serial, 'system', 'accelerometer_rotation', 0);
-      await adb.putSetting(serial, 'system', 'user_rotation', 1); // 1 = 90° (paisagem)
+      await adb.putSetting(serial, 'system', 'user_rotation', target);
       // O comando 'wm' que força apps teimosos é o mais frágil (varia por
       // versão e pode não existir). Se falhar, a rotação básica acima JÁ foi
       // aplicada — então não derrubamos a task, só sinalizamos no detalhe.
@@ -276,8 +421,8 @@ async function runTask(serial, task) {
       }
       return {
         detail: forced
-          ? 'Paisagem forçada'
-          : 'Paisagem aplicada (alguns apps podem ainda abrir em pé neste aparelho)',
+          ? t('runner.landscapeForced')
+          : t('runner.landscapeApplied'),
         revert: {
           kind: 'rotate',
           accel: normalizePrev(prevAccel),
@@ -301,8 +446,23 @@ async function runTask(serial, task) {
         revert.density = beforeDensity.override;
       }
       return {
-        detail: `Resolução ${task.width}x${task.height}${task.density ? ` · ${task.density}dpi` : ''}`,
+        detail: task.density
+          ? t('runner.resolutionWithDensity', { w: task.width, h: task.height, dpi: task.density })
+          : t('runner.resolution', { w: task.width, h: task.height }),
         revert,
+      };
+    }
+    case 'density': {
+      // Tamanho da interface: dpi calculado a partir da resolução atual
+      // (padrão de TV ou 20% menor). Se a task traz um dpi explícito (snapshot
+      // do modo TV personalizado pelo usuário), ele tem precedência.
+      // Guarda o dpi anterior para reverter.
+      const target = task.dpi || (await densityTarget(serial, task.mode));
+      const before = await adb.getDisplayDensity(serial);
+      await adb.setDisplayDensity(serial, target);
+      return {
+        detail: t('runner.densityApplied', { dpi: target }),
+        revert: { kind: 'density', hadDensity: !!before.override, density: before.override },
       };
     }
     case 'dnd': {
@@ -314,12 +474,12 @@ async function runTask(serial, task) {
       // pode não existir e falhar silenciosamente.
       const now = (await adb.getSetting(serial, 'global', 'zen_mode')).trim();
       if (now === '0' || now === '' || now === 'null') {
-        throw new Error('O sistema não ativou o Não Perturbe (este Android pode não suportar via ADB).');
+        throw new Error(t('runner.error.dndFailed'));
       }
-      return { detail: 'Não perturbe ativado', revert: { kind: 'dnd', prev } };
+      return { detail: t('runner.dndOn'), revert: { kind: 'dnd', prev } };
     }
     default:
-      throw new Error(`Tipo de task desconhecido: ${task.kind}`);
+      throw new Error(t('runner.error.unknownTaskKind', { kind: task.kind }));
   }
 }
 
@@ -330,11 +490,20 @@ function normalizePrev(raw) {
   return (raw === 'null' || raw === '') ? null : raw;
 }
 
+// Kinds de reversão que o revertEntry sabe desfazer — a FONTE ÚNICA da
+// allowlist. O import de registro valida contra ela para nunca aceitar um kind
+// órfão (que só quebraria mais tarde, numa reversão). Manter em sincronia com
+// o switch do revertEntry abaixo.
+const REVERT_KINDS = new Set([
+  'restore', 'restore-many', 'uninstall', 'setting', 'settings',
+  'home', 'rotate', 'wmsize', 'density', 'dnd',
+]);
+
 // Reverte uma entrada previamente registrada. Retorna texto do resultado.
 // Lança erro se não conseguir (o chamador trata item a item).
 async function revertEntry(serial, entry) {
   const r = entry.revert;
-  if (!r) throw new Error('Sem informação de reversão');
+  if (!r) throw new Error(t('runner.error.noRevertInfo'));
 
   switch (r.kind) {
     case 'restore': {
@@ -351,8 +520,8 @@ async function revertEntry(serial, entry) {
         try { await adb.restorePackage(serial, pkg); ok.push(pkg); }
         catch { fail.push(pkg); }
       }
-      if (fail.length) throw new Error(`Reativados ${ok.length}/${r.pkgs.length}`);
-      return `Reativados (${ok.length})`;
+      if (fail.length) throw new Error(t('runner.error.partialReactivate', { ok: ok.length, total: r.pkgs.length }));
+      return t('runner.reactivated', { n: ok.length });
     }
     case 'uninstall': {
       // App que NÓS instalamos: desinstalação completa (adb uninstall).
@@ -375,8 +544,22 @@ async function revertEntry(serial, entry) {
       return 'Restaurado';
     }
     case 'home': {
-      await adb.setHomeActivity(serial, r.prev);
-      return 'Launcher restaurado';
+      // Restaura o launcher do celular e CONFERE o resultado: em alguns
+      // Galaxy o set-home-activity falha em silêncio — sem a conferência, o
+      // launcher de TV continuaria como padrão no modo celular sem aviso.
+      for (let attempt = 0; attempt < 2; attempt++) {
+        await adb.setHomeActivity(serial, r.prev);
+        const now = await adb.getCurrentHome(serial);
+        if (!now || now.includes(r.prev)) {
+          // Traz o launcher do celular para a TELA — sem este toque em
+          // Início, o launcher de TV continuaria visível por cima.
+          const onScreen = await ensureHomeOnScreen(serial, r.prev);
+          return onScreen
+            ? t('runner.launcherRestored')
+            : t('runner.launcherRestoredTapHome');
+        }
+      }
+      throw new Error(t('runner.error.launcherKeptTv'));
     }
     case 'rotate': {
       // Libera a rotação forçada (só se foi aplicada) e restaura os valores.
@@ -387,7 +570,7 @@ async function revertEntry(serial, entry) {
       else await adb.putSetting(serial, 'system', 'accelerometer_rotation', r.accel);
       if (r.rot === null) await adb.deleteSetting(serial, 'system', 'user_rotation');
       else await adb.putSetting(serial, 'system', 'user_rotation', r.rot);
-      return 'Rotação restaurada';
+      return t('runner.rotationRestored');
     }
     case 'wmsize': {
       if (r.hadOverride && r.override) {
@@ -401,17 +584,39 @@ async function revertEntry(serial, entry) {
         if (r.hadDensity && r.density) await adb.setDisplayDensity(serial, r.density);
         else await adb.setDisplayDensity(serial, null);
       }
-      return 'Resolução restaurada';
+      return t('runner.resolutionRestored');
+    }
+    case 'density': {
+      // Restaura o dpi anterior (ou o padrão de fábrica, se não havia override).
+      if (r.hadDensity && r.density) await adb.setDisplayDensity(serial, r.density);
+      else await adb.setDisplayDensity(serial, null);
+      return 'Tamanho da interface restaurado';
     }
     case 'dnd': {
       // Restaura o modo anterior do Não Perturbe a partir do zen_mode salvo.
       const map = { 1: 'priority', 2: 'none', 3: 'alarms' };
       await adb.setDnd(serial, map[r.prev] || 'off');
-      return 'Não perturbe restaurado';
+      return t('runner.dndRestored');
     }
     default:
-      throw new Error(`Tipo de reversão desconhecido: ${r.kind}`);
+      throw new Error(t('runner.error.unknownRevertKind', { kind: r.kind }));
   }
+}
+
+// Leitura com ASSENTAMENTO para os kinds que re-layoutam (density/wmsize): o
+// One UI pode levar um instante para assentar o novo layout, e uma leitura
+// única logo após a troca pega um valor intermediário — falso "não confirmou".
+// Relê até estabilizar. O custo (a espera) é pago SÓ quando a 1ª leitura
+// diverge do esperado — no caminho feliz é leitura única, sem atraso.
+async function confirmStable(readFn, isOk, { retries = 2, settleMs = 700 } = {}) {
+  let value = await readFn();
+  if (isOk(value)) return { value, ok: true };
+  for (let i = 0; i < retries; i++) {
+    await new Promise((r) => setTimeout(r, settleMs));
+    value = await readFn();
+    if (isOk(value)) return { value, ok: true };
+  }
+  return { value, ok: false };
 }
 
 // Verifica, SEM alterar nada, se o efeito de uma task continua valendo no
@@ -425,65 +630,356 @@ async function verifyTask(serial, task) {
         if (await adb.hasPackage(serial, pkg)) back.push(pkg);
       }
       return back.length
-        ? { ok: false, detail: `${back.length} de ${task.pkgs.length} apps voltaram` }
+        ? { ok: false, detail: t('runner.verify.appsBack', { back: back.length, total: task.pkgs.length }) }
         : { ok: true };
     }
     case 'install': {
-      if (!task.pkg) return { ok: true, detail: 'Sem pacote declarado para conferir' };
-      return (await adb.hasPackage(serial, task.pkg))
-        ? { ok: true }
-        : { ok: false, detail: 'O app não está mais instalado' };
+      if (!task.pkg) return { ok: true, detail: t('runner.verify.noPackage') };
+      if (!(await adb.hasPackage(serial, task.pkg))) {
+        return { ok: false, detail: t('runner.verify.notInstalled') };
+      }
+      // Para o app que embarcamos, "instalado" não basta: uma versão velha
+      // presa no aparelho é uma falha de check-up, não um sucesso.
+      if (task.minVersionCode) {
+        const atual = await adb.getVersionCode(serial, task.pkg);
+        if (atual !== null && atual < task.minVersionCode) {
+          return { ok: false, detail: t('runner.verify.outdated', { version: atual }) };
+        }
+      }
+      return { ok: true };
     }
     case 'setting': {
       const cur = (await adb.getSetting(serial, task.ns, task.key)).trim();
       return cur === String(task.value)
         ? { ok: true }
-        : { ok: false, detail: `Valor atual: ${cur || '(vazio)'}` };
+        : { ok: false, detail: t('runner.verify.currentValue', { value: cur || t('runner.empty') }) };
     }
     case 'settings': {
       for (const { key, value } of task.keys) {
         const cur = (await adb.getSetting(serial, task.ns, key)).trim();
         if (cur !== String(value)) {
-          return { ok: false, detail: `A chave ${key} mudou (${cur || 'vazio'})` };
+          return { ok: false, detail: t('runner.verify.keyChanged', { key, value: cur || t('runner.emptyShort') }) };
         }
       }
       return { ok: true };
     }
     case 'home': {
       const home = await adb.getCurrentHome(serial);
-      return home && home.includes(task.pkg)
-        ? { ok: true }
-        : { ok: false, detail: `Launcher atual: ${home || 'desconhecido'}` };
+      if (home && home.includes(task.pkg)) return { ok: true };
+      // Leitura indisponível (logo após a troca o sistema pode devolver o
+      // seletor em vez de um launcher): confere quem está NA TELA — se o
+      // launcher esperado está em primeiro plano, o efeito real está valendo.
+      if (!home) {
+        const fg = await adb.getForegroundPackage(serial).catch(() => null);
+        if (fg === task.pkg) return { ok: true, detail: t('runner.verify.confirmedOnScreen') };
+      }
+      return { ok: false, detail: t('runner.verify.currentLauncher', { launcher: home || t('runner.unknown') }) };
     }
     case 'rotate': {
       const accel = (await adb.getSetting(serial, 'system', 'accelerometer_rotation')).trim();
+      if (accel !== '0') return { ok: false, detail: t('runner.verify.autoRotateBack') };
       const rot = (await adb.getSetting(serial, 'system', 'user_rotation')).trim();
-      return accel === '0' && rot === '1'
-        ? { ok: true }
-        : { ok: false, detail: 'A rotação foi alterada' };
+      // Perfil com rotação EXPLÍCITA (posição escolhida pelo usuário girando
+      // a tela): confere contra ela. Chave ausente/vazia equivale a 0.
+      if (Number.isInteger(task.rotation) && task.rotation >= 0 && task.rotation <= 3) {
+        const okExplicit = rot === String(task.rotation)
+          || (task.rotation === 0 && (rot === '' || rot === 'null'));
+        return okExplicit ? { ok: true } : { ok: false, detail: t('runner.verify.rotationChanged') };
+      }
+      // Sem rotação explícita, o valor CERTO depende do formato atual do
+      // display (mesma regra da aplicação): com resolução de TV (override
+      // paisagem), a orientação natural já é deitada — 0 é paisagem, e 1/3
+      // deixariam a tela EM PÉ (o sistema também reseta para 0 sozinho ao
+      // trocar o display, sem a tela mudar: não é divergência). Painel em
+      // pé: 90°/270° = paisagem.
+      const size = await adb.getDisplaySize(serial);
+      const dims = (size.override || '').split('x').map(Number);
+      const landscapeNatural = dims.length === 2 && dims.every(Number.isFinite) && dims[0] > dims[1];
+      const okRot = landscapeNatural
+        ? (rot === '0' || rot === '' || rot === 'null')
+        : (rot === '1' || rot === '3');
+      return okRot ? { ok: true } : { ok: false, detail: t('runner.verify.rotationChanged') };
     }
     case 'wmsize': {
-      const size = await adb.getDisplaySize(serial);
-      if (size.override !== `${task.width}x${task.height}`) {
-        return { ok: false, detail: `Resolução atual: ${size.override || size.physical || '?'}` };
+      // Aceita as dimensões trocadas (1080x1920): com a rotação travada em
+      // 90°, o mesmo override pode ser lido girado — não é uma divergência.
+      // Leitura com assentamento (o override re-layouta).
+      const sizeOk = (s) => s.override === `${task.width}x${task.height}`
+        || s.override === `${task.height}x${task.width}`;
+      const sr = await confirmStable(() => adb.getDisplaySize(serial), sizeOk);
+      if (!sr.ok) {
+        return { ok: false, detail: t('runner.verify.currentResolution', { value: sr.value.override || sr.value.physical || '?' }) };
       }
       if (task.density) {
-        const density = await adb.getDisplayDensity(serial);
-        if (density.override !== task.density) {
-          return { ok: false, detail: `Densidade atual: ${density.override || density.physical || '?'}dpi` };
+        const dr = await confirmStable(
+          () => adb.getDisplayDensity(serial),
+          (d) => d.override === task.density
+        );
+        if (!dr.ok) {
+          return { ok: false, detail: t('runner.verify.currentDensity', { value: dr.value.override || dr.value.physical || '?' }) };
         }
       }
       return { ok: true };
+    }
+    case 'density': {
+      let target = task.dpi;
+      if (!target) {
+        try {
+          target = await densityTarget(serial, task.mode);
+        } catch {
+          return { ok: false, detail: t('runner.verify.noTvResolution') };
+        }
+      }
+      // Assentamento: o dpi re-layouta; relê se a 1ª leitura divergir.
+      const res = await confirmStable(
+        () => adb.getDisplayDensity(serial),
+        (d) => d.override === target
+      );
+      return res.ok
+        ? { ok: true }
+        : { ok: false, detail: t('runner.verify.currentDensity', { value: res.value.override || res.value.physical || '?' }) };
     }
     case 'dnd': {
       const zen = (await adb.getSetting(serial, 'global', 'zen_mode')).trim();
       return zen !== '0' && zen !== 'null' && zen !== ''
         ? { ok: true }
-        : { ok: false, detail: 'O Não Perturbe está desligado' };
+        : { ok: false, detail: t('runner.verify.dndOff') };
     }
     default:
-      return { ok: true, detail: 'Sem verificação para este tipo' };
+      return { ok: true, detail: t('runner.verify.noCheck') };
   }
 }
 
-module.exports = { runTask, revertEntry, verifyTask };
+// Confere, SEM alterar nada, se um estado de reversão está valendo no
+// aparelho — o espelho do verifyTask para a direção TV → celular: enquanto o
+// verifyTask confere o perfil TV aplicado, este confere se os valores de
+// CELULAR (phoneRevert/revert) foram de fato restaurados. É a segunda ponta
+// da conferência final da alternância de modos.
+async function verifyRevert(serial, revert) {
+  switch (revert.kind) {
+    case 'setting': {
+      const cur = normalizePrev((await adb.getSetting(serial, revert.ns, revert.key)).trim());
+      return cur === revert.prev
+        ? { ok: true }
+        : { ok: false, detail: t('runner.verify.currentValue', { value: cur ?? t('runner.empty') }) };
+    }
+    case 'settings': {
+      for (const { key, prev } of revert.keys) {
+        const cur = normalizePrev((await adb.getSetting(serial, revert.ns, key)).trim());
+        if (cur !== prev) {
+          return { ok: false, detail: t('runner.revertVerify.keyNotBack', { key, value: cur ?? t('runner.emptyShort') }) };
+        }
+      }
+      return { ok: true };
+    }
+    case 'home': {
+      const home = await adb.getCurrentHome(serial);
+      return !home || home.includes(revert.prev)
+        ? { ok: true }
+        : { ok: false, detail: t('runner.verify.currentLauncher', { launcher: home }) };
+    }
+    case 'rotate': {
+      const accel = normalizePrev((await adb.getSetting(serial, 'system', 'accelerometer_rotation')).trim());
+      const rot = normalizePrev((await adb.getSetting(serial, 'system', 'user_rotation')).trim());
+      return accel === revert.accel && rot === revert.rot
+        ? { ok: true }
+        : { ok: false, detail: t('runner.revertVerify.rotationNotBack') };
+    }
+    case 'wmsize': {
+      const want = revert.hadOverride && revert.override ? revert.override : null;
+      // Tolera dimensões trocadas (leitura com a tela girada), como o verifyTask.
+      // Leitura com assentamento (o override re-layouta).
+      const sameSize = (size) => {
+        const cur = size.override || null;
+        return want === cur
+          || (!!want && !!cur && want.split('x').sort().join() === cur.split('x').sort().join());
+      };
+      const sr = await confirmStable(() => adb.getDisplaySize(serial), sameSize);
+      if (!sr.ok) {
+        return { ok: false, detail: t('runner.verify.currentResolution', { value: sr.value.override || sr.value.physical || '?' }) };
+      }
+      if (revert.hadDensity !== undefined) {
+        const wantD = revert.hadDensity && revert.density ? revert.density : null;
+        const dr = await confirmStable(
+          () => adb.getDisplayDensity(serial),
+          (d) => (d.override || null) === wantD
+        );
+        if (!dr.ok) {
+          return { ok: false, detail: t('runner.verify.currentDensity', { value: dr.value.override || dr.value.physical || '?' }) };
+        }
+      }
+      return { ok: true };
+    }
+    case 'density': {
+      const want = revert.hadDensity && revert.density ? revert.density : null;
+      // Assentamento: o dpi re-layouta; relê se a 1ª leitura divergir.
+      const res = await confirmStable(
+        () => adb.getDisplayDensity(serial),
+        (d) => (d.override || null) === want
+      );
+      return res.ok
+        ? { ok: true }
+        : { ok: false, detail: t('runner.verify.currentDensity', { value: res.value.override || res.value.physical || '?' }) };
+    }
+    case 'dnd': {
+      const zen = (await adb.getSetting(serial, 'global', 'zen_mode')).trim();
+      const want = revert.prev == null ? '0' : String(revert.prev);
+      return zen === want || (want === '0' && (zen === '' || zen === 'null'))
+        ? { ok: true }
+        : { ok: false, detail: t('runner.revertVerify.dndNotBack') };
+    }
+    default:
+      return { ok: true, detail: t('runner.revertVerify.noCheck') };
+  }
+}
+
+// Dpi que o app usa em modo TV: os pareados por resolução (320/480/640) e as
+// variações de ±20% do "tamanho da interface" — valores que um celular
+// dificilmente teria como override próprio.
+const TV_DPI_VALUES = new Set([256, 320, 384, 480, 512, 576, 640, 768]);
+
+// O retrato "de celular" capturado numa ida ao modo TV tem CARA DE TV?
+// É a vacina contra a contaminação do phoneRevert (caso do S21 FE em
+// 21/07/2026): se uma volta anterior ficou torta no meio, a captura da ida
+// seguinte lê valores de TV e os grava como "estado do celular" — e toda
+// volta ao celular passa a devolver uma interface torta, para sempre.
+// Detectada a cara de TV, o chamador DESCARTA a captura e mantém o
+// phoneRevert anterior (ou o estado original) — fontes mais confiáveis que
+// uma captura duvidosa. Custo do falso positivo: um valor que o usuário
+// legitimamente igualou ao do modo TV volta ao anterior na próxima volta ao
+// celular — recuperável ajustando no aparelho; o verdadeiro positivo evita a
+// interface torta permanente.
+function captureLooksLikeTv(task, revert) {
+  if (!task || !revert) return false;
+  switch (revert.kind) {
+    case 'setting':
+      // O "estado do celular" é exatamente o valor que o modo TV aplica.
+      return revert.prev != null && String(revert.prev) === String(task.value);
+    case 'settings': {
+      if (!Array.isArray(revert.keys) || revert.keys.length === 0) return false;
+      const tv = new Map((task.keys || []).map((k) => [k.key, String(k.value)]));
+      return revert.keys.every((k) => k.prev != null && tv.get(k.key) === String(k.prev));
+    }
+    case 'wmsize':
+      // Celular não tem override de resolução — qualquer um capturado como
+      // "estado de celular" é resíduo de TV. (Um override legítimo anterior
+      // ao app está preservado em entry.revert, o fallback do chamador.)
+      return !!revert.hadOverride;
+    case 'density': {
+      if (!revert.hadDensity || !revert.density) return false;
+      if (task.dpi && revert.density === task.dpi) return true;
+      return TV_DPI_VALUES.has(Number(revert.density));
+    }
+    case 'dnd':
+      // zen_mode 1 (prioridade) é o que o modo TV liga.
+      return String(revert.prev) === '1';
+    default:
+      // rotate nunca gera phoneRevert; home já tem âncora própria no runTask.
+      return false;
+  }
+}
+
+// Fotografa o estado ATUAL do aparelho para uma task já aplicada — é o que
+// mantém o perfil TV "vivo": se o usuário personalizou ajustes ao longo dos
+// dias (outro dpi, outra fonte), a foto vira o novo perfil e a próxima
+// ativação do modo TV volta EXATAMENTE para como ele deixou.
+//
+// Retorna a task atualizada com os valores atuais, ou null quando não há o
+// que adotar:
+//   - valor igual ao do perfil salvo (nada mudou);
+//   - tipo sem captura: dnd é característica fixa do modo TV,
+//     remove/install são estruturais (não alternam entre modos), e o launcher
+//     padrão (home) é FIXO por modo — TV = launcher de TV, celular = One UI
+//     Home — para uma troca manual num modo não vazar para o outro;
+//   - mudança com CARA DE RESET do sistema — a chave sumiu, o override de
+//     resolução/dpi foi limpo, ou o valor voltou ao estado original pré-modo-TV
+//     (originalRevert). Nesses casos o perfil é preservado, para uma
+//     atualização do One UI ou um reinício não "contaminar" o modo TV salvo.
+async function captureTask(serial, task, originalRevert) {
+  switch (task.kind) {
+    case 'setting': {
+      const cur = normalizePrev((await adb.getSetting(serial, task.ns, task.key)).trim());
+      if (cur === null || cur === String(task.value)) return null;
+      if (originalRevert && originalRevert.kind === 'setting' && cur === originalRevert.prev) return null;
+      return { ...task, value: cur };
+    }
+    case 'settings': {
+      const origPrev = new Map(
+        originalRevert && originalRevert.kind === 'settings'
+          ? originalRevert.keys.map((k) => [k.key, k.prev])
+          : []
+      );
+      let changed = false;
+      const nextKeys = [];
+      for (const { key, value } of task.keys) {
+        const cur = normalizePrev((await adb.getSetting(serial, task.ns, key)).trim());
+        if (cur === null || cur === String(value) || (origPrev.has(key) && cur === origPrev.get(key))) {
+          nextKeys.push({ key, value });
+        } else {
+          nextKeys.push({ key, value: cur });
+          changed = true;
+        }
+      }
+      return changed ? { ...task, keys: nextKeys } : null;
+    }
+    case 'wmsize': {
+      const size = await adb.getDisplaySize(serial);
+      if (!size.override) return null; // resolução resetada pelo sistema: mantém o perfil
+      const dims = size.override.split('x').map(Number);
+      if (dims.length !== 2 || dims.some((n) => !Number.isFinite(n) || n <= 0)) return null;
+      // Com a rotação do modo TV travada em 90°, o mesmo override pode ser
+      // LIDO com as dimensões trocadas (1080x1920 em vez de 1920x1080). Isso
+      // não é personalização — adotá-lo giraria o modo TV em 90° na próxima
+      // ativação. Compara como par de dimensões, ignorando a ordem.
+      const sameDims = Math.min(...dims) === Math.min(task.width, task.height)
+        && Math.max(...dims) === Math.max(task.width, task.height);
+      let next = null;
+      if (!sameDims) {
+        // Resolução de TV é paisagem por definição: normaliza a leitura para
+        // largura ≥ altura, mesmo que tenha sido lida com a tela girada.
+        next = { ...task, width: Math.max(...dims), height: Math.min(...dims) };
+      }
+      if (task.density) {
+        const density = await adb.getDisplayDensity(serial);
+        if (density.override && density.override !== task.density) {
+          next = { ...(next || task), density: density.override };
+        }
+      }
+      return next;
+    }
+    case 'density': {
+      const density = await adb.getDisplayDensity(serial);
+      if (!density.override) return null; // dpi resetado pelo sistema: mantém o perfil
+      let target;
+      try {
+        target = task.dpi || (await densityTarget(serial, task.mode));
+      } catch {
+        return null;
+      }
+      if (density.override === target) return null;
+      return { ...task, dpi: density.override };
+    }
+    case 'rotate': {
+      // A POSIÇÃO da rotação faz parte do perfil TV: se o usuário girou a
+      // tela até a posição certa (botão "Girar tela" ou ajuste no aparelho),
+      // é para ela que o modo TV deve voltar — não para o alvo da heurística.
+      const accel = normalizePrev((await adb.getSetting(serial, 'system', 'accelerometer_rotation')).trim());
+      // Rotação automática ligada = estado de celular ou reset do sistema:
+      // não é personalização do modo TV — mantém o perfil salvo.
+      if (accel !== '0') return null;
+      const rotRaw = normalizePrev((await adb.getSetting(serial, 'system', 'user_rotation')).trim());
+      const rot = rotRaw === null ? 0 : Number(rotRaw);
+      if (!Number.isInteger(rot) || rot < 0 || rot > 3) return null;
+      // Valor idêntico ao estado ORIGINAL pré-modo-TV (com a mesma trava):
+      // tem cara de reset — preserva o perfil em vez de adotá-lo.
+      if (originalRevert && originalRevert.kind === 'rotate'
+          && originalRevert.accel === '0' && originalRevert.rot === String(rot)) return null;
+      if (task.rotation === rot) return null;
+      return { ...task, rotation: rot };
+    }
+    default:
+      return null;
+  }
+}
+
+module.exports = { runTask, revertEntry, verifyTask, verifyRevert, captureTask, captureLooksLikeTv, ensureScreenReady, installApkFile, REVERT_KINDS };

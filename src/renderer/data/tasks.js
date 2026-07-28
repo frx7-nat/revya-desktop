@@ -8,208 +8,175 @@
 export const TASK_GROUPS = [
   {
     id: 'debloat',
-    title: 'Remover apps',
-    subtitle: 'Desinstala por usuário (reversível em reset)',
     tasks: [
-      { id: 'rm-bixby', label: 'Bixby', kind: 'remove', pkgs: [
+      { id: 'rm-bixby', kind: 'remove', pkgs: [
         'com.samsung.android.bixby.agent',
         'com.samsung.android.bixby.wakeup',
         'com.samsung.android.app.spage',
       ]},
-      { id: 'rm-store', label: 'Galaxy Store', kind: 'remove', pkgs: [
+      { id: 'rm-store', kind: 'remove', pkgs: [
         'com.sec.android.app.samsungapps',
       ]},
-      { id: 'rm-office', label: 'Apps de escritório', kind: 'remove', pkgs: [
+      { id: 'rm-office', kind: 'remove', pkgs: [
         'com.microsoft.skydrive', 'com.microsoft.office.officehubrow',
       ]},
-      { id: 'rm-social', label: 'Redes sociais pré-instaladas', kind: 'remove', pkgs: [
+      { id: 'rm-social', kind: 'remove', pkgs: [
         'com.facebook.katana', 'com.facebook.system', 'com.facebook.appmanager',
       ]},
     ],
   },
 
   // -------------------------------------------------------------------------
-  // INSTALAR APPS DE TV — agora dividido em categorias.
+  // INSTALAR — só o launcher próprio.
   //
-  // Cada app tem:
-  //   id      identificador único (use prefixo da categoria, ex.: 'mm-' )
-  //   label   nome exibido
-  //   kind    'install' (sempre, neste grupo)
-  //   source  de onde vem o APK. Dois formatos possíveis:
-  //             { type: 'local', apk: 'arquivo.apk' }   -> arquivo em ./apks
-  //             { type: 'url',   url: 'https://...apk' } -> baixa do repositório
-  //   pkg     (opcional) nome do pacote, para checar se já está instalado
+  // Em 27/07/2026 TODO o catálogo de APKs de terceiros saiu do programa
+  // (streaming, ferramentas, emuladores) e os arquivos saíram da pasta apks/.
+  // Motivo: DISTRIBUIÇÃO. Embutir e redistribuir o APK de outra empresa é
+  // problema legal nosso, não do usuário — e o produto é vendido. O DexArmor
+  // passa a fazer só a TRANSFORMAÇÃO do celular; os apps que o usuário quiser
+  // ele instala a partir dos arquivos dele, pelo "Enviar para o celular"
+  // (arrastar e soltar), explicado no guia sideloadGuide.js.
   //
-  // Você adicionará os apps e os repositórios depois. Os exemplos abaixo
-  // mostram o formato — troque/expanda à vontade.
-  // -------------------------------------------------------------------------
+  // O que NÃO fazer ao mexer aqui: repovoar este grupo com APK de terceiro.
+  // O único app que pode ir embutido é o que nos pertence.
   //
-  // FORMATO DE CADA APP (todos offline, instalados da pasta apks/<categoria>/):
-  //   { id: 'mm-kodi', label: 'Kodi', kind: 'install',
-  //     pkg: 'org.xbmc.kodi',                          // nome real do pacote
-  //     source: { type: 'local', dir: 'multimidia', apk: 'kodi.apk' } }
+  // FORMATO DE UM APP (offline, instalado da pasta apks/<categoria>/):
+  //   { id: 'lnch-x', kind: 'install',
+  //     pkg: 'com.exemplo.app',                        // nome real do pacote
+  //     source: { type: 'local', dir: 'launchers', apk: 'arquivo.apk' } }
   //
-  // O campo `dir` é a subpasta da categoria dentro de apks/. O `apk` deve ser
-  // o nome exato do arquivo que você colocar lá. Para ativar um app, descomente
-  // a linha e coloque o arquivo correspondente na pasta.
+  // O campo `dir` é a subpasta dentro de apks/ e `apk` é o nome exato do
+  // arquivo. O runner também aceita { type: 'url', url: 'https://...apk' }.
   // -------------------------------------------------------------------------
   {
     id: 'install',
-    title: 'Instalar apps de TV',
-    subtitle: 'Escolha por categoria',
-    categories: [
-      {
-        id: 'multimidia',
-        label: 'Multimídia',
-        apps: [
-          { id: 'mm-appletv', label: 'Apple TV+', kind: 'install',
-            pkg: 'com.apple.atve.androidtv.appletv',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Apple TV+.xapk' } },
-          { id: 'mm-crunchyroll', label: 'Crunchyroll', kind: 'install',
-            pkg: 'com.crunchyroll.crunchyroid',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Crunchyroll.apkm' } },
-          { id: 'mm-disneyplus', label: 'Disney+', kind: 'install',
-            pkg: 'com.disney.disneyplus',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Disney+.xapk' } },
-          { id: 'mm-globoplay', label: 'Globoplay', kind: 'install',
-            pkg: 'com.globo.globoplay',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Globoplay.apkm' } },
-          { id: 'mm-max', label: 'Max', kind: 'install',
-            pkg: 'com.wbd.bond',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Max.xapk' } },
-          { id: 'mm-mubi', label: 'MUBI', kind: 'install',
-            pkg: 'com.mubi',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} MUBI.apk' } },
-          { id: 'mm-netflix', label: 'Netflix', kind: 'install',
-            pkg: 'com.netflix.mediaclient',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Netflix.apkm' } },
-          { id: 'mm-paramount', label: 'Paramount+', kind: 'install',
-            pkg: 'com.paramountplus.ott',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Paramount+.apkm' } },
-          { id: 'mm-pluto', label: 'Pluto TV', kind: 'install',
-            pkg: 'tv.pluto.android',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Pluto TV.apkm' } },
-          { id: 'mm-prime', label: 'Prime Video', kind: 'install',
-            pkg: 'com.amazon.avod.thirdpartyclient',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Prime Video.apkm' } },
-          { id: 'mm-stremio', label: 'Stremio', kind: 'install',
-            pkg: 'com.stremio.one',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Stremio.apk' } },
-          { id: 'mm-tizentube', label: 'Tizentube', kind: 'install',
-            source: { type: 'local', dir: 'multimidia', apk: '{Multimídia} Tizentube.apk' } },
-        ],
-      },
-      {
-        id: 'navegacao',
-        label: 'Navegação',
-        apps: [
-          { id: 'nav-aptoide', label: 'Aptoide TV', kind: 'install',
-            pkg: 'cm.aptoide.pt',
-            source: { type: 'local', dir: 'navegacao', apk: '{Navegação} Aptoide TV.apk' } },
-          { id: 'nav-downloader', label: 'Downloader', kind: 'install',
-            pkg: 'com.ilabs.dls',
-            source: { type: 'local', dir: 'navegacao', apk: '{Navegação} Downloader.apkm' } },
-          { id: 'nav-localsend', label: 'LocalSend', kind: 'install',
-            pkg: 'org.localsend.localsend_app',
-            source: { type: 'local', dir: 'navegacao', apk: '{Navegação} LocalSend.apk' } },
-          { id: 'nav-telegram', label: 'Telegram', kind: 'install',
-            pkg: 'org.telegram.messenger',
-            source: { type: 'local', dir: 'navegacao', apk: '{Navegação} Telegram.apk' } },
-          { id: 'nav-zarchiver', label: 'ZArchiver', kind: 'install',
-            pkg: 'ru.zdevs.zarchiver',
-            source: { type: 'local', dir: 'navegacao', apk: '{Navegação} ZArchiver.apk' } },
-        ],
-      },
-      {
-        id: 'launchers',
-        label: 'Launchers',
-        apps: [
-          // Projectivy é o launcher padrão do sistema (ligado ao tweak tw-home).
-          // Arquivo em apks/launchers/{Launcher} Projectivy Launcher.apkm
-          // (bundle do APKMirror: base.apk + splits → instalado via install-multiple).
-          { id: 'lnch-projectivy', label: 'Projectivy Launcher', kind: 'install',
-            pkg: 'com.spocky.projengmenu',
-            source: { type: 'local', dir: 'launchers', apk: '{Launcher} Projectivy Launcher.apkm' } },
-        ],
-      },
-      {
-        id: 'emuladores',
-        label: 'Emuladores',
-        apps: [
-          { id: 'emu-aethersx2', label: 'AetherSX2', kind: 'install',
-            pkg: 'xyz.aethersx2.android',
-            source: { type: 'local', dir: 'emuladores', apk: '{Emulador} AetherSX2-V1.5-3668.apk' } },
-        ],
-      },
+    // Aviso que ocupa o lugar do antigo catálogo: explica ao usuário como
+    // instalar os apps dele e mandar arquivos (TaskPanel renderiza o texto e
+    // o botão, que abre o SideloadGuideDialog).
+    tasks: [
+      // DexArmor TV é o launcher próprio do produto e o padrão do modo TV
+      // (ligado ao tweak tw-home). É o ÚNICO app que nos pertence: por isso
+      // vai embutido, sem depender de loja nenhuma.
+      // Arquivo em apks/launchers/{Launcher} DexArmor TV.apk (APK simples).
+      //
+      // `minVersionCode` liga a atualização: o runner compara com o
+      // versionCode instalado no aparelho e reinstala com -r quando o
+      // embutido for maior. Ao publicar um APK novo, suba os DOIS —
+      // o versionCode no build.gradle.kts do launcher e o número aqui.
+      { id: 'lnch-dexarmor', kind: 'install',
+        pkg: 'tech.dexarmor.launcher',
+        // Sobe JUNTO com o `versionCode` do app/build.gradle.kts do launcher.
+        // Se ficar para trás, o runner compara o instalado contra este mínimo,
+        // conclui "já atualizado" e nunca reinstala — o APK novo fica no
+        // catálogo sem nunca chegar ao aparelho.
+        //   2 (27/07/2026) — tela "contribua" + categorias com.arvio.tv e
+        //                    com.farmerbb.secondscreen.free
+        minVersionCode: 2,
+        source: { type: 'local', dir: 'launchers', apk: '{Launcher} DexArmor TV.apk' } },
+
+      // O Projectivy saiu em 25/07/2026, substituído pelo launcher próprio;
+      // os demais apps saíram em 27/07/2026 (ver comentário acima).
+      //
+      // Sair do catálogo NÃO desinstala nada: aparelhos já provisionados
+      // seguem com o que foi instalado antes, e quem quiser qualquer um deles
+      // de volta usa o "Enviar para o celular" com o APK em mãos.
     ],
   },
 
   // Personalizações de sistema. Cada task pode ter um campo `info` com uma
   // explicação curta do porquê — exibida num indicador expansível ao lado.
+  //
+  // `modeScope` classifica a task para a ALTERNÂNCIA DE MODOS (celular ⇄ TV):
+  //   'mode'       alterna a cada troca — são ajustes rápidos de settings/wm
+  //   'structural' aplica uma vez e vale nos DOIS modos (só sai na reversão
+  //                completa) — ex.: apps instalados, bloatware removido,
+  //                proteção de bateria.
+  // Sem o campo, vale o padrão por kind (ver isModeTask no fim do arquivo).
+  //
+  // `repeatable: true` marca os ajustes DE INTERFACE que nunca travam depois
+  // de aplicados: rotação, resolução e tamanho da interface podem ser
+  // reaplicados quantas vezes for preciso, até o usuário chegar na tela que
+  // funciona para ele. O registro de reversão preserva o estado ORIGINAL do
+  // aparelho mesmo com reaplicações (merge no revertStore).
   {
     id: 'tweaks',
-    title: 'Personalizar sistema',
-    subtitle: 'Ajustes para uso em TV',
     tasks: [
-      { id: 'tw-screen', label: 'Manter tela sempre ligada', kind: 'setting',
-        ns: 'system', key: 'screen_off_timeout', value: 2147483647,
-        info: 'A TV não deve apagar sozinha durante o uso.' },
+      { id: 'tw-screen', kind: 'setting',
+        ns: 'system', key: 'screen_off_timeout', value: 2147483647, modeScope: 'mode' },
 
       // Proteção de bateria do One UI: limita a carga a ~85%. Essencial para
       // um aparelho que vive 24h no carregador — evita degradação e calor.
       // OBS: a chave existe no One UI moderno; em aparelhos sem o recurso a
       // escrita pode até passar sem efeito real (limitação do Android).
-      { id: 'tw-battery', label: 'Proteger a bateria (carga até 85%)', kind: 'setting',
-        ns: 'global', key: 'protect_battery', value: 1,
-        info: 'Plugado 24h na tomada, o celular degrada a bateria rápido. Este ajuste do One UI limita a carga a 85%, alongando muito a vida útil.' },
+      // Estrutural: proteger a bateria é desejável nos dois modos.
+      { id: 'tw-battery', kind: 'setting',
+        ns: 'global', key: 'protect_battery', value: 1, modeScope: 'structural' },
 
       // Não Perturbe via gerenciador de notificações (cmd notification).
       // Evita notificação de mensagem/ligação aparecendo por cima do filme.
-      { id: 'tw-dnd', label: 'Não perturbe (modo TV)', kind: 'dnd',
-        info: 'Silencia notificações e chamadas que apareceriam na TV, por cima do conteúdo e na frente de todo mundo.' },
+      { id: 'tw-dnd', kind: 'dnd', modeScope: 'mode' },
 
-      { id: 'tw-updates', label: 'Desativar atualizações automáticas', kind: 'remove',
+      { id: 'tw-updates', kind: 'remove',
         pkgs: [
           'com.wssyncmldm',                 // SamsungDM / FOTA agent
           'com.sec.android.soagent',        // Software update agent
           'com.samsung.android.app.updatecenter',
-        ],
-        info: 'Uma atualização do sistema pode desfazer toda a configuração. Por segurança, mantenha o aparelho como está.' },
+        ] },
 
-      { id: 'tw-anim', label: 'Reduzir animações', kind: 'settings',
-        ns: 'global',
+      { id: 'tw-anim', kind: 'settings',
+        ns: 'global', modeScope: 'mode',
         // São TRÊS escalas separadas; setar só uma não tem efeito visível.
         // 0 = animações desligadas (efeito perceptível e navegação mais rápida).
         keys: [
           { key: 'window_animation_scale', value: 0 },
           { key: 'transition_animation_scale', value: 0 },
           { key: 'animator_duration_scale', value: 0 },
-        ],
-        info: 'Navegação mais rápida e direta na tela grande.' },
+        ] },
 
-      { id: 'tw-font', label: 'Aumentar tamanho da fonte', kind: 'setting',
-        ns: 'system', key: 'font_scale', value: 1.15,
-        info: 'Texto maior para leitura confortável à distância do sofá.' },
+      // Tamanho da fonte: três opções mutuamente exclusivas e AJUSTÁVEIS —
+      // troque à vontade até a leitura ficar confortável do sofá. O id
+      // 'tw-font' original é mantido (registros antigos continuam válidos)
+      // e segue sendo a opção do preset recomendado.
+      { id: 'tw-font', kind: 'setting',
+        ns: 'system', key: 'font_scale', value: 1.15, modeScope: 'mode',
+        exclusiveGroup: 'font', repeatable: true },
 
-      { id: 'tw-rotate', label: 'Forçar tela na horizontal', kind: 'rotate',
-        info: 'Mantém tudo em paisagem na TV, mesmo apps que abririam em pé.' },
+      { id: 'tw-font-big', kind: 'setting',
+        ns: 'system', key: 'font_scale', value: 1.3, modeScope: 'mode',
+        exclusiveGroup: 'font', repeatable: true },
 
-      { id: 'tw-gestures', label: 'Navegação por gestos', kind: 'setting',
-        ns: 'secure', key: 'navigation_mode', value: 2,
-        info: 'Troca os botões por gestos, liberando espaço na tela.' },
+      { id: 'tw-font-normal', kind: 'setting',
+        ns: 'system', key: 'font_scale', value: 1.0, modeScope: 'mode',
+        exclusiveGroup: 'font', repeatable: true },
 
-      { id: 'tw-lock', label: 'Remover bloqueio de tela', kind: 'setting',
+      // Repetível: em alguns aparelhos o alvo calculado erra o lado e a tela
+      // fica em pé — o usuário pode reaplicar (e usar o botão "Girar tela" do
+      // controle remoto) quantas vezes for preciso até a posição certa. A
+      // posição que funcionou fica salva no perfil TV e é ela que volta nas
+      // próximas ativações do modo TV.
+      { id: 'tw-rotate', kind: 'rotate', modeScope: 'mode',
+        repeatable: true },
+
+      { id: 'tw-gestures', kind: 'setting',
+        ns: 'secure', key: 'navigation_mode', value: 2, modeScope: 'mode' },
+
+      { id: 'tw-lock', kind: 'setting',
         // Chave correta é lockscreen_disabled (underscore). Em alguns Galaxy
         // o sistema ignora mesmo assim; a verificação avisa se não pegou.
-        ns: 'secure', key: 'lockscreen_disabled', value: 1,
-        info: 'Liga direto no conteúdo, sem pedir senha pelo controle.' },
+        ns: 'secure', key: 'lockscreen_disabled', value: 1, modeScope: 'mode' },
 
-      // Define o launcher de TV como tela inicial. Preencha `pkg` com o pacote
-      // do launcher que você colocar no catálogo de instalação (ex.: Projectivy
-      // = 'com.spocky.projengmenu'). Sem isso, esta opção não tem efeito.
-      { id: 'tw-home', label: 'Usar launcher de TV como padrão', kind: 'home',
-        pkg: 'com.spocky.projengmenu',  // Projectivy (padrão; usuário pode trocar depois)
-        info: 'O celular abre direto na tela de TV, não no sistema do Android.' },
+      // Define o launcher de TV como tela inicial. O `pkg` precisa estar no
+      // catálogo de instalação acima, senão esta opção falha por falta do app.
+      // Na alternância de modos, só o launcher PADRÃO troca — o app continua
+      // instalado no modo celular. O mapeamento é FIXO: modo TV = este pkg,
+      // modo celular = One UI Home (o launcher da Samsung), sempre.
+      //
+      // Trocar de launcher de TV = trocar o pkg aqui E pôr o app correspondente
+      // no catálogo de instalação acima. Os dois têm de andar juntos: o handler
+      // recusa definir como padrão um launcher que não está instalado.
+      { id: 'tw-home', kind: 'home',
+        pkg: 'tech.dexarmor.launcher',  // DexArmor TV — launcher próprio do modo TV
+        modeScope: 'mode' },
 
       // Resolução da TV: três opções mutuamente exclusivas (o usuário escolhe
       // UMA, conforme a resolução da TV dele). O valor DEVE bater com a
@@ -219,26 +186,40 @@ export const TASK_GROUPS = [
       // `density` é o dpi pareado no padrão Android TV (1080p→320, 1440p→480,
       // 4K→640): interface na escala certa para ver do sofá. `exclusiveGroup`
       // faz com que marcar uma desmarque as outras do mesmo grupo.
-      { id: 'tw-res-fhd', label: 'Resolução Full HD (1080p)', kind: 'wmsize',
+      { id: 'tw-res-fhd', kind: 'wmsize',
         width: 1920, height: 1080, density: 320, exclusiveGroup: 'resolution',
-        info: 'Para TVs Full HD (1920x1080). A resolução mais comum.' },
+        modeScope: 'mode', repeatable: true },
 
-      { id: 'tw-res-2k', label: 'Resolução 2K (1440p)', kind: 'wmsize',
+      { id: 'tw-res-2k', kind: 'wmsize',
         width: 2560, height: 1440, density: 480, exclusiveGroup: 'resolution',
-        info: 'Para monitores e TVs 2K/QHD (2560x1440).' },
+        modeScope: 'mode', repeatable: true },
 
-      { id: 'tw-res-4k', label: 'Resolução 4K (2160p)', kind: 'wmsize',
+      { id: 'tw-res-4k', kind: 'wmsize',
         width: 3840, height: 2160, density: 640, exclusiveGroup: 'resolution',
-        info: 'Para TVs 4K/UHD (3840x2160). Só use se a TV for realmente 4K.' },
+        modeScope: 'mode', repeatable: true },
 
-      { id: 'tw-sound', label: 'Silenciar sons de toque', kind: 'settings',
-        ns: 'system',
+      // Tamanho da interface (dpi), pareado com a resolução aplicada acima.
+      // O runner lê a resolução atual do aparelho e calcula o dpi na hora:
+      // 'default' usa o padrão de TV (1080p→320, 1440p→480, 4K→640); 'small'
+      // aplica 20% a menos — dpi menor = elementos menores = mais conteúdo
+      // cabendo na tela. Requer uma resolução de TV já aplicada — sem ela,
+      // a task orienta o usuário a escolher a resolução primeiro.
+      { id: 'tw-dpi-default', kind: 'density',
+        mode: 'default', exclusiveGroup: 'density', modeScope: 'mode', repeatable: true },
+
+      { id: 'tw-dpi-small', kind: 'density',
+        mode: 'small', exclusiveGroup: 'density', modeScope: 'mode', repeatable: true },
+
+      { id: 'tw-dpi-large', kind: 'density',
+        mode: 'large', exclusiveGroup: 'density', modeScope: 'mode', repeatable: true },
+
+      { id: 'tw-sound', kind: 'settings',
+        ns: 'system', modeScope: 'mode',
         // Som de toque e som de bloqueio são chaves diferentes no One UI.
         keys: [
           { key: 'sound_effects_enabled', value: 0 },
           { key: 'lockscreen_sounds_enabled', value: 0 },
-        ],
-        info: 'Sem o clique a cada toque, melhor para a sala.' },
+        ] },
 
       // NOTA: a antiga opção "Manter Wi-Fi sempre ativo" (wifi_sleep_policy) foi
       // removida — essa chave foi descontinuada no Android moderno e não tem
@@ -248,65 +229,181 @@ export const TASK_GROUPS = [
 ];
 
 // ---------------------------------------------------------------------------
-// Todas as tasks selecionáveis, achatadas: as diretas dos grupos comuns e os
-// apps dentro das categorias do grupo "install". Fonte única para App,
-// diálogos e preset — a ordem daqui é a ordem de execução.
+// Todas as tasks selecionáveis, achatadas. Fonte única para App, diálogos e
+// preset — a ordem daqui é a ordem de execução.
 // ---------------------------------------------------------------------------
-export const ALL_TASKS = TASK_GROUPS.flatMap((g) =>
-  g.categories
-    ? g.categories.flatMap((c) => c.apps)
-    : (g.tasks || [])
-);
+export const ALL_TASKS = TASK_GROUPS.flatMap((g) => g.tasks || []);
+
+// ---------------------------------------------------------------------------
+// Classificação para a ALTERNÂNCIA DE MODOS (celular ⇄ TV).
+// 'mode' = alterna a cada troca; 'structural' = vale nos dois modos.
+// Quando a task não declara modeScope (registros antigos), decide-se pelo
+// kind: settings/resolução/launcher/rotação/dnd alternam; remover e instalar
+// apps são estruturais.
+// ---------------------------------------------------------------------------
+const MODE_KINDS = new Set(['setting', 'settings', 'home', 'rotate', 'dnd', 'wmsize', 'density']);
+
+export function isModeTask(task) {
+  if (!task) return false;
+  if (task.modeScope) return task.modeScope === 'mode';
+  return MODE_KINDS.has(task.kind);
+}
 
 // ---------------------------------------------------------------------------
 // CONFIGURAÇÃO RECOMENDADA — o conjunto aplicado pelo botão de 1 clique.
-// Critério: só o que é seguro e desejável em QUALQUER aparelho/TV. Ficam de
-// fora decisões que dependem do usuário: resolução (varia por TV), remoção do
-// bloqueio de tela (segurança), gestos (gosto) e os apps de streaming (cada
-// um assina os seus). A ordem de execução vem de ALL_TASKS (launcher instala
-// antes de virar padrão).
+// Critério: NÃO DESINSTALA NADA. O preset instala o launcher de TV, o define
+// como padrão e aplica só os ajustes de interface/uso — tudo settings
+// reversíveis, nenhuma remoção de app. As remoções (Bixby, Galaxy Store,
+// escritório, redes sociais e agentes de atualização) continuam disponíveis
+// na seleção manual, para quem quiser um aparelho mais enxuto.
+// Também ficam de fora decisões que dependem do usuário: resolução (varia
+// por TV), remoção do bloqueio de tela (segurança) e gestos (gosto). A ordem
+// de execução vem de ALL_TASKS (launcher instala antes de virar padrão).
 // ---------------------------------------------------------------------------
 export const RECOMMENDED_TASK_IDS = [
-  'rm-bixby', 'rm-store', 'rm-office', 'rm-social',
-  'lnch-projectivy',
-  'tw-screen', 'tw-battery', 'tw-updates', 'tw-anim', 'tw-font',
+  'lnch-dexarmor',
+  'tw-screen', 'tw-battery', 'tw-anim', 'tw-font',
   'tw-rotate', 'tw-dnd', 'tw-sound', 'tw-home',
 ];
 
 // ---------------------------------------------------------------------------
 // ACESSÓRIOS RECOMENDADOS — não executa nada no aparelho.
-// É uma vitrine de produtos que expandem o uso do celular como TV.
-// Cada item abre o link no navegador padrão (não dentro do app).
+// É uma vitrine de produtos com link externo: cada item abre no navegador
+// padrão (não dentro do app).
 //
-// Campos:
+// FONTE ÚNICA: espelha a página /recomendacoes do natalierjunior.tech
+// (`landing-page-produtos/src/data/recomendacoes.json`) — mesmas categorias,
+// mesma ordem, mesmos textos. Ao mexer numa lista, mexa na outra: são dois
+// arquivos contando a mesma história, e a que envelhecer passa a mentir.
+//
+// Campos do grupo:
 //   id       identificador único
-//   label    nome do produto/solução
-//   note     descrição curta (para que serve)
-//   url      link do produto (loja/afiliado/etc.)
+//   label    nome da categoria (igual ao `titulo` do site)
+//   items    produtos; ausente/vazio quando a categoria é `soon`
+//   soon     texto de "em breve" — a categoria aparece, mas sem produtos
 //
-// Você preencherá os links depois. Categorias servem de organização.
+// Campos do item:
+//   id       identificador único
+//   label    nome do produto (`nome` no site)
+//   note     descrição curta (`nota` no site; opcional)
+//   url      link do produto (`href` no site)
+//   store    loja de destino (`loja` no site) — o usuário sabe para onde vai
+//
+// As notas do site que traziam HTML (link para as Anotações, link do canal no
+// aviso de "em breve") entram aqui em texto puro: o app não tem essas páginas
+// e não renderiza HTML de dados.
 // ---------------------------------------------------------------------------
+
+// Aviso de transparência — mesmo compromisso declarado na página do site.
+export const ACCESSORY_DISCLOSURE_KEY = 'accessories.disclosure';
+
+// Lojas que ENTREGAM FORA DO BRASIL. O Mercado Livre é regional: oferecer seus
+// produtos a quem está com a interface em inglês é mostrar algo que a pessoa
+// não consegue comprar — o mesmo problema do QR de Pix no launcher.
+//
+// A regra vive na LOJA, não no componente: acrescentar uma loja internacional
+// (Amazon, por exemplo) passa a valer em todo lugar sem tocar em interface.
+const INTERNATIONAL_STORES = new Set(['AliExpress']);
+
+/**
+ * Catálogo de acessórios para um idioma.
+ *
+ * Em português vai tudo. Nos demais, só o que a pessoa consegue comprar — e a
+ * categoria que ficar sem nenhum item some junto, em vez de aparecer vazia.
+ * As categorias "em breve" ficam nos dois: não dependem de loja.
+ */
+export function accessoryGroupsFor(language) {
+  if (language === 'pt') return ACCESSORY_GROUPS;
+  return ACCESSORY_GROUPS
+    .map((g) => ({ ...g, items: (g.items || []).filter((i) => INTERNATIONAL_STORES.has(i.store)) }))
+    .filter((g) => g.soon || g.items.length > 0);
+}
+
 export const ACCESSORY_GROUPS = [
   {
-    id: 'controles',
-    label: 'Controles e joysticks',
+    id: 'ac-caixas',
     items: [
-      // { id: 'ac-remote', label: 'Controle remoto Bluetooth', note: 'Navegação por D-pad', url: 'https://...' },
-      // { id: 'ac-gamepad', label: 'Joystick para emuladores', note: 'Compatível com RetroArch', url: 'https://...' },
+      { id: 'ac-caixas-motion', url: 'https://s.click.aliexpress.com/e/_oFBAuSG', store: 'AliExpress' },
     ],
   },
   {
-    id: 'video',
-    label: 'Vídeo e conexão',
+    id: 'ac-fones',
     items: [
-      // { id: 'ac-hdmi', label: 'Adaptador USB-C para HDMI', note: 'Saída de vídeo para TV', url: 'https://...' },
+      { id: 'ac-fones-p30i', url: 'https://meli.la/2RpcD5P', store: 'Mercado Livre' },
+      { id: 'ac-fones-lib4nc', url: 'https://meli.la/1uw8YD9', store: 'Mercado Livre' },
+      { id: 'ac-fones-bp1', url: 'https://meli.la/1FPXjgr', store: 'Mercado Livre' },
+      { id: 'ac-fones-wm01', url: 'https://meli.la/1kqYVU5', store: 'Mercado Livre' },
     ],
   },
   {
-    id: 'suporte',
-    label: 'Energia e suporte',
+    id: 'ac-headphone',
     items: [
-      // { id: 'ac-dock', label: 'Dock com carregamento', note: 'Mantém o celular ligado', url: 'https://...' },
+      { id: 'ac-head-q30', url: 'https://meli.la/28AoFMq', store: 'Mercado Livre' },
+      { id: 'ac-head-q20i', url: 'https://meli.la/2cAEFt7', store: 'Mercado Livre' },
+    ],
+  },
+  {
+    id: 'ac-smartwatches',
+    items: [
+      { id: 'ac-watch-bip6', url: 'https://meli.la/32eeWGL', store: 'Mercado Livre' },
+      { id: 'ac-watch-bal2', url: 'https://meli.la/1pqJrM7', store: 'Mercado Livre' },
+      { id: 'ac-watch-act2', url: 'https://meli.la/1dCTghw', store: 'Mercado Livre' },
+    ],
+  },
+  {
+    id: 'ac-carregadores',
+    items: [
+      { id: 'ac-carr-100w', url: 'https://s.click.aliexpress.com/e/_oF47pqx', store: 'AliExpress' },
+      { id: 'ac-carr-30w', url: 'https://s.click.aliexpress.com/e/_opUKnH1', store: 'AliExpress' },
+      { id: 'ac-carr-estacao', url: 'https://s.click.aliexpress.com/e/_c4D5nHYH', store: 'AliExpress' },
+    ],
+  },
+  {
+    id: 'ac-joysticks',
+    soon: true,          // texto em accessories.soon.<id>
+    items: [],
+  },
+  {
+    id: 'ac-hub',
+    items: [
+      { id: 'ac-hub-baseus', url: 'https://s.click.aliexpress.com/e/_c31H3iw5', store: 'AliExpress' },
+      { id: 'ac-hub-vention', url: 'https://s.click.aliexpress.com/e/_c4rwQZ2h', store: 'AliExpress' },
+    ],
+  },
+  {
+    id: 'ac-osmo360',
+    items: [
+      { id: 'ac-osmo-cage', url: 'https://s.click.aliexpress.com/e/_c43rvubf', store: 'AliExpress' },
+      { id: 'ac-osmo-bastao', url: 'https://s.click.aliexpress.com/e/_c3LHFnyH', store: 'AliExpress' },
+      { id: 'ac-osmo-engate', url: 'https://s.click.aliexpress.com/e/_c4om5fa1', store: 'AliExpress' },
+      { id: 'ac-osmo-peito', url: 'https://s.click.aliexpress.com/e/_c3WTRfDf', store: 'AliExpress' },
+      { id: 'ac-osmo-pelicula', url: 'https://s.click.aliexpress.com/e/_c4om5fa1', store: 'AliExpress' },
+    ],
+  },
+  {
+    id: 'ac-notebook',
+    items: [
+      { id: 'ac-nb-pes', url: 'https://s.click.aliexpress.com/e/_c3N20o25', store: 'AliExpress' },
+      { id: 'ac-nb-switch', url: 'https://s.click.aliexpress.com/e/_mMntBrH', store: 'AliExpress' },
+    ],
+  },
+  {
+    id: 'ac-controle-tv',
+    items: [
+      { id: 'ac-ctrl-g60s', url: 'https://s.click.aliexpress.com/e/_c4UWBp5R', store: 'AliExpress' },
+      { id: 'ac-ctrl-rii', url: 'https://s.click.aliexpress.com/e/_c4l6zWFX', store: 'AliExpress' },
+    ],
+  },
+  {
+    id: 'ac-fotografia',
+    items: [
+      { id: 'ac-foto-tripe', url: 'https://s.click.aliexpress.com/e/_msw3XZv', store: 'AliExpress' },
+      { id: 'ac-foto-bolsa-lentes', url: 'https://s.click.aliexpress.com/e/_opkn6jZ', store: 'AliExpress' },
+      { id: 'ac-foto-bolsa-lateral', url: 'https://s.click.aliexpress.com/e/_oERLUg7', store: 'AliExpress' },
+      { id: 'ac-foto-gatilho-cinto', url: 'https://s.click.aliexpress.com/e/_oFwPzXV', store: 'AliExpress' },
+      { id: 'ac-foto-alca', url: 'https://s.click.aliexpress.com/e/_oCS67DZ', store: 'AliExpress' },
+      { id: 'ac-foto-gatilhos', url: 'https://s.click.aliexpress.com/e/_oBHAgC3', store: 'AliExpress' },
+      { id: 'ac-foto-cinto', url: 'https://s.click.aliexpress.com/e/_oBRvhLN', store: 'AliExpress' },
     ],
   },
 ];

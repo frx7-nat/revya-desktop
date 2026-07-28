@@ -25,12 +25,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Typography, Stack } from '@mui/material';
 import DeviceStatusCard from '../components/DeviceStatusCard.jsx';
+import { useT } from '../i18n';
 
 export default function ConnectPhoneScreen({
   onReady,
   pollIntervalMs = 2000,
   autoAdvance = false,
 }) {
+  const { t } = useT();
   const [diagnosis, setDiagnosis] = useState(null);
   const [phase, setPhase] = useState('querying');
   const [polling, setPolling] = useState(true);
@@ -121,11 +123,10 @@ export default function ConnectPhoneScreen({
     >
       <Stack spacing={0.5} alignItems="center" sx={{ textAlign: 'center', maxWidth: 460 }}>
         <Typography variant="h5" component="h1">
-          Conecte seu Galaxy
+          {t('connect.title')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Ligue o aparelho ao computador pelo cabo USB. A tela atualiza sozinha
-          assim que ele for detectado.
+          {t('connect.body')}
         </Typography>
       </Stack>
 

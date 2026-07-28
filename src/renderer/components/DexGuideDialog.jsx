@@ -13,7 +13,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import * as Icons from '@mui/icons-material';
-import { DEX_EXPLAIN, DEX_VERSIONS, DEX_NOTE, DEX_HDMI_WARNING } from '../data/dexGuide';
+import { DEX_EXPLAIN, DEX_VERSIONS, DEX_NOTE_KEY, DEX_HDMI_WARNING_KEY } from '../data/dexGuide';
+import { useT } from '../i18n';
 
 const SlideUp = React.forwardRef(function SlideUp(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -26,6 +27,7 @@ function Ico({ name, ...props }) {
 
 // Aviso destacado: o DeX só aparece nas configurações com o HDMI conectado.
 function HdmiWarning() {
+  const { t } = useT();
   return (
     <Stack direction="row" spacing={1.2} sx={{
       p: 1.5, borderRadius: 2, mb: 2.5,
@@ -33,20 +35,21 @@ function HdmiWarning() {
     }}>
       <InfoOutlinedIcon sx={{ fontSize: 20, color: 'primary.main', flexShrink: 0, mt: 0.1 }} />
       <Typography variant="caption" sx={{ fontSize: '0.76rem', lineHeight: 1.5, color: 'text.primary' }}>
-        {DEX_HDMI_WARNING}
+        {t(DEX_HDMI_WARNING_KEY)}
       </Typography>
     </Stack>
   );
 }
 
 function Explain({ onNext }) {
+  const { t } = useT();
   return (
     <Box>
       <Typography variant="h6" sx={{ fontSize: '1.1rem', mb: 1 }}>
-        DeX ou Experiência de TV?
+        {t('dexGuide.title')}
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem', lineHeight: 1.55, mb: 2.5 }}>
-        {DEX_EXPLAIN.intro}
+        {t(DEX_EXPLAIN.introKey)}
       </Typography>
 
       <HdmiWarning />
@@ -55,7 +58,7 @@ function Explain({ onNext }) {
         {DEX_EXPLAIN.compare.map((c) => {
           const accent = c.tone === 'accent';
           return (
-            <Box key={c.title} sx={{
+            <Box key={c.key} sx={{
               display: 'flex', gap: 1.5, p: 1.5, borderRadius: 2,
               bgcolor: accent ? 'rgba(255,185,74,0.08)' : 'rgba(255,255,255,0.03)',
               border: `1px solid ${accent ? 'rgba(255,185,74,0.25)' : 'rgba(255,255,255,0.06)'}`,
@@ -69,10 +72,10 @@ function Explain({ onNext }) {
               </Box>
               <Box>
                 <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.88rem', color: accent ? 'primary.main' : 'text.primary' }}>
-                  {c.title}
+                  {t(`${c.key}.title`)}
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.76rem', lineHeight: 1.45 }}>
-                  {c.desc}
+                  {t(`${c.key}.desc`)}
                 </Typography>
               </Box>
             </Box>
@@ -81,28 +84,29 @@ function Explain({ onNext }) {
       </Stack>
 
       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.83rem', lineHeight: 1.55, mb: 3 }}>
-        {DEX_EXPLAIN.conclusion}
+        {t(DEX_EXPLAIN.conclusionKey)}
       </Typography>
 
       <Button variant="contained" color="primary" fullWidth size="large"
         onClick={onNext} sx={{ py: 1.3 }}>
-        Como desativar o DeX
+        {t('dexGuide.how')}
       </Button>
     </Box>
   );
 }
 
 function Guide({ onBack }) {
+  const { t } = useT();
   const [ver, setVer] = useState('ui67');
   const version = DEX_VERSIONS.find((v) => v.id === ver);
 
   return (
     <Box>
       <Typography variant="h6" sx={{ fontSize: '1.05rem', mb: 0.5 }}>
-        Desativar o DeX
+        {t('dexGuide.disable')}
       </Typography>
       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 2 }}>
-        Escolha a versão do seu aparelho.
+        {t('dexGuide.pickVersion')}
       </Typography>
 
       <ToggleButtonGroup
@@ -113,8 +117,8 @@ function Guide({ onBack }) {
         {DEX_VERSIONS.map((v) => (
           <ToggleButton key={v.id} value={v.id} sx={{ justifyContent: 'flex-start', textAlign: 'left', py: 1 }}>
             <Box>
-              <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.84rem' }}>{v.label}</Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>{v.hint}</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.84rem' }}>{t(`${v.key}.label`)}</Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>{t(`${v.key}.hint`)}</Typography>
             </Box>
           </ToggleButton>
         ))}
@@ -134,9 +138,9 @@ function Guide({ onBack }) {
               <Ico name={s.icon} sx={{ fontSize: 17, color: 'primary.main' }} />
             </Box>
             <Box sx={{ flex: 1, pt: 0.2 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.84rem' }}>{s.title}</Typography>
+              <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.84rem' }}>{t(`${s.key}.title`)}</Typography>
               <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.76rem', lineHeight: 1.45 }}>
-                {s.body}
+                {t(`${s.key}.body`)}
               </Typography>
             </Box>
           </Stack>
@@ -145,7 +149,7 @@ function Guide({ onBack }) {
 
       <Divider sx={{ my: 2 }} />
       <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.72rem', lineHeight: 1.45, display: 'block', mb: 2.5 }}>
-        {DEX_NOTE}
+        {t(DEX_NOTE_KEY)}
       </Typography>
 
       <Stack direction="row" spacing={1}>
@@ -159,6 +163,7 @@ function Guide({ onBack }) {
 }
 
 export default function DexGuideDialog({ open, onClose }) {
+  const { t } = useT();
   const [screen, setScreen] = useState('explain'); // 'explain' | 'guide'
 
   const handleClose = () => { setScreen('explain'); onClose(); };

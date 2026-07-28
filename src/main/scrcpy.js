@@ -17,6 +17,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const adb = require('../adb/adb');
+const { t } = require('../i18n/runtime.cjs');
 
 function osFolder() {
   switch (process.platform) {
@@ -38,6 +39,8 @@ function scrcpyPath() {
 
 // Um espelhamento por aparelho; evita abrir duas janelas do mesmo celular.
 const children = new Map(); // serial -> ChildProcess
+// Título usado em cada espelhamento — para o reinício recriar a janela igual.
+const titles = new Map(); // serial -> string
 
 // Inicia o espelhamento. Resolve com { ok } quando a janela abre (processo
 // sobrevive ao arranque) ou { ok: false, error } quando falha rápido.
@@ -62,7 +65,7 @@ function start(serial, title) {
   return new Promise((resolve) => {
     const child = spawn(command, [
       '-s', serial,
-      '--window-title', title || 'DexArmor — Tela do celular',
+      '--window-title', title || t('scrcpy.windowTitle'),
     ], { env, stdio: ['ignore', 'ignore', 'pipe'], windowsHide: true });
 
     let stderrTail = '';
@@ -80,7 +83,7 @@ function start(serial, title) {
       settle({
         ok: false,
         error: err.code === 'ENOENT'
-          ? 'scrcpy não encontrado. Coloque os binários em scrcpy/ (veja o README da pasta) ou instale o scrcpy no sistema.'
+          ? t('scrcpy.notFound')
           : String(err.message || err),
       });
     });
@@ -90,15 +93,39 @@ function start(serial, title) {
       // Saída rápida com erro = falhou ao abrir (ex.: aparelho desconectado).
       if (code !== 0) {
         const lastLine = stderrTail.trim().split('\n').filter(Boolean).pop();
-        settle({ ok: false, error: lastLine || `scrcpy encerrou com código ${code}` });
+        settle({ ok: false, error: lastLine || t('scrcpy.exited', { code }) });
       } else {
         settle({ ok: true });
       }
     });
 
     children.set(serial, child);
+    titles.set(serial, title);
     // Se em 2s o processo continua vivo, a janela abriu — considera sucesso.
     setTimeout(() => settle({ ok: true }), 2000);
+  });
+}
+
+// Reinicia o espelhamento de um aparelho, SE estiver aberto (senão, não faz
+// nada). Usado após a alternância de modos: a troca de resolução faz o
+// encoder de vídeo renegociar e o stream pode cair para um tamanho menor e
+// FICAR nele até a sessão ser recriada — visto no S8/LineageOS em 18/07/2026
+// (display virtual preso em 1050x2160 com o aparelho em resolução plena).
+function restartIfRunning(serial) {
+  const child = children.get(serial);
+  if (!child) return Promise.resolve({ ok: true, restarted: false });
+  return new Promise((resolve) => {
+    let done = false;
+    const relaunch = () => {
+      if (done) return;
+      done = true;
+      start(serial, titles.get(serial)).then((r) => resolve({ ...r, restarted: true }));
+    };
+    child.once('exit', relaunch);
+    try { child.kill(); } catch { /* já morreu; o exit resolve */ }
+    // Rede de segurança: processo que não encerra em 3s não é recriado por
+    // cima (duas janelas seria pior que uma degradada).
+    setTimeout(() => { if (!done) { done = true; resolve({ ok: false, restarted: false }); } }, 3000);
   });
 }
 
@@ -110,4 +137,4 @@ function stopAll() {
   children.clear();
 }
 
-module.exports = { start, stopAll };
+module.exports = { start, stopAll, restartIfRunning };

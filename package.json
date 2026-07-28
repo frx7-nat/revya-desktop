@@ -7,7 +7,8 @@
     "dev:vite": "vite",
     "dev:electron": "wait-on tcp:5173 && electron . --dev",
     "dev": "concurrently -k -n VITE,ELECTRON -c cyan,yellow \"npm:dev:vite\" \"npm:dev:electron\"",
-    "build:renderer": "vite build",
+    "check:i18n": "node scripts/check-i18n.js",
+    "build:renderer": "node scripts/check-i18n.js && vite build",
     "start": "npm run build:renderer && electron .",
     "dist": "npm run build:renderer && electron-builder",
     "dist:win": "npm run build:renderer && electron-builder --win",
@@ -40,6 +41,7 @@
     "files": [
       "src/main/**/*",
       "src/adb/**/*",
+      "src/i18n/**/*",
       "dist/renderer/**/*"
     ],
     "extraResources": [
@@ -60,7 +62,10 @@
       }
     ],
     "win": {
-      "target": ["nsis", "portable"],
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
     "nsis": {
@@ -68,9 +73,15 @@
       "allowToChangeInstallationDirectory": true,
       "perMachine": false
     },
+    "portable": {
+      "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
+    },
     "mac": {
       "target": [{ "target": "dmg", "arch": ["x64", "arm64"] }],
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "extendInfo": {
+        "NSLocalNetworkUsageDescription": "O DexArmor usa a rede local para conectar ao seu celular por Wi-Fi (modo sem fio e espelhamento sem cabo)."
+      }
     },
     "linux": {
       "target": ["AppImage", "deb"],

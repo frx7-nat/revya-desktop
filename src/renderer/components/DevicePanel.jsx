@@ -14,10 +14,13 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import WifiIcon from '@mui/icons-material/Wifi';
-import ScreenShareIcon from '@mui/icons-material/ScreenShare';
+import TvIcon from '@mui/icons-material/Tv';
+import PhoneAndroidIcon from '@mui/icons-material/PhoneAndroid';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import PhoneMock from './PhoneMock';
 import PhoneScreen from './PhoneScreen';
 import PhoneAccessories from './PhoneAccessories';
+import { useT } from '../i18n';
 
 function Spec({ label, value }) {
   return (
@@ -30,11 +33,40 @@ function Spec({ label, value }) {
   );
 }
 
+// Chip de ESTADO DO MODO, sempre visível sob o celular: diz em qual modo o
+// aparelho está sem o usuário precisar deduzir pelo desenho ou pelo rótulo do
+// botão da lateral. A troca incompleta (ficou no meio por cabo/bloqueio/
+// "parar por aqui") vira um chip de alerta CLICÁVEL que retoma de onde parou
+// — antes, ela só aparecia ao reconectar o aparelho.
+function ModeStatusChip({ modeState, onResumePending, disabled }) {
+  const { t } = useT();
+  if (!modeState) return null;
+  if (modeState.kind === 'pending') {
+    return (
+      <Chip
+        icon={<WarningAmberIcon />}
+        label={t(modeState.direction === 'phone' ? 'device.pendingPhone' : 'device.pendingTv')}
+        color="warning" variant="outlined" size="small"
+        onClick={disabled ? undefined : onResumePending}
+        sx={{ mt: 2, fontWeight: 600 }}
+      />
+    );
+  }
+  return modeState.kind === 'tv' ? (
+    <Chip icon={<TvIcon />} label="Modo TV ativo" color="primary" variant="outlined" size="small"
+      sx={{ mt: 2, fontWeight: 600 }} />
+  ) : (
+    <Chip icon={<PhoneAndroidIcon />} label={t('device.phoneMode')} variant="outlined" size="small"
+      sx={{ mt: 2, fontWeight: 600, color: 'text.secondary' }} />
+  );
+}
+
 export default function DevicePanel({
   device, phase, onRun, onRunRecommended, running, ready, percent, currentLabel,
-  showAccessories, devices = [], onPickDevice, wifiStatus, onEnableWifi,
-  mirrorStatus, onStartMirror,
+  showAccessories, devices = [], onPickDevice,
+  modeState = null, onResumePending,
 }) {
+  const { t } = useT();
   const isTv = phase === 'tv';
   const validated = phase === 'success' || phase === 'working' || isTv;
   const searching = phase === 'tutorial' || phase === 'waiting';
@@ -65,6 +97,10 @@ export default function DevicePanel({
         </PhoneMock>
       </Box>
 
+      {/* Estado do modo (celular/TV/troca incompleta), visível em qualquer
+          fase com aparelho configurado — inclusive no visual de TV. */}
+      <ModeStatusChip modeState={modeState} onResumePending={onResumePending} disabled={running} />
+
       {/* Ficha técnica: aparece quando validado, mas some no modo TV
           (o aparelho girado ocupa o espaço). */}
       <Collapse in={validated && !isTv} sx={{ width: '100%', maxWidth: 420 }}>
@@ -72,9 +108,9 @@ export default function DevicePanel({
           {/* Mais de um aparelho conectado: seletor para escolher qual focar. */}
           {devices.length > 1 && (
             <FormControl size="small" fullWidth sx={{ mb: 2 }}>
-              <InputLabel id="device-pick">Aparelho</InputLabel>
+              <InputLabel id="device-pick">{t('device.picker')}</InputLabel>
               <Select
-                labelId="device-pick" label="Aparelho"
+                labelId="device-pick" label={t('device.picker')}
                 value={device?.serial || ''}
                 onChange={(e) => onPickDevice && onPickDevice(e.target.value)}
               >
@@ -89,7 +125,7 @@ export default function DevicePanel({
 
           <Stack direction="row" spacing={1} alignItems="center" justifyContent="center" sx={{ mb: 2 }}>
             <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-              {device?.model || 'Dispositivo'}
+              {device?.model || t('device.unknownDevice')}
             </Typography>
             {device?.dexSupport && (
               <Chip icon={<CheckCircleIcon />} label="DeX" color="success" variant="outlined" size="small" />
@@ -105,6 +141,12 @@ export default function DevicePanel({
             <Spec label="Bateria" value={device?.battery != null ? `${device.battery}%` : null} />
           </Stack>
 
+          {/* Descoberta da função "Enviar para o celular" (overlay de arrastar). */}
+          <Typography variant="caption" color="text.secondary"
+            sx={{ display: 'block', textAlign: 'center', mt: 1, opacity: 0.7 }}>
+            {t('device.dragHint')}
+          </Typography>
+
           <Divider sx={{ my: 3 }} />
 
           {/* Caminho de 1 clique: aplica o preset curado (seguro em qualquer
@@ -116,12 +158,10 @@ export default function DevicePanel({
             onClick={onRunRecommended} disabled={running}
             sx={{ py: 1.5, fontSize: '1rem' }}
           >
-            {running ? 'Aplicando…' : 'Configuração recomendada'}
+            {running ? t('device.applying') : t('device.recommended')}
           </Button>
           <Typography variant="caption" color="text.secondary" sx={{ mt: 1, mb: 2, display: 'block', textAlign: 'center' }}>
-            Aplica o conjunto ideal para TV em um clique — só perguntamos a
-            resolução da sua TV. Bloqueio de tela e apps de streaming você
-            escolhe à esquerda.
+            {t('device.recommendedHelp')}
           </Typography>
 
           <Button
@@ -129,50 +169,11 @@ export default function DevicePanel({
             onClick={onRun} disabled={running || !ready}
             sx={{ py: 1.2, fontSize: '0.95rem' }}
           >
-            {running ? 'Aplicando…' : 'Aplicar seleção manual'}
+            {running ? t('device.applying') : t('device.applyManual')}
           </Button>
           {!ready && !running && (
             <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block', textAlign: 'center' }}>
-              Ou selecione modificações à esquerda e aplique por aqui.
-            </Typography>
-          )}
-
-          {/* Conexão por Wi-Fi: depois de ativada, o cabo pode ser removido —
-              útil com o celular já instalado atrás da TV. Só faz sentido
-              quando a conexão atual é USB. */}
-          {!isWifi && (
-            <Button
-              variant="text" color="primary" fullWidth startIcon={<WifiIcon />}
-              onClick={onEnableWifi} disabled={running || !!wifiStatus?.busy}
-              sx={{ mt: 1.5, fontSize: '0.82rem' }}
-            >
-              {wifiStatus?.busy ? 'Ativando Wi-Fi…' : 'Usar por Wi-Fi (dispensar o cabo)'}
-            </Button>
-          )}
-          {wifiStatus?.ip && !isWifi && (
-            <Typography variant="caption" color="success.main" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
-              Conectado por Wi-Fi em {wifiStatus.ip} — você já pode desplugar o cabo.
-            </Typography>
-          )}
-          {wifiStatus?.error && !isWifi && (
-            <Typography variant="caption" color="error" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
-              {wifiStatus.error}
-            </Typography>
-          )}
-
-          {/* Espelhamento (scrcpy): abre a tela do celular numa janela,
-              controlável por mouse — dispensa pegar o aparelho na mão nas
-              etapas que pedem toques. */}
-          <Button
-            variant="text" color="primary" fullWidth startIcon={<ScreenShareIcon />}
-            onClick={onStartMirror} disabled={!!mirrorStatus?.busy}
-            sx={{ mt: 1.5, fontSize: '0.82rem' }}
-          >
-            {mirrorStatus?.busy ? 'Abrindo a tela…' : 'Ver tela do celular'}
-          </Button>
-          {mirrorStatus?.error && (
-            <Typography variant="caption" color="error" sx={{ display: 'block', textAlign: 'center', mt: 0.5 }}>
-              {mirrorStatus.error}
+              {t('device.orSelect')}
             </Typography>
           )}
         </Box>
@@ -185,7 +186,7 @@ export default function DevicePanel({
           onClick={onRun} disabled={running || !ready}
           sx={{ mt: 6 }}
         >
-          Aplicar mais ajustes
+          {t('device.applyMore')}
         </Button>
       )}
     </Box>

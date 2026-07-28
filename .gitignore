@@ -1,6 +1,13 @@
 node_modules/
 dist/
-release/
+# Saída do electron-builder. O curinga é proposital: cada variante de build
+# cria a sua própria pasta (`release-english/` nasceu do contorno do Kaspersky),
+# e cada uma carrega ~500 MB de binário do Electron. Listar uma por uma já
+# falhou — o `release-english/` quase entrou no histórico em 28/07/2026.
+release*/
+# Bundle do Vite que escapa para a raiz em vez de ficar no dist/. A barra
+# inicial prende a regra à raiz, para não pegar fonte dentro de src/.
+/index-*.js
 *.log
 .DS_Store
 

@@ -1,9 +1,10 @@
 # DexArmor
 
 App desktop (Electron) que provisiona celulares Samsung como dispositivos de
-mídia para TV via ADB — sem root. Remove bloatware, instala apps de TV e
-emuladores, aplica ajustes de sistema, e sabe **desfazer tudo** (registro de
-reversão por aparelho).
+mídia para TV via ADB — sem root. Remove bloatware, instala o launcher de TV
+próprio, aplica ajustes de sistema, e sabe **desfazer tudo** (registro de
+reversão por aparelho). Aplicativos de terceiros não são distribuídos: o
+usuário instala os dele arrastando o APK para a janela.
 
 ## Estrutura
 
@@ -45,7 +46,7 @@ platform-tools/         (você adiciona) binários ADB por plataforma:
   linux/                adb (sem extensão, chmod +x)
 scrcpy/                 (você adiciona) release oficial do scrcpy por plataforma
                         (ver scrcpy/README.txt) — botão "Ver tela do celular"
-apks/                   (você adiciona) APKs leanback e emuladores
+apks/                   só o APK próprio: launchers/{Launcher} DexArmor TV.apk
 ```
 
 ## Setup
@@ -57,8 +58,8 @@ apks/                   (você adiciona) APKs leanback e emuladores
 3. (Opcional, para o espelhamento de tela) Baixe o release oficial do scrcpy e
    coloque o conteúdo em `scrcpy/<plataforma>/` — ver `scrcpy/README.txt`. Sem
    ele, o app tenta o scrcpy do sistema (PATH).
-4. Coloque os APKs nas subpastas de `apks/` (veja `apks/README.txt`) e ajuste
-   os apps correspondentes em `src/renderer/data/tasks.js`.
+4. Coloque o APK do launcher em `apks/launchers/` (veja `apks/README.txt`).
+   **Nenhum APK de terceiro entra aqui** — o programa não redistribui apps.
 
 No CI (GitHub Actions), platform-tools e scrcpy são baixados automaticamente.
 

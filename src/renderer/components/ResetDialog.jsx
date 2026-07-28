@@ -1,5 +1,6 @@
 // src/renderer/components/ResetDialog.jsx
-// Diálogo de reversão ("Reverter alterações"). Dois momentos:
+// Diálogo da "Reversão completa" — desfaz TUDO de uma vez (a reversão
+// isolada, item a item, fica na barra lateral). Dois momentos:
 //   1) Confirmação — lista o que será desfeito + aviso do DeX.
 //   2) Execução — reverte item a item, mostrando o status de cada um, sem
 //      travar se um falhar. Ao final, um resumo honesto.
@@ -13,10 +14,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { useT } from '../i18n';
+import { entryLabel } from '../utils/labels';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { friendlyError } from '../utils/errors';
 
 const SlideUp = React.forwardRef(function SlideUp(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -30,7 +36,11 @@ const STATUS_ICON = {
   error: <ErrorIcon fontSize="small" color="error" />,
 };
 
-export default function ResetDialog({ open, serial, onClose, onReverted }) {
+// `onInterfaceReset` (opcional): abre o RESET DE INTERFACE — o caminho NÃO
+// destrutivo para quando só a interface do celular ficou torta. Vem nulo
+// quando não há entradas de modo no registro.
+export default function ResetDialog({ open, serial, onClose, onReverted, onSessionReset, onInterfaceReset }) {
+  const { t } = useT();
   const [phase, setPhase] = useState('confirm'); // 'confirm' | 'running' | 'done'
   const [entries, setEntries] = useState([]);
   const [log, setLog] = useState([]);
@@ -54,8 +64,8 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
     setTransferMsg(null);
     try {
       const saved = await window.api.revertExport(serial);
-      if (saved) setTransferMsg('Registro exportado.');
-    } catch (e) { setTransferMsg(String(e.message || e)); }
+      if (saved) setTransferMsg(t('reset.exported'));
+    } catch (e) { setTransferMsg(friendlyError(e)); }
   };
   const doImport = async () => {
     setTransferMsg(null);
@@ -66,7 +76,7 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
         reload();
         onReverted && onReverted(); // atualiza contagem/travas no App
       }
-    } catch (e) { setTransferMsg(String(e.message || e)); }
+    } catch (e) { setTransferMsg(friendlyError(e)); }
   };
 
   const runRevert = async () => {
@@ -75,7 +85,7 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
     // (ex.: duas resoluções) se desfazem corretamente — a última aplicada é a
     // primeira desfeita, como numa pilha.
     const queue = [...entries].reverse();
-    setLog(queue.map((e) => ({ taskId: e.taskId, label: e.label, status: 'pending' })));
+    setLog(queue.map((e) => ({ taskId: e.taskId, label: entryLabel(t, e), status: 'pending' })));
 
     for (const entry of queue) {
       setLog((l) => l.map((x) => x.taskId === entry.taskId ? { ...x, status: 'running' } : x));
@@ -85,11 +95,16 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
       } catch (err) {
         // Falha parcial: marca como aviso e segue para o próximo.
         setLog((l) => l.map((x) => x.taskId === entry.taskId
-          ? { ...x, status: 'warn', detail: String(err.message || err) } : x));
+          ? { ...x, status: 'warn', detail: friendlyError(err) } : x));
       }
     }
+    // Reversão completa = fim da sessão de configuração: apaga preferências e
+    // registros no disco (itens que falharam permanecem, seguem reversíveis)
+    // e pede ao App para limpar o histórico da interface — recomeço do zero.
+    try { await window.api.sessionReset(serial); } catch { /* não-fatal */ }
     setPhase('done');
     onReverted && onReverted(); // avisa o App para atualizar contagem e travas
+    onSessionReset && onSessionReset(); // limpa histórico/seleções/preferências na UI
   };
 
   const close = () => { setPhase('confirm'); onClose(); };
@@ -111,45 +126,75 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
           <Box>
             <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
               <RestartAltIcon sx={{ color: 'error.main' }} />
-              <Typography variant="h6" sx={{ fontSize: '1.05rem' }}>Reverter alterações?</Typography>
+              <Typography variant="h6" sx={{ fontSize: '1.05rem' }}>{t('reset.title')}</Typography>
             </Stack>
             <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.84rem', lineHeight: 1.55, mb: 2 }}>
-              Isto vai desfazer o que foi aplicado neste aparelho, devolvendo-o ao
-              estado anterior:
+              {t('reset.intro')}
             </Typography>
 
             <Stack spacing={0.8} sx={{ mb: 2 }}>
               {entries.length === 0 ? (
-                <Typography variant="caption" color="text.secondary">Nada a reverter.</Typography>
+                <Typography variant="caption" color="text.secondary">{t('reset.nothing')}</Typography>
               ) : entries.map((e) => (
                 <Stack key={e.taskId} direction="row" spacing={1} alignItems="center">
                   <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: 'text.secondary' }} />
-                  <Typography variant="body2" sx={{ fontSize: '0.83rem' }}>{e.label}</Typography>
+                  <Typography variant="body2" sx={{ fontSize: '0.83rem' }}>{entryLabel(t, e)}</Typography>
                 </Stack>
               ))}
             </Stack>
 
+            {/* Caminho não destrutivo primeiro: se o problema é só a
+                interface do celular "torta", não é preciso desfazer tudo —
+                o reset de interface devolve o estado original da primeira
+                configuração mantendo apps, arquivos e o modo TV salvo. */}
+            {onInterfaceReset && (
+              <Stack spacing={1} sx={{
+                p: 1.5, borderRadius: 2, mb: 1.2,
+                bgcolor: 'rgba(255,185,74,0.06)', border: '1px solid rgba(255,185,74,0.3)',
+              }}>
+                <Typography variant="caption" sx={{ fontSize: '0.74rem', lineHeight: 1.5, color: 'text.primary' }}>
+                  {t('reset.interfaceOnly')}
+                </Typography>
+                <Button variant="outlined" color="primary" size="small" fullWidth
+                  startIcon={<SettingsBackupRestoreIcon sx={{ fontSize: 16 }} />}
+                  onClick={onInterfaceReset}
+                  sx={{ textTransform: 'none', fontSize: '0.78rem' }}>
+                  {t('reset.interfaceReset')}
+                </Button>
+              </Stack>
+            )}
+
             {/* Aviso do DeX: a reversão por software não religa o DeX. */}
             <Stack direction="row" spacing={1.2} sx={{
-              p: 1.5, borderRadius: 2, mb: 2.5,
+              p: 1.5, borderRadius: 2, mb: 1.2,
               bgcolor: 'rgba(255,185,74,0.1)', border: '1px solid rgba(255,185,74,0.3)',
             }}>
               <WarningAmberIcon sx={{ fontSize: 19, color: 'primary.main', flexShrink: 0, mt: 0.1 }} />
               <Typography variant="caption" sx={{ fontSize: '0.74rem', lineHeight: 1.5, color: 'text.primary' }}>
-                O modo DeX, se você o desativou, precisa ser religado manualmente
-                nas configurações do aparelho. Em último caso, o reset de fábrica
-                do celular reverte tudo com segurança.
+                {t('reset.dexWarning')}
+              </Typography>
+            </Stack>
+
+            {/* Fim de sessão: comunica, em linguagem simples, que o registro
+                guardado será apagado e o programa recomeça do zero. */}
+            <Stack direction="row" spacing={1.2} sx={{
+              p: 1.5, borderRadius: 2, mb: 2.5,
+              bgcolor: 'rgba(120,170,255,0.08)', border: '1px solid rgba(120,170,255,0.25)',
+            }}>
+              <InfoOutlinedIcon sx={{ fontSize: 19, color: 'info.main', flexShrink: 0, mt: 0.1 }} />
+              <Typography variant="caption" sx={{ fontSize: '0.74rem', lineHeight: 1.5, color: 'text.primary' }}>
+                {t('reset.sessionEnd')}
               </Typography>
             </Stack>
 
             <Stack direction="row" spacing={1}>
               <Button variant="text" color="inherit" fullWidth onClick={close}
                 sx={{ color: 'text.secondary' }}>
-                Cancelar
+                {t('reset.cancel')}
               </Button>
               <Button variant="contained" color="error" fullWidth onClick={runRevert}
                 disabled={entries.length === 0}>
-                Reverter tudo
+                {t('reset.confirm')}
               </Button>
             </Stack>
 
@@ -158,12 +203,12 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
               <Button size="small" variant="text" startIcon={<FileDownloadIcon sx={{ fontSize: 14 }} />}
                 onClick={doExport} disabled={entries.length === 0}
                 sx={{ fontSize: '0.72rem', textTransform: 'none', color: 'text.secondary' }}>
-                Exportar registro
+                {t('reset.export')}
               </Button>
               <Button size="small" variant="text" startIcon={<FileUploadIcon sx={{ fontSize: 14 }} />}
                 onClick={doImport}
                 sx={{ fontSize: '0.72rem', textTransform: 'none', color: 'text.secondary' }}>
-                Importar registro
+                {t('reset.import')}
               </Button>
             </Stack>
             {transferMsg && (
@@ -178,7 +223,7 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
         {(phase === 'running' || phase === 'done') && (
           <Box>
             <Typography variant="h6" sx={{ fontSize: '1.05rem', mb: 2 }}>
-              {phase === 'running' ? 'Revertendo…' : 'Reversão concluída'}
+              {phase === 'running' ? t('reset.running') : t('reset.done')}
             </Typography>
 
             <Stack spacing={1.2} sx={{ mb: 2.5 }}>
@@ -202,7 +247,7 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
                 <Divider sx={{ mb: 2 }} />
                 <ResetSummary log={log} />
                 <Button variant="contained" color="primary" fullWidth onClick={close} sx={{ mt: 2 }}>
-                  Fechar
+                  {t('reset.close')}
                 </Button>
               </>
             )}
@@ -215,19 +260,22 @@ export default function ResetDialog({ open, serial, onClose, onReverted }) {
 
 // Resumo honesto: quantos voltaram, quantos precisam de atenção.
 function ResetSummary({ log }) {
+  const { t } = useT();
   const done = log.filter((x) => x.status === 'done').length;
   const warn = log.filter((x) => x.status === 'warn').length;
   return (
     <Box>
       <Typography variant="body2" sx={{ fontSize: '0.86rem' }}>
-        Revertido: {done} de {log.length} {log.length === 1 ? 'item' : 'itens'}.
+        {t('reset.summary', { done, total: log.length, unit: t(log.length === 1 ? 'reset.unitOne' : 'reset.unitMany') })}
       </Typography>
       {warn > 0 && (
         <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.76rem', display: 'block', mt: 0.5 }}>
-          {warn} {warn === 1 ? 'item precisa' : 'itens precisam'} de um passo seu — veja os avisos acima.
-          Se preferir reverter tudo de uma vez, o reset de fábrica do aparelho é a garantia.
+          {t(warn === 1 ? 'reset.warnOne' : 'reset.warnMany', { n: warn })}
         </Typography>
       )}
+      <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.76rem', display: 'block', mt: 0.5 }}>
+        {t('reset.newSession')}
+      </Typography>
     </Box>
   );
 }

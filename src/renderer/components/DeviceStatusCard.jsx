@@ -36,19 +36,21 @@ import SmartphoneRoundedIcon from '@mui/icons-material/SmartphoneRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
+import { useT } from '../i18n';
 
 // Mapeia a severidade do diagnóstico para cor + ícone + rótulo do MUI.
 const SEVERITY = {
-  ok: { color: 'success', Icon: CheckCircleRoundedIcon, label: 'Pronto' },
-  action_needed: { color: 'warning', Icon: SmartphoneRoundedIcon, label: 'Ação necessária' },
-  blocked: { color: 'error', Icon: ErrorRoundedIcon, label: 'Bloqueado' },
+  // `labelKey`: constante de módulo, o texto vem do catálogo na hora de desenhar.
+  ok: { color: 'success', Icon: CheckCircleRoundedIcon, labelKey: 'status.ready' },
+  action_needed: { color: 'warning', Icon: SmartphoneRoundedIcon, labelKey: 'status.actionNeeded' },
+  blocked: { color: 'error', Icon: ErrorRoundedIcon, labelKey: 'status.blocked' },
 };
 
 // Mensagem mostrada durante cada fase do orquestrador.
 const PHASE_LABEL = {
-  querying: 'Procurando dispositivos…',
-  recovering: 'Reiniciando a conexão…',
-  requerying: 'Verificando de novo…',
+  querying: 'status.querying',
+  recovering: 'status.recovering',
+  requerying: 'status.requerying',
 };
 
 export default function DeviceStatusCard({
@@ -59,6 +61,7 @@ export default function DeviceStatusCard({
   onRetry,
   onStart,
 }) {
+  const { t } = useT();
   const isBusy = busy || (phase != null && phase !== 'done');
 
   // --- Estado de carregamento ------------------------------------------------
@@ -69,7 +72,7 @@ export default function DeviceStatusCard({
           <Stack direction="row" spacing={2} alignItems="center">
             <CircularProgress size={28} />
             <Typography variant="body1" color="text.secondary">
-              {PHASE_LABEL[phase] ?? 'Procurando dispositivos…'}
+              {t(PHASE_LABEL[phase] ?? 'status.querying')}
             </Typography>
           </Stack>
         </CardContent>
@@ -93,7 +96,7 @@ export default function DeviceStatusCard({
               <Typography variant="h6" component="h2" sx={{ lineHeight: 1.2 }}>
                 {diagnosis.title}
               </Typography>
-              <Chip size="small" color={cfg.color} label={cfg.label} variant="outlined" />
+              <Chip size="small" color={cfg.color} label={t(cfg.labelKey)} variant="outlined" />
             </Stack>
 
             <Typography variant="body2" color="text.secondary">
@@ -157,7 +160,7 @@ export default function DeviceStatusCard({
 
         {recoveryAttempted && (
           <Typography variant="caption" color="text.disabled" sx={{ display: 'block', mt: 2 }}>
-            A conexão foi reiniciada automaticamente.
+            {t('status.recovered')}
           </Typography>
         )}
       </CardContent>
@@ -165,7 +168,7 @@ export default function DeviceStatusCard({
       <CardActions sx={{ px: 2, pb: 2, pt: 0 }}>
         {diagnosis.isReady && onStart ? (
           <Button variant="contained" color="success" startIcon={<PlayArrowRoundedIcon />} onClick={onStart}>
-            Iniciar configuração
+            {t('status.start')}
           </Button>
         ) : (
           <Button variant="contained" startIcon={<RefreshRoundedIcon />} onClick={onRetry}>

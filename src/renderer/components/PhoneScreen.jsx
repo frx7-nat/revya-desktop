@@ -15,6 +15,7 @@ import UsbIcon from '@mui/icons-material/Usb';
 import TvIcon from '@mui/icons-material/Tv';
 import * as Icons from '@mui/icons-material';
 import { TUTORIAL_STEPS } from '../data/tutorial';
+import { useT } from '../i18n';
 
 // Resolve o ícone do passo pelo nome salvo em tutorial.js.
 function StepIcon({ name, ...props }) {
@@ -45,6 +46,7 @@ function SearchingPill() {
 
 // --- Tela de tutorial: um passo por vez, com ícone, avançar/voltar ---
 function Tutorial() {
+  const { t } = useT();
   const [i, setI] = useState(0);
   const step = TUTORIAL_STEPS[i];
   const last = i === TUTORIAL_STEPS.length - 1;
@@ -63,13 +65,13 @@ function Tutorial() {
         </Box>
 
         <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 700, letterSpacing: '0.08em' }}>
-          PASSO {step.n} DE {TUTORIAL_STEPS.length}
+          {t('tutorial.stepOf', { n: step.n, total: TUTORIAL_STEPS.length })}
         </Typography>
         <Typography variant="h6" sx={{ fontSize: '1.02rem', mt: 0.5, mb: 1.5, lineHeight: 1.2 }}>
-          {step.title}
+          {t(`${step.key}.title`)}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem', lineHeight: 1.5 }}>
-          {step.body}
+          {t(`${step.key}.body`)}
         </Typography>
       </Box>
 
@@ -92,7 +94,7 @@ function Tutorial() {
           </Button>
           {!last && (
             <Button size="small" fullWidth variant="contained" color="primary" onClick={() => setI(i + 1)}>
-              Avançar
+              {t('phoneScreen.next')}
             </Button>
           )}
         </Stack>
@@ -105,16 +107,16 @@ function Tutorial() {
 
 // --- Cabo detectado, mas ainda não autorizado ---
 function Waiting() {
+  const { t } = useT();
   return (
     <Stack sx={{ height: '100%' }} justifyContent="center" alignItems="center" spacing={2.5} textAlign="center">
       <Box sx={{ position: 'relative', display: 'grid', placeItems: 'center' }}>
         <CircularProgress size={64} thickness={2} color="primary" />
         <UsbIcon color="primary" sx={{ position: 'absolute' }} />
       </Box>
-      <Typography variant="h6" sx={{ fontSize: '1rem' }}>Quase lá</Typography>
+      <Typography variant="h6" sx={{ fontSize: '1rem' }}>{t('phoneScreen.almost')}</Typography>
       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.82rem', lineHeight: 1.5 }}>
-        Cabo conectado. Na tela do celular, toque em "Permitir" para autorizar
-        este computador.
+        {t('phoneScreen.authorize')}
       </Typography>
     </Stack>
   );
@@ -122,6 +124,7 @@ function Waiting() {
 
 // --- Validado: sucesso, com brilho radial e check que "estoura" ---
 function Success({ model }) {
+  const { t } = useT();
   return (
     <Stack sx={{ height: '100%' }} justifyContent="center" alignItems="center" spacing={2} textAlign="center">
       <Box sx={{ position: 'relative', display: 'grid', placeItems: 'center' }}>
@@ -143,7 +146,7 @@ function Success({ model }) {
       </Box>
       <Typography variant="h6" sx={{ fontSize: '1.05rem' }}>Conectado!</Typography>
       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.82rem', lineHeight: 1.5 }}>
-        {model ? `${model} validado.` : 'Aparelho validado.'} Pode escolher as
+        {model ? `${model} validado.` : t('phoneScreen.validated')} Pode escolher as
         modificações e prosseguir.
       </Typography>
     </Stack>
@@ -152,6 +155,7 @@ function Success({ model }) {
 
 // --- Provisionamento em andamento ---
 function Working({ percent, currentLabel }) {
+  const { t } = useT();
   return (
     <Stack sx={{ height: '100%' }} justifyContent="center" alignItems="center" spacing={2.5} textAlign="center">
       <Box sx={{
@@ -162,7 +166,7 @@ function Working({ percent, currentLabel }) {
       }}>
         <TvIcon color="primary" sx={{ fontSize: 30 }} />
       </Box>
-      <Typography variant="h6" sx={{ fontSize: '1rem' }}>Preparando seu TV box</Typography>
+      <Typography variant="h6" sx={{ fontSize: '1rem' }}>{t('phoneScreen.preparing')}</Typography>
       <Box sx={{ width: '100%' }}>
         <LinearProgress variant="determinate" value={percent}
           sx={{ height: 6, borderRadius: 3 }} />
@@ -179,10 +183,11 @@ function Working({ percent, currentLabel }) {
 
 // --- Transformado em TV: configuração concluída ---
 function TvReady({ model }) {
+  const { t } = useT();
   return (
     <Stack sx={{ height: '100%' }} justifyContent="center" alignItems="center" spacing={1.5} textAlign="center">
       <TvIcon color="primary" sx={{ fontSize: 34 }} />
-      <Typography variant="h6" sx={{ fontSize: '0.95rem' }}>Seu TV box está pronto</Typography>
+      <Typography variant="h6" sx={{ fontSize: '0.95rem' }}>{t('phoneScreen.ready')}</Typography>
       <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.72rem', lineHeight: 1.5, maxWidth: 260 }}>
         {model ? `${model} ` : ''}configurado. Desconecte o cabo e ligue na TV
         pela saída HDMI.

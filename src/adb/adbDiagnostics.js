@@ -10,6 +10,8 @@
 // Roda no processo MAIN (CommonJS), junto com o restante da lógica ADB.
 // -----------------------------------------------------------------------------
 
+const { t, tList } = require('../i18n/runtime.cjs');
+
 /** Estados canônicos que o app reconhece. */
 const DeviceState = {
   READY: 'ready',                 // device -> pronto para provisionar
@@ -33,97 +35,22 @@ const Severity = {
  * sozinho antes de incomodar o usuário (reinício do servidor ADB resolve boa
  * parte dos casos offline / no permissions).
  */
+// Severidade, chave do catálogo e recuperação automática.
+//
+// O TEXTO não mora aqui. Esta é constante de módulo, avaliada no `require`,
+// quando o idioma ainda não foi lido do disco — uma frase escrita aqui ficaria
+// congelada no idioma de origem. O que fica é a `key`; quem monta a mensagem é
+// `describeDevice`, no momento em que ela vai à tela.
 const MESSAGES = {
-  [DeviceState.READY]: {
-    severity: Severity.OK,
-    title: 'Galaxy pronto',
-    message: 'Dispositivo autorizado e respondendo. Pode iniciar a configuração.',
-    steps: [],
-    autoRecover: null,
-  },
-
-  [DeviceState.UNAUTHORIZED]: {
-    severity: Severity.ACTION_NEEDED,
-    title: 'Autorize o computador no telefone',
-    message:
-      'O DexArmor encontrou seu Galaxy, mas ele ainda não confia neste ' +
-      'computador. Isso é normal na primeira conexão.',
-    steps: [
-      'Desbloqueie a tela do seu Galaxy (o aviso só aparece com a tela desbloqueada).',
-      'Toque em "Permitir" no aviso "Permitir depuração USB?".',
-      'Marque "Sempre permitir deste computador" antes de tocar em Permitir.',
-      'Se o aviso não aparecer: puxe a barra de notificações e mude o modo USB de "Apenas carga" para "Transferência de arquivos (MTP)".',
-    ],
-    autoRecover: null, // por segurança, só o usuário pode autorizar no aparelho
-  },
-
-  [DeviceState.OFFLINE]: {
-    severity: Severity.ACTION_NEEDED,
-    title: 'Dispositivo não está respondendo',
-    message:
-      'O Galaxy aparece, mas não está respondendo aos comandos. Geralmente é ' +
-      'o serviço do ADB travado, cabo ruim ou o aparelho em estado estranho.',
-    steps: [
-      'Aguarde — o DexArmor vai reiniciar a conexão automaticamente.',
-      'Se continuar, troque o cabo USB ou a porta do computador.',
-      'Desconecte e reconecte o telefone.',
-    ],
-    autoRecover: ['kill-server', 'start-server'],
-  },
-
-  [DeviceState.NO_PERMISSIONS]: {
-    severity: Severity.BLOCKED,
-    title: 'Sem permissão para acessar o dispositivo',
-    message:
-      'O computador detectou o Galaxy mas não consegue acessá-lo. Costuma ser ' +
-      'o serviço do ADB travado ou o driver USB ausente/desatualizado (Windows).',
-    steps: [
-      'Aguarde — o DexArmor vai reiniciar o serviço do ADB automaticamente.',
-      'No Windows: reinstale o driver USB da Samsung e tente de novo.',
-      'No Mac/Linux: reconecte o cabo após o reinício do serviço.',
-    ],
-    autoRecover: ['kill-server', 'start-server'],
-  },
-
-  [DeviceState.NO_DEVICES]: {
-    severity: Severity.BLOCKED,
-    title: 'Nenhum Galaxy detectado',
-    message: 'O computador não está enxergando nenhum dispositivo.',
-    steps: [
-      'Confirme que o cabo está conectado — e que é um cabo de DADOS, não só de carga.',
-      'Ative a Depuração USB: Configurações → Opções de desenvolvedor → Depuração USB.',
-      'Se as Opções de desenvolvedor não aparecem: Configurações → Sobre o telefone → toque 7 vezes em "Número da versão".',
-      'No Windows, instale o driver USB da Samsung se o aparelho não aparecer.',
-    ],
-    autoRecover: null,
-  },
-
-  [DeviceState.OTHER_MODE]: {
-    severity: Severity.ACTION_NEEDED,
-    title: 'Telefone em modo especial',
-    message:
-      'O Galaxy está em um modo que não permite a configuração agora ' +
-      '(recovery, bootloader ou similar).',
-    steps: [
-      'Reinicie o telefone normalmente até o sistema Android carregar.',
-      'Reconecte e tente de novo.',
-    ],
-    autoRecover: null,
-  },
-
-  [DeviceState.UNKNOWN]: {
-    severity: Severity.BLOCKED,
-    title: 'Estado não reconhecido',
-    message:
-      'O dispositivo retornou um estado que o DexArmor ainda não conhece. ' +
-      'Reinicie o telefone e a conexão e tente novamente.',
-    steps: [
-      'Desconecte e reconecte o telefone.',
-      'Reinicie o aparelho se o problema continuar.',
-    ],
-    autoRecover: ['kill-server', 'start-server'],
-  },
+  [DeviceState.READY]:        { severity: Severity.OK,            key: 'diagnostics.ready',         autoRecover: null },
+  [DeviceState.UNAUTHORIZED]: { severity: Severity.ACTION_NEEDED, key: 'diagnostics.unauthorized',  autoRecover: null },
+  [DeviceState.OFFLINE]:      { severity: Severity.ACTION_NEEDED, key: 'diagnostics.offline',       autoRecover: ['kill-server', 'start-server'] },
+  [DeviceState.NO_PERMISSIONS]: { severity: Severity.BLOCKED,     key: 'diagnostics.noPermissions', autoRecover: ['kill-server', 'start-server'] },
+  [DeviceState.NO_DEVICES]:   { severity: Severity.BLOCKED,       key: 'diagnostics.noDevices',     autoRecover: null },
+  [DeviceState.OTHER_MODE]:   { severity: Severity.ACTION_NEEDED, key: 'diagnostics.otherMode',     autoRecover: null },
+  [DeviceState.UNKNOWN]:      { severity: Severity.BLOCKED,       key: 'diagnostics.unknown',       autoRecover: ['kill-server', 'start-server'] },
 };
+
 
 /**
  * Converte o token cru de estado (ex.: "device", "unauthorized",
@@ -178,9 +105,9 @@ function describeDevice({ serial, state }) {
     serial,
     state,
     severity: info.severity,
-    title: info.title,
-    message: info.message,
-    steps: info.steps,
+    title: t(`${info.key}.title`),
+    message: t(`${info.key}.message`),
+    steps: tList(`${info.key}.steps`),
     autoRecover: info.autoRecover, // null OU array de subcomandos do adb (ex.: ['kill-server','start-server'])
     isReady: state === DeviceState.READY,
   };
@@ -237,14 +164,9 @@ function adbNaoEncontrado() {
       serial: null,
       state: DeviceState.UNKNOWN,
       severity: Severity.BLOCKED,
-      title: 'ADB não encontrado',
-      message:
-        'O DexArmor não encontrou o ADB no sistema. Ele é necessário para se ' +
-        'comunicar com o Galaxy.',
-      steps: [
-        'Verifique se o ADB foi empacotado junto com o aplicativo.',
-        'Se você instalou manualmente, confirme que a pasta platform-tools está no PATH.',
-      ],
+      title: t('diagnostics.adbMissing.title'),
+      message: t('diagnostics.adbMissing.message'),
+      steps: tList('diagnostics.adbMissing.steps'),
       autoRecover: null,
       isReady: false,
     },
