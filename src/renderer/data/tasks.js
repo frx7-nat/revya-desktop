@@ -78,7 +78,11 @@ export const TASK_GROUPS = [
         //                    INCOMPATIBLE). Aparelho com a v2 instalada
         //                    precisa desinstalar antes — ver ASSINATURA.md
         //                    no changeset do launcher.
-        minVersionCode: 3,
+        //   4 (28/07/2026) — ícone do tile focado sem tint. Primeira subida
+        //                    release→release: aparelho com a v3 deve receber
+        //                    a v4 POR CIMA, sem desinstalar. É o teste do
+        //                    caminho de atualização (item 1 do PENDENCIAS).
+        minVersionCode: 4,
         source: { type: 'local', dir: 'launchers', apk: '{Launcher} DexArmor TV.apk' } },
 
       // O Projectivy saiu em 25/07/2026, substituído pelo launcher próprio;
