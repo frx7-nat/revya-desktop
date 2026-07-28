@@ -69,8 +69,38 @@ function createWindow() {
   // direto após um curto prazo — o X nunca pode "não responder".
   let allowClose = false;
   let closeFallback = null;
+
+  // Desligar/reiniciar o Windows não espera pop-up de ninguém. Sem isto, a
+  // interceptação abaixo seguraria o encerramento da sessão.
+  //
+  // `removeAllListeners` pelo mesmo motivo dos handlers de IPC logo abaixo: no
+  // macOS, reabrir pelo Dock chama `createWindow()` de novo, e sem a limpeza
+  // cada reabertura deixaria mais um ouvinte preso ao `allowClose` de uma
+  // janela que já não existe.
+  app.removeAllListeners('session-end');
+  app.on('session-end', () => { allowClose = true; });
+
   win.on('close', (e) => {
     if (allowClose) return;
+
+    // O pop-up só faz sentido quando QUEM FECHOU está olhando para a janela.
+    //
+    // Um pedido de fechamento vindo DE FORA — o instalador encerrando o app
+    // antes de atualizar, um script, o gerenciador de tarefas — chega com a
+    // janela SEM FOCO. Interceptar nesse caso põe o pop-up atrás da janela de
+    // quem pediu: ninguém confirma, o app nunca fecha, e o instalador desiste
+    // com "Não é possível fechar o DexArmor. Feche a janela e clique em
+    // Repetir".
+    //
+    // Encontrado em 28/07/2026 testando a atualização no Windows. Não é caso
+    // raro: atualizar com o programa aberto é o cenário mais comum que existe,
+    // e o usuário leigo não tem como adivinhar que precisa ir a outra janela
+    // confirmar algo.
+    //
+    // Clicar no X foca a janela antes de fechá-la, então o caminho do usuário
+    // continua vendo o pop-up normalmente.
+    if (!win.isFocused()) return;
+
     e.preventDefault();
     win.webContents.send('show-close-popup');
     clearTimeout(closeFallback);
