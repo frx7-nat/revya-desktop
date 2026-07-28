@@ -105,7 +105,7 @@ export default function DeviceStatusCard({
 
             {diagnosis.serial && (
               <Typography variant="caption" color="text.disabled" sx={{ display: 'block', mt: 0.5 }}>
-                Dispositivo: {diagnosis.serial}
+                {t('status.deviceSerial', { serial: diagnosis.serial })}
               </Typography>
             )}
           </Box>
@@ -172,7 +172,7 @@ export default function DeviceStatusCard({
           </Button>
         ) : (
           <Button variant="contained" startIcon={<RefreshRoundedIcon />} onClick={onRetry}>
-            Verificar de novo
+            {t('status.retry')}
           </Button>
         )}
       </CardActions>

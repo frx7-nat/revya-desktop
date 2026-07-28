@@ -76,7 +76,7 @@ export default function ProfilesPanel({
   profiles = [], canSave, hasDevice, running,
   onSave, onApply, onDelete,
 }) {
-  const { t } = useT();
+  const { t, language } = useT();
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState(null); // { ok, text }
@@ -209,7 +209,10 @@ export default function ProfilesPanel({
                     {p.name}
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.62rem' }}>
-                    salvo em {new Date(p.updatedAt || p.createdAt).toLocaleDateString('pt-BR')}
+                    {t('profiles.savedAt', {
+                      date: new Date(p.updatedAt || p.createdAt)
+                        .toLocaleDateString(language === 'pt' ? 'pt-BR' : 'en-US'),
+                    })}
                   </Typography>
                 </Box>
                 {confirmDeleteId === p.id ? (

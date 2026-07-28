@@ -102,7 +102,7 @@ export default function RemoteControl({ serial, disabled, dockRight, onRotated }
       <Stack direction="row" spacing={0.6} alignItems="center" justifyContent="center" sx={{ mb: 0.8 }}>
         <SettingsRemoteIcon sx={{ fontSize: 13, color: 'text.secondary' }} />
         <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.66rem', letterSpacing: '0.04em' }}>
-          CONTROLE REMOTO
+          {t('remote.title')}
         </Typography>
       </Stack>
 
@@ -121,6 +121,9 @@ export default function RemoteControl({ serial, disabled, dockRight, onRotated }
           <KeyboardArrowLeftIcon sx={{ fontSize: 20 }} />
         </Key>
         <Key title={t('remote.ok')} onPress={press('ok')} disabled={disabled} primary>
+          {/* i18n-ok — "OK" é o rótulo gravado na tecla central de qualquer
+              controle remoto, nos dois idiomas. O `title` acima, esse sim, é
+              a descrição falada e vem do catálogo. */}
           OK
         </Key>
         <Key title={t('remote.right')} onPress={press('right')} disabled={disabled}>

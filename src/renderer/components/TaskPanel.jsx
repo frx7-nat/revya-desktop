@@ -323,7 +323,7 @@ function journalLabel(t, ev) {
 // restaurações), recarregado a cada expansão. Diagnóstico em linguagem
 // simples — QUANDO cada troca rodou e o que falhou, sem depender de memória.
 function JournalList({ onLoad }) {
-  const { t } = useT();
+  const { t, language } = useT();
   const [open, setOpen] = useState(false);
   const [events, setEvents] = useState(null);
 
@@ -338,7 +338,7 @@ function JournalList({ onLoad }) {
   const recent = (events || []).slice(-12).reverse();
   const fmt = (iso) => {
     try {
-      return new Date(iso).toLocaleString('pt-BR', {
+      return new Date(iso).toLocaleString(language === 'pt' ? 'pt-BR' : 'en-US', {
         day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
       });
     } catch { return ''; }
@@ -537,7 +537,7 @@ export default function TaskPanel({
             onClick={onOpenDexGuide}
             sx={{ mb: 1.2, py: 1, fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.02em' }}
           >
-            Desative o DeX
+            {t('taskPanel.disableDex')}
           </Button>
 
           {/* Reabre o guia de primeira configuração (mostrado sozinho só na
@@ -550,7 +550,7 @@ export default function TaskPanel({
               sx={{ mb: 1.2, mt: -0.6, py: 0.4, fontSize: '0.72rem', textTransform: 'none',
                 color: 'text.secondary' }}
             >
-              Guia de primeiros passos
+              {t('taskPanel.firstGuideBtn')}
             </Button>
           )}
 
@@ -681,7 +681,7 @@ export default function TaskPanel({
                 onClick={() => setView('profiles')}
                 sx={{ py: 0.5, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.04em' }}
               >
-                Salvar como perfil
+                {t('taskPanel.saveAsProfile')}
               </Button>
             </Box>
           )}

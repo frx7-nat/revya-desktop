@@ -33,7 +33,7 @@ import { entryLabel } from './utils/labels';
 const SIDE_W = 'clamp(230px, 21vw, 300px)';
 
 export default function App() {
-  const { t } = useT();
+  const { t, language } = useT();
   const [device, setDevice] = useState(null);
   const [cablePresent, setCablePresent] = useState(false); // cabo ligado mas não autorizado
   const [scanning, setScanning] = useState(false);
@@ -503,16 +503,23 @@ export default function App() {
 
   // Monta e salva o relatório de configuração (texto) da última execução.
   const saveReport = useCallback(async () => {
-    const statusLabel = { done: 'OK', error: 'ERRO', warning: 'AVISO', guide: 'AVISO', pending: 'PENDENTE', running: 'EM ANDAMENTO' };
+    const statusLabel = {
+      done: t('app.reportDone'), error: t('app.reportError'),
+      warning: t('app.reportWarning'), guide: t('app.reportWarning'),
+      pending: t('app.reportPending'), running: t('app.reportRunning'),
+    };
     const lines = [
       t('app.reportTitle'),
       t('app.reportDevice', { model: device?.model || t('app.unknownModel'), serial: device?.serial || '-' }),
-      `Android: ${device?.android || '-'}  |  Data: ${new Date().toLocaleString()}`,
+      t('app.reportAndroidDate', {
+        android: device?.android || '-',
+        date: new Date().toLocaleString(language === 'pt' ? 'pt-BR' : 'en-US'),
+      }),
       '',
       ...log.map((e) => `[${statusLabel[e.status] || e.status}] ${e.label}${e.detail ? ` — ${e.detail}` : ''}`),
     ];
     try { await window.api.saveReport(lines.join('\n')); } catch { /* usuário cancelou */ }
-  }, [device, log]);
+  }, [device, log, t, language]);
 
   const ready = Object.values(selected).some(Boolean);
 

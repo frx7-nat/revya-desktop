@@ -96,14 +96,14 @@ export default function ProgressPanel({ log, percent, active, onSaveReport, fini
           fontSize: '0.64rem', fontWeight: 700, letterSpacing: '0.14em',
           textTransform: 'uppercase', color: 'text.secondary', flex: 1,
         }}>
-          Progresso
+          {t('progress.title')}
         </Typography>
         {/* Ao fim de uma execução, permite salvar o relatório em .txt. */}
         {onSaveReport && (
           <Button size="small" startIcon={<SaveAltIcon sx={{ fontSize: 14 }} />}
             onClick={onSaveReport}
             sx={{ fontSize: '0.66rem', textTransform: 'none', py: 0, minWidth: 0, flexShrink: 0 }}>
-            Salvar
+            {t('progress.save')}
           </Button>
         )}
       </Stack>
@@ -158,7 +158,7 @@ export default function ProgressPanel({ log, percent, active, onSaveReport, fini
                         color: 'text.secondary', flexShrink: 0, lineHeight: 1.2,
                         '&:hover': { background: 'none', textDecoration: 'underline', color: 'warning.main' },
                       }}>
-                      Desfazer
+                      {t('progress.undo')}
                     </Button>
                   )}
                 </Stack>

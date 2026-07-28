@@ -26,6 +26,7 @@ function StepIcon({ name, ...props }) {
 // Pílula "procurando dispositivo" com um ponto que pulsa — sinaliza que o app
 // está ativamente escutando o ADB, em TODOS os passos (não só no último).
 function SearchingPill() {
+  const { t } = useT();
   return (
     <Stack direction="row" alignItems="center" spacing={0.8} justifyContent="center"
       sx={{ opacity: 0.8 }}>
@@ -38,7 +39,7 @@ function SearchingPill() {
         },
       }} />
       <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.68rem', letterSpacing: '0.02em' }}>
-        Procurando dispositivo…
+        {t('phoneScreen.searching')}
       </Typography>
     </Stack>
   );
@@ -90,7 +91,7 @@ function Tutorial() {
           <Button size="small" fullWidth variant="text" color="inherit"
             disabled={i === 0} onClick={() => setI(i - 1)}
             sx={{ opacity: i === 0 ? 0.3 : 0.7 }}>
-            Voltar
+            {t('tutorial.back')}
           </Button>
           {!last && (
             <Button size="small" fullWidth variant="contained" color="primary" onClick={() => setI(i + 1)}>
@@ -144,10 +145,9 @@ function Success({ model }) {
           <CheckCircleIcon color="success" sx={{ fontSize: 42 }} />
         </Box>
       </Box>
-      <Typography variant="h6" sx={{ fontSize: '1.05rem' }}>Conectado!</Typography>
+      <Typography variant="h6" sx={{ fontSize: '1.05rem' }}>{t('phoneScreen.connected')}</Typography>
       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.82rem', lineHeight: 1.5 }}>
-        {model ? `${model} validado.` : t('phoneScreen.validated')} Pode escolher as
-        modificações e prosseguir.
+        {model ? t('phoneScreen.validatedModel', { model }) : t('phoneScreen.validated')} {t('phoneScreen.chooseNext')}
       </Typography>
     </Stack>
   );
@@ -189,8 +189,7 @@ function TvReady({ model }) {
       <TvIcon color="primary" sx={{ fontSize: 34 }} />
       <Typography variant="h6" sx={{ fontSize: '0.95rem' }}>{t('phoneScreen.ready')}</Typography>
       <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.72rem', lineHeight: 1.5, maxWidth: 260 }}>
-        {model ? `${model} ` : ''}configurado. Desconecte o cabo e ligue na TV
-        pela saída HDMI.
+        {model ? t('phoneScreen.tvReadyModel', { model }) : t('phoneScreen.tvReadyNoModel')}
       </Typography>
     </Stack>
   );

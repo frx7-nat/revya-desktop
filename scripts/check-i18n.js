@@ -166,6 +166,161 @@ function findHardcoded(file) {
   return hits;
 }
 
+/**
+ * C. TEXTO CRU EM POSIÇÃO DE INTERFACE — checagem ESTRUTURAL.
+ *
+ * ## Por que a checagem B não bastou
+ *
+ * A B pergunta "isto parece português?". Em 28/07/2026 a usuária rodou o app
+ * pela primeira vez (o Kaspersky impedia — ver PENDENCIAS) e viu títulos ainda
+ * em português com o idioma em inglês. A B passava em verde. Três furos:
+ *
+ *   1. `looksPortuguese` exige espaço OU acento. "Telemetria", "Bateria",
+ *      "Progresso", "Enviado" — palavra única sem acento — nunca eram vistas.
+ *      Título de seção tem exatamente esse formato.
+ *   2. `PT_WORDS` não tem `de`, `da`, `do`, `no`, `na`, `em`. "Central de
+ *      controle" tem espaço, não tem acento e não casa nada. Passava.
+ *      Acrescentá-las não resolve: "do" e "as" são inglês legítimo, e a B
+ *      varre TODO literal — o falso positivo inviabilizaria a guarda.
+ *   3. O regex de JSX era `>([^<>{}]{4,})<`. As chaves na classe negada matam
+ *      o casamento quando o texto tem `{expressão}` no meio — que é o caso
+ *      comum. `{model ? … : t('…')} Pode escolher as modificações` era
+ *      invisível.
+ *
+ * ## A troca de pergunta
+ *
+ * Aqui não se pergunta o idioma: pergunta-se a POSIÇÃO. Em `src/renderer`,
+ * texto que chega ao olho do usuário — filho de JSX e props de texto — tem de
+ * vir de `t()`. Qualquer literal ali é suspeito, em qualquer idioma. Isso pega
+ * inclusive o texto escrito direto em inglês, que a B assume como limite.
+ *
+ * O preço é acusar o que legitimamente não se traduz: "DeX", "Wi-Fi", "4K
+ * (2160p)". Esses se declaram com `// i18n-ok` — o mesmo marcador da tarefa
+ * `checkI18n` do launcher, para quem trabalha nos dois lados não precisar
+ * lembrar de duas convenções. O marcador vale na linha ou em qualquer linha do
+ * bloco de comentário logo acima, porque o motivo raramente cabe no fim da
+ * linha e obrigar a espremer produz `// i18n-ok` sem explicação.
+ */
+const UI_PROPS = /\b(label|title|help|placeholder|sub|text|primary|secondary|heading|subtitle|caption|hint|note|alt|aria-label)\s*=\s*(?:"([^"\n]{2,})"|'([^'\n]{2,})')/g;
+// O `</` no fim é o que separa JSX de código. Sem ele, `>` e `<` de comparação
+// (`if (history.length > 2)`, `for (let i = 0; i < n)`) casavam com qualquer
+// coisa até o próximo sinal, e a checagem acusou 234 trechos — quase todos
+// fragmentos de código. Exigir a TAG DE FECHAMENTO derruba isso para o que
+// realmente é filho de JSX.
+//
+// Limite conhecido: texto seguido de elemento aninhado em vez de fechamento
+// (`<p>Olá <b>mundo</b></p>`) não casa o primeiro pedaço. Aceitável — negrito
+// no meio de frase já é caso do RichText, que vem do catálogo.
+const JSX_TEXT = />([^<>]{2,400}?)<\//g;
+const HAS_WORD = /[A-Za-zÀ-ÿ]{2,}/;
+
+function findBareUiText(file) {
+  const raw = fs.readFileSync(file, 'utf8');
+  const rawLines = raw.split('\n');
+
+  // Linhas cobertas por `// i18n-ok`: a própria, ou a que tem um bloco de
+  // comentário logo acima contendo o marcador.
+  // Vale nos DOIS estilos de comentário, porque em JSX os dois aparecem: `//`
+  // funciona dentro de um bloco de código, mas na posição de FILHO só existe
+  // `{/* … */}`. Exigir um estilo só obrigaria a lembrar qual, no meio da
+  // edição — e o marcador que não pega falha em silêncio, que é o pior modo.
+  //
+  // O marcador cobre a própria linha e a primeira linha de CÓDIGO abaixo dele.
+  // Uma linha só, de propósito: um comentário dizendo "vale para as duas
+  // linhas seguintes" não tem como ser verificado, e a segunda linha ficaria
+  // isenta sem que ninguém percebesse. Um marcador por elemento.
+  // Mapa de linhas que são comentário. Precisa de ESTADO de bloco: um
+  // `{/* … */}` de três linhas tem a do meio começando com palavra comum
+  // ("procura o número da versão"), que teste algum de prefixo não reconhece.
+  // Sem isto, a busca pela linha de código parava no meio do próprio
+  // comentário e marcava a linha errada — o `label="API"` seguia acusado com
+  // o marcador logo acima dele.
+  const isComment = new Array(rawLines.length).fill(false);
+  let inBlock = false;
+  rawLines.forEach((line, i) => {
+    const s = line.trim();
+    if (inBlock) {
+      isComment[i] = true;
+      if (s.includes('*/')) inBlock = false;
+      return;
+    }
+    if (s === '' || s.startsWith('//')) { isComment[i] = true; return; }
+    if (s.startsWith('/*') || s.startsWith('{/*')) {
+      isComment[i] = true;
+      if (!s.includes('*/')) inBlock = true;
+    }
+  });
+
+  // O marcador cobre a própria linha e a primeira linha de CÓDIGO abaixo dele.
+  // Uma linha só, de propósito: um comentário dizendo "vale para as duas
+  // linhas seguintes" não tem como ser verificado, e a segunda ficaria isenta
+  // sem ninguém perceber. Um marcador por elemento.
+  const marked = new Set();
+  rawLines.forEach((line, i) => {
+    if (!line.includes('i18n-ok')) return;
+    marked.add(i);
+    let j = i + 1;
+    while (j < rawLines.length && isComment[j]) j++;
+    if (j < rawLines.length) marked.add(j);
+  });
+
+  // `stripComments` preserva a contagem de linhas, então o deslocamento no
+  // texto limpo ainda converte em número de linha do arquivo original.
+  const code = stripComments(raw);
+  const lineOf = (idx) => code.slice(0, idx).split('\n').length - 1;
+
+  const hits = [];
+  const add = (text, idx) => {
+    const t = text.replace(/\s+/g, ' ').trim();
+    if (t.length < 2 || !HAS_WORD.test(t)) return;
+    // Sobra de código, não texto de tela. Um `>` de COMPARAÇÃO dentro de uma
+    // chave JSX (`{n > 50 ? t('a') : t('b')}`) faz o casamento começar no meio
+    // da expressão, e a contagem de profundidade não salva porque ela já
+    // começou torta. Esses restos sempre trazem parêntese ou abrem com dígito;
+    // texto que o usuário lê não faz nem uma coisa nem outra.
+    // O preço é não ver um texto de tela com parêntese solto em filho de JSX —
+    // uma acusação a menos, nunca uma a mais.
+    if (/[()]/.test(t)) return;
+    if (!/^[A-Za-zÀ-ÿ]/.test(t)) return;
+    const start = lineOf(idx);
+    const end = lineOf(idx + text.length);
+    for (let l = start; l <= end; l++) if (marked.has(l)) return;
+    hits.push({ line: start + 1, text: t.length > 60 ? `${t.slice(0, 60)}…` : t });
+  };
+
+  for (const m of code.matchAll(UI_PROPS)) {
+    add(m[2] ?? m[3] ?? '', m.index);
+  }
+  for (const m of code.matchAll(JSX_TEXT)) {
+    // Tira as {expressões} e olha o que sobra de texto solto entre elas —
+    // é isto que o regex antigo, com `{}` na classe negada, deixava passar.
+    //
+    // A contagem de PROFUNDIDADE é necessária: `{t('k', { a: 1 })}` tem chaves
+    // aninhadas, e um `\{[^{}]*\}` simples casa só até a primeira `}`, deixando
+    // o resto da chamada virar "texto". Foi o que produziu 82 acusações como
+    // `") : t('checkup.driftOne')}"` — fragmento de código, não texto de tela.
+    const bruto = m[1];
+    if (/=>|\breturn\b/.test(bruto)) continue;
+    let depth = 0;
+    let buf = '';
+    let bufStart = m.index + 1;
+    for (let i = 0; i < bruto.length; i++) {
+      const c = bruto[i];
+      if (c === '{') {
+        if (depth === 0) { add(buf, bufStart); buf = ''; }
+        depth++;
+      } else if (c === '}') {
+        depth = Math.max(0, depth - 1);
+        if (depth === 0) bufStart = m.index + 1 + i + 1;
+      } else if (depth === 0) {
+        buf += c;
+      }
+    }
+    add(buf, bufStart);
+  }
+  return hits;
+}
+
 function walk(dir, acc = []) {
   for (const name of fs.readdirSync(dir)) {
     const full = path.join(dir, name);
@@ -239,6 +394,25 @@ for (const file of files) {
     problems.push(
       `${rel}: ${hits.length} textos cravados, mas a linha de base permite ${allowed}. ` +
       'A catraca só desce — migre o texto novo em vez de subir o número.');
+  }
+}
+
+// --- C. texto cru em posição de interface -----------------------------------
+//
+// Sem catraca e sem linha de base: nasce em ZERO e tem de continuar em zero.
+// A catraca da B existia porque havia ~200 textos pendentes quando ela foi
+// escrita; aqui não há dívida a acomodar — o renderer foi limpo em 28/07/2026,
+// no mesmo dia em que esta checagem foi escrita.
+for (const file of files) {
+  const rel = path.relative(ROOT, file);
+  if (!rel.endsWith('.jsx')) continue;
+  if (!rel.startsWith(path.join('src', 'renderer'))) continue;
+  const bare = findBareUiText(file);
+  if (bare.length) {
+    problems.push(
+      `${rel}: ${bare.length} texto(s) cru(s) em posição de interface — use t(), ` +
+      'ou declare com // i18n-ok e o motivo\n' +
+      bare.slice(0, 6).map((h) => `        :${h.line}  "${h.text}"`).join('\n'));
   }
 }
 

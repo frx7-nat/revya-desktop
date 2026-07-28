@@ -234,7 +234,7 @@ export default function ResetDialog({ open, serial, onClose, onReverted, onSessi
                     <Typography variant="body2" sx={{ fontSize: '0.83rem' }}>{x.label}</Typography>
                     {x.detail && x.status === 'warn' && (
                       <Typography variant="caption" sx={{ fontSize: '0.7rem', color: 'primary.main', lineHeight: 1.3 }}>
-                        Precisa de um passo manual — {x.detail}
+                        {t('reset.manualStep', { detail: x.detail })}
                       </Typography>
                     )}
                   </Box>

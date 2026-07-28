@@ -174,6 +174,11 @@ export default function SendOverlay({ serial }) {
     for (let i = 0; i < files.length; i++) {
       if (cancelRef.current) break;
       const file = files[i];
+      // Traduz ANTES de entrar nos atualizadores de estado: lá dentro o
+      // parâmetro `t` é o objeto de transferência e sombreia o `t` da
+      // tradução. Chamar `t('...')` ali dava TypeError em tempo de execução,
+      // sem erro nenhum no build.
+      const cancelledLabel = t('sendOverlay.cancelled');
       setTransfer((t) => ({
         ...t, current: i, percent: 0, totalBytes: 0, transferredBytes: 0, startedAt: Date.now(),
       }));
@@ -189,17 +194,17 @@ export default function SendOverlay({ serial }) {
             throw new Error(t('sendOverlay.apkOnly'));
           }
           const r = await window.api.sendApk(serial, localPath);
-          if (r?.cancelled) { mark('cancelled', 'Cancelado'); break; }
+          if (r?.cancelled) { mark('cancelled', cancelledLabel); break; }
           mark('done', t('sendOverlay.installed'));
         } else {
           const r = await window.api.sendFile(serial, localPath, targetKey);
-          if (r?.cancelled) { mark('cancelled', 'Cancelado'); break; }
-          mark('done', 'Enviado');
+          if (r?.cancelled) { mark('cancelled', cancelledLabel); break; }
+          mark('done', t('sendOverlay.sent'));
         }
       } catch (err) {
         // Cancelamento do usuário não é erro: marca como cancelado e para a fila.
         if (cancelRef.current || /CANCELLED/i.test(String(err?.message || err))) {
-          mark('cancelled', 'Cancelado');
+          mark('cancelled', cancelledLabel);
           break;
         }
         mark('error', friendlySendError(err));
@@ -211,12 +216,12 @@ export default function SendOverlay({ serial }) {
       setTransfer((t) => (t ? {
         ...t,
         items: t.items.map((it) => (it.status === 'pending'
-          ? { ...it, status: 'cancelled', detail: 'Cancelado' } : it)),
+          ? { ...it, status: 'cancelled', detail: cancelledLabel } : it)),
       } : t));
     }
 
     setTransfer((t) => (t ? { ...t, mode: 'done' } : t));
-  }, [serial]);
+  }, [serial, t]);
 
   // Processa a fila de arquivos soltos num alvo ('apk' ou chave de pasta).
   // Guarda a lista para permitir "Tentar de novo" sem arrastar outra vez.
@@ -466,15 +471,15 @@ export default function SendOverlay({ serial }) {
             {transfer.mode === 'done' && (retryCount > 0 && serial ? (
               <Stack direction="row" spacing={1} sx={{ mt: 2.5 }}>
                 <Button fullWidth variant="contained" color="primary" onClick={retryFailed}>
-                  {retryCount > 1 ? `Tentar de novo (${retryCount})` : 'Tentar de novo'}
+                  {retryCount > 1 ? t('sendOverlay.retryN', { n: retryCount }) : t('sendOverlay.retry')}
                 </Button>
                 <Button variant="text" color="inherit" onClick={closeAll} sx={{ minWidth: 92 }}>
-                  Fechar
+                  {t('sendOverlay.close')}
                 </Button>
               </Stack>
             ) : (
               <Button fullWidth variant="contained" color="primary" onClick={closeAll} sx={{ mt: 2.5 }}>
-                Fechar
+                {t('sendOverlay.close')}
               </Button>
             ))}
           </Box>

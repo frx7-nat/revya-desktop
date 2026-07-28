@@ -53,7 +53,7 @@ function ModeStatusChip({ modeState, onResumePending, disabled }) {
     );
   }
   return modeState.kind === 'tv' ? (
-    <Chip icon={<TvIcon />} label="Modo TV ativo" color="primary" variant="outlined" size="small"
+    <Chip icon={<TvIcon />} label={t('device.tvMode')} color="primary" variant="outlined" size="small"
       sx={{ mt: 2, fontWeight: 600 }} />
   ) : (
     <Chip icon={<PhoneAndroidIcon />} label={t('device.phoneMode')} variant="outlined" size="small"
@@ -128,17 +128,22 @@ export default function DevicePanel({
               {device?.model || t('device.unknownDevice')}
             </Typography>
             {device?.dexSupport && (
+              // i18n-ok — "DeX" é marca da Samsung, igual em todo idioma.
               <Chip icon={<CheckCircleIcon />} label="DeX" color="success" variant="outlined" size="small" />
             )}
             {isWifi && (
+              // i18n-ok — "Wi-Fi" é marca registrada da Wi-Fi Alliance.
               <Chip icon={<WifiIcon />} label="Wi-Fi" color="primary" variant="outlined" size="small" />
             )}
           </Stack>
 
           <Stack direction="row" spacing={3} justifyContent="center" flexWrap="wrap" useFlexGap>
+            {/* i18n-ok — "Android" é marca do Google. */}
             <Spec label="Android" value={device?.android} />
+            {/* i18n-ok — "API" é sigla técnica; traduzir atrapalharia quem
+                procura o número da versão. */}
             <Spec label="API" value={device?.sdk} />
-            <Spec label="Bateria" value={device?.battery != null ? `${device.battery}%` : null} />
+            <Spec label={t('device.battery')} value={device?.battery != null ? `${device.battery}%` : null} />
           </Stack>
 
           {/* Descoberta da função "Enviar para o celular" (overlay de arrastar). */}

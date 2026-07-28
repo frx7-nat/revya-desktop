@@ -155,7 +155,7 @@ function Guide({ onBack }) {
       <Stack direction="row" spacing={1}>
         <Button variant="text" color="inherit" startIcon={<ArrowBackIcon />}
           onClick={onBack} sx={{ color: 'text.secondary' }}>
-          Voltar
+          {t('dexGuide.back')}
         </Button>
       </Stack>
     </Box>

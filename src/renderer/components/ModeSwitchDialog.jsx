@@ -340,7 +340,7 @@ export default function ModeSwitchDialog({
       {paused.obstacle === 'locked' && (
         <Button variant="outlined" color="inherit" fullWidth onClick={continueAnyway}
           sx={{ color: 'text.secondary' }}>
-          Continuar mesmo assim
+          {t('modeSwitch.continueAnyway')}
         </Button>
       )}
       {!paused.fromPreflight && paused.obstacle === 'error' && (

@@ -97,7 +97,7 @@ function TempSparkline({ history }) {
         fontSize: '0.56rem', fontWeight: 700, letterSpacing: '0.12em',
         textTransform: 'uppercase', color: 'text.secondary',
       }}>
-        Temperatura · últimos {minutes} min
+        {t('health.chartLabel', { minutes })}
       </Typography>
     </Box>
   );
@@ -122,7 +122,7 @@ function buildAlerts(t, battery, storage) {
   if (storage && storage.totalBytes) {
     const freePct = (storage.freeBytes / storage.totalBytes) * 100;
     if (freePct < 10 || storage.freeBytes < 2 * 1024 ** 3) {
-      alerts.push({ sev: 'warn', text: 'Armazenamento quase cheio: use o Pit Stop, logo abaixo.' });
+      alerts.push({ sev: 'warn', text: t('health.storageFull') });
     }
   }
   return alerts;
@@ -179,7 +179,7 @@ export default function HealthPanel({ serial, active, refreshKey = 0 }) {
           fontSize: '0.64rem', fontWeight: 700, letterSpacing: '0.14em',
           textTransform: 'uppercase', color: 'text.secondary',
         }}>
-          Telemetria
+          {t('health.title')}
         </Typography>
       </Stack>
 
@@ -197,16 +197,16 @@ export default function HealthPanel({ serial, active, refreshKey = 0 }) {
           <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
             <SpecCell
               value={battery?.level != null ? `${battery.level}%` : '—'}
-              sub={battery?.full ? 'carga completa'
-                : battery?.charging ? 'carregando'
-                : battery?.plugged ? 'na tomada'
-                : 'na bateria'}
-              label="Bateria"
+              sub={battery?.full ? t('health.subFull')
+                : battery?.charging ? t('health.subCharging')
+                : battery?.plugged ? t('health.subPlugged')
+                : t('health.subOnBattery')}
+              label={t('health.battery')}
             />
             <SpecCell
               value={battery?.tempC != null ? `${String(battery.tempC).replace('.', ',')}°C` : '—'}
-              sub={battery?.tempC != null ? (battery.tempC >= 42 ? 'muito quente' : battery.tempC >= 38 ? 'aquecido' : 'normal') : null}
-              label="Temperatura"
+              sub={battery?.tempC != null ? (battery.tempC >= 42 ? t('health.subHot') : battery.tempC >= 38 ? t('health.subWarm') : t('health.subNormal')) : null}
+              label={t('health.temperature')}
               valueColor={tempColor(battery?.tempC)}
             />
           </Stack>
@@ -218,15 +218,15 @@ export default function HealthPanel({ serial, active, refreshKey = 0 }) {
                 fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.12em',
                 textTransform: 'uppercase', color: 'text.secondary',
               }}>
-                Armazenamento
+                {t('health.storage')}
               </Typography>
               <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.64rem' }}>
-                {gb(storage?.freeBytes)} livres de {gb(storage?.totalBytes)}
+                {t('health.storageFree', { free: gb(storage?.freeBytes), total: gb(storage?.totalBytes) })}
               </Typography>
             </Stack>
             {usedPct != null && (
               <Box sx={{ height: 6, bgcolor: TOK.hairlineStrong, borderRadius: 0 }}
-                role="img" aria-label={`Armazenamento ${usedPct}% usado`}>
+                role="img" aria-label={t('health.storageAria', { pct: usedPct })}>
                 <Box sx={{
                   height: '100%', width: `${usedPct}%`, borderRadius: 0,
                   bgcolor: usedPct >= 90 ? TOK.warning : TOK.dataBlue,

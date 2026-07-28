@@ -248,17 +248,20 @@
     }
   },
   "taskPanel": {
-    "tab": {
-      "mods": "Modifications",
-      "profiles": "Profiles",
-      "accessories": "Accessories"
+    "accessories": {
+      "intro": "Accessories tested on the channel. They open in your browser — nothing is installed on the device.",
+      "empty": "No accessories listed yet.",
+      "soon": "coming soon"
     },
     "adjustable": "adjustable",
-    "whyDoThis": "Why do this?",
-    "whatIsThis": "What is this?",
-    "undo": "Undo",
-    "revertOne": "Revert a specific change",
-    "phoneModeSuffix": " (phone mode)",
+    "checkup": "Device check-up",
+    "disableDex": "Turn DeX off",
+    "firstGuideBtn": "First steps guide",
+    "fullReset": "Full revert",
+    "interfaceReset": {
+      "label": "Restore the phone interface",
+      "help": "Does the phone interface still look odd even after going back to phone mode? This restores the original interface from the first setup — resolution, size, font, rotation and launcher. Apps, files and your saved TV mode stay put."
+    },
     "journal": {
       "title": "Switch journal",
       "loading": "Loading…",
@@ -281,45 +284,53 @@
       "journalRecovered": "Safeguard: the journal was corrupted and recovered from backup",
       "invariant": "Internal alert: invariant violated{detail}"
     },
+    "maintenance": "Maintenance",
     "mirror": {
       "opening": "Opening the screen…",
       "label": "Mirror the phone screen",
       "help": "Follow what happens on your phone straight from the computer."
-    },
-    "wifi": {
-      "connected": "Connected over Wi-Fi",
-      "enabling": "Turning on wireless mode…",
-      "label": "Wireless mode (Wi-Fi)",
-      "help": "Set the phone up without a cable, over Wi-Fi: make adjustments from the comfort of your bed or couch, straight from the laptop, with the device already mounted at the TV. The USB cable is only needed to turn this mode on — and again if the phone is switched off or restarted.",
-      "connectedAt": "Connected over Wi-Fi at {ip} — you can unplug the cable now."
     },
     "mode": {
       "toPhone": "Back to phone mode",
       "toTv": "Activate TV mode",
       "help": "Switches between TV mode and phone mode in seconds. Nothing is uninstalled: apps, launcher and logins stay on the device, and TV mode is saved exactly as you left it — including tweaks you changed later."
     },
-    "checkup": "Device check-up",
-    "maintenance": "Maintenance",
-    "fullReset": "Full revert",
-    "interfaceReset": {
-      "label": "Restore the phone interface",
-      "help": "Does the phone interface still look odd even after going back to phone mode? This restores the original interface from the first setup — resolution, size, font, rotation and launcher. Apps, files and your saved TV mode stay put."
-    },
+    "phoneModeSuffix": " (phone mode)",
     "profileHint": "Is the interface just the way you want it? Save it as a profile to come back to it with one click.",
-    "accessories": {
-      "intro": "Accessories tested on the channel. They open in your browser — nothing is installed on the device.",
-      "empty": "No accessories listed yet.",
-      "soon": "coming soon"
+    "revertOne": "Revert a specific change",
+    "saveAsProfile": "Save as profile",
+    "tab": {
+      "mods": "Modifications",
+      "profiles": "Profiles",
+      "accessories": "Accessories"
+    },
+    "undo": "Undo",
+    "whatIsThis": "What is this?",
+    "whyDoThis": "Why do this?",
+    "wifi": {
+      "connected": "Connected over Wi-Fi",
+      "enabling": "Turning on wireless mode…",
+      "label": "Wireless mode (Wi-Fi)",
+      "help": "Set the phone up without a cable, over Wi-Fi: make adjustments from the comfort of your bed or couch, straight from the laptop, with the device already mounted at the TV. The USB cable is only needed to turn this mode on — and again if the phone is switched off or restarted.",
+      "connectedAt": "Connected over Wi-Fi at {ip} — you can unplug the cable now."
     }
   },
   "modeSwitch": {
-    "tv": {
-      "title": "Activate TV mode",
-      "body": "Reapplies your TV mode exactly as you left it last time — resolution, default launcher, rotation and the rest. It takes a few seconds and installs nothing new.",
-      "action": "Activate TV mode",
-      "runningTitle": "Activating TV mode…",
-      "doneTitle": "TV mode active"
-    },
+    "activateNow": "Activate now",
+    "autoTvLabel": "Activate TV mode automatically when this device connects",
+    "cancel": "Cancel",
+    "close": "Close",
+    "continueAnyway": "Continue anyway",
+    "countdownBody": "The automatic bridge is on for this device. If you plugged the phone in to use it as a phone, just cancel — nothing will be changed.",
+    "countdownTitle": "Activating TV mode in {n}s",
+    "divergentValue": "value differs",
+    "fixNow": "Fix now",
+    "fixing": "Fixing…",
+    "modePhone": "phone mode",
+    "modeTv": "TV mode",
+    "notConfirmed": "Not confirmed — {detail}",
+    "nothingToSwitch": "Nothing to switch.",
+    "pausedTitle": "One moment — we need you",
     "phone": {
       "title": "Back to phone mode",
       "body": "Restores the original phone settings in seconds. Nothing is uninstalled — apps, launcher and logins stay on the device — and your TV mode is saved as it is now, so the next activation picks up from the same point.",
@@ -327,6 +338,9 @@
       "runningTitle": "Going back to phone mode…",
       "doneTitle": "Phone mode active"
     },
+    "reinstallAndContinue": "Reinstall the launcher and continue",
+    "reinstallFailed": "The reinstall failed: {error}. Check the connection and try again.",
+    "reinstalling": "Reinstalling the TV launcher… this may take a minute.",
     "reset": {
       "title": "Restore the original interface",
       "body": "Restores the phone interface to the state recorded during first setup — resolution, interface size, font, rotation and default launcher. Use it when the phone screen still looks off even after going back to phone mode. Nothing is uninstalled, and your saved TV mode stays available for the next activation.",
@@ -340,30 +354,12 @@
       "bodyOne": "The last switch stopped halfway. 1 setting is missing for the device to be fully in {mode}. Nothing is redone — only what was left pending.",
       "bodyMany": "The last switch stopped halfway. {n} settings are missing for the device to be fully in {mode}. Nothing is redone — only what was left pending."
     },
-    "modePhone": "phone mode",
-    "modeTv": "TV mode",
-    "cancel": "Cancel",
-    "activateNow": "Activate now",
-    "close": "Close",
-    "countdownTitle": "Activating TV mode in {n}s",
-    "countdownBody": "The automatic bridge is on for this device. If you plugged the phone in to use it as a phone, just cancel — nothing will be changed.",
-    "autoTvLabel": "Activate TV mode automatically when this device connects",
-    "nothingToSwitch": "Nothing to switch.",
-    "pausedTitle": "One moment — we need you",
-    "fixNow": "Fix now",
-    "fixing": "Fixing…",
+    "resumeNow": "Finish now",
     "retry": "Try again",
     "skipItem": "Skip this item",
-    "stopHere": "Stop here",
-    "reinstallAndContinue": "Reinstall the launcher and continue",
-    "reinstalling": "Reinstalling the TV launcher… this may take a minute.",
-    "reinstallFailed": "The reinstall failed: {error}. Check the connection and try again.",
-    "notConfirmed": "Not confirmed — {detail}",
-    "divergentValue": "value differs",
-    "stillDivergent": "Still differs — {detail}",
     "skippedByUser": "Skipped at your request — you can try again from the same button",
-    "verifiedAll": "{verified}/{checked} confirmed on the device",
-    "verifiedSome": "{verified}/{checked} ok · {failed} differing — use \"Fix now\"",
+    "stillDivergent": "Still differs — {detail}",
+    "stopHere": "Stop here",
     "summary": {
       "restored": "Interface restored",
       "backToPhone": "Back on the phone",
@@ -383,8 +379,16 @@
       "attentionOne": "{n} item needs attention — see the warnings above. You can try again from the same button; what already switched is not redone.",
       "attentionMany": "{n} items need attention — see the warnings above. You can try again from the same button; what already switched is not redone."
     },
-    "resumeNow": "Finish now",
-    "switchStopped": "Switch interrupted"
+    "switchStopped": "Switch interrupted",
+    "tv": {
+      "title": "Activate TV mode",
+      "body": "Reapplies your TV mode exactly as you left it last time — resolution, default launcher, rotation and the rest. It takes a few seconds and installs nothing new.",
+      "action": "Activate TV mode",
+      "runningTitle": "Activating TV mode…",
+      "doneTitle": "TV mode active"
+    },
+    "verifiedAll": "{verified}/{checked} confirmed on the device",
+    "verifiedSome": "{verified}/{checked} ok · {failed} differing — use \"Fix now\""
   },
   "diagnostics": {
     "ready": {
@@ -462,25 +466,34 @@
     "roms": "Game ROMs"
   },
   "sendOverlay": {
-    "hint": {
-      "download": "General files",
-      "movies": "Videos and films",
-      "music": "Audio and playlists",
-      "roms": "For installed emulators"
-    },
-    "noPath": "Could not read the file path",
     "apkOnly": "This target only installs apps (.apk, .apkm or .xapk) — drop regular files on the folders",
-    "installed": "Installed on the phone",
+    "cancel": "Cancel",
+    "cancelled": "Cancelled",
+    "cancelling": "Cancelling…",
+    "checkingSpace": "Checking space on the phone…",
+    "close": "Close",
     "connectFirst": {
       "title": "Connect the phone first",
       "body": "To send files or install APKs, the device must be connected and authorized."
     },
+    "doneAll": "Transfer complete",
+    "doneCancelled": "Transfer cancelled",
+    "doneError": "Transfer incomplete",
     "drop": {
       "title": "Drop to send to the phone",
       "body": "Choose the destination by dropping the file straight onto the target.",
       "apkTitle": "Install on the phone",
       "apkBody": "Drop an app (.apk, .apkm or .xapk) here to install it directly"
     },
+    "hint": {
+      "download": "General files",
+      "movies": "Videos and films",
+      "music": "Audio and playlists",
+      "roms": "For installed emulators"
+    },
+    "installed": "Installed on the phone",
+    "installingApk": "Installing the app on the phone… this may take a moment. Do not close DexArmor.",
+    "noPath": "Could not read the file path",
     "noSpace": {
       "title": "Not enough space on the phone",
       "apk": "This app needs {needed}, but the phone only has {free} free. Free up space (you can use DexArmor's {cleanup}) and try again.",
@@ -489,17 +502,13 @@
       "ok": "Got it"
     },
     "preparing": "Preparing the transfer…",
+    "retry": "Try again",
+    "retryN": "Try again ({n})",
     "sending": "Sending {current} of {total}…",
-    "doneAll": "Transfer complete",
-    "doneError": "Transfer incomplete",
-    "doneCancelled": "Transfer cancelled",
-    "checkingSpace": "Checking space on the phone…",
-    "installingApk": "Installing the app on the phone… this may take a moment. Do not close DexArmor.",
-    "sentPercent": "{percent}%{size} sent",
+    "sent": "Sent",
     "sentOf": " of {size}",
-    "transferring": "Transferring{size}… ({elapsed}) Large files can take a few minutes — do not close DexArmor.",
-    "cancel": "Cancel",
-    "cancelling": "Cancelling…"
+    "sentPercent": "{percent}%{size} sent",
+    "transferring": "Transferring{size}… ({elapsed}) Large files can take a few minutes — do not close DexArmor."
   },
   "cleanup": {
     "title": "Pit stop · cleanup",
@@ -533,24 +542,9 @@
     "close": "Close"
   },
   "profiles": {
-    "title": "Interface profiles",
-    "intro": "A profile stores the interface exactly as it is right now — resolution, size, rotation, font and the rest — so you can come back to it with one click.",
-    "step1": "On the {mods} tab, adjust the interface until it looks right: resolution, interface size, font, rotation (items marked {adjustable} can be changed freely).",
-    "step2": "Happy with it? Give it a name and tap {save}, just below.",
-    "step3": "Done: apply any saved profile with one click — today, tomorrow or when you change TV. Saving again with the same name updates the profile.",
-    "namePlaceholder": "Profile name — e.g. \"Living room 4K\"",
-    "save": "Save current interface",
-    "saving": "Taking a snapshot…",
-    "saved": "Profile \"{name}\" saved. Whenever you want this interface back, it's one click on Apply.",
     "applied": "Profile \"{name}\" applied — follow the check on the right-hand side.",
-    "needDevice": "Connect the device to save and apply profiles.",
-    "nothingToSnapshot": "There are no active interface settings to snapshot yet — start on the Modifications tab (or activate TV mode).",
-    "savedTitle": "Saved profiles",
-    "none": "No profiles saved yet. The first one you save will show up here.",
     "apply": "Apply this profile",
     "applying": "Applying…",
-    "deleteConfirm": "Delete?",
-    "deleteAria": "Delete the profile {name}",
     "chip": {
       "densitySmall": "smaller interface",
       "densityLarge": "larger interface",
@@ -559,34 +553,66 @@
       "font": "font {value}x",
       "moreOne": "+{n} setting",
       "moreMany": "+{n} settings"
-    }
+    },
+    "deleteAria": "Delete the profile {name}",
+    "deleteConfirm": "Delete?",
+    "intro": "A profile stores the interface exactly as it is right now — resolution, size, rotation, font and the rest — so you can come back to it with one click.",
+    "namePlaceholder": "Profile name — e.g. \"Living room 4K\"",
+    "needDevice": "Connect the device to save and apply profiles.",
+    "none": "No profiles saved yet. The first one you save will show up here.",
+    "nothingToSnapshot": "There are no active interface settings to snapshot yet — start on the Modifications tab (or activate TV mode).",
+    "save": "Save current interface",
+    "saved": "Profile \"{name}\" saved. Whenever you want this interface back, it's one click on Apply.",
+    "savedAt": "saved on {date}",
+    "savedTitle": "Saved profiles",
+    "saving": "Taking a snapshot…",
+    "step1": "On the {mods} tab, adjust the interface until it looks right: resolution, interface size, font, rotation (items marked {adjustable} can be changed freely).",
+    "step2": "Happy with it? Give it a name and tap {save}, just below.",
+    "step3": "Done: apply any saved profile with one click — today, tomorrow or when you change TV. Saving again with the same name updates the profile.",
+    "title": "Interface profiles"
   },
   "remote": {
     "back": "Back",
-    "up": "Up",
+    "down": "Down",
     "home": "Home screen",
     "left": "Left",
     "ok": "Confirm (OK)",
-    "right": "Right",
-    "volDown": "Volume down",
-    "down": "Down",
-    "volUp": "Volume up",
     "playPause": "Play / pause what's showing",
+    "right": "Right",
+    "rotate": "ROTATE SCREEN",
     "rotateHelp": "Screen the wrong way round? Turns a quarter turn per click until it's right — the correct position is saved in TV mode",
-    "rotate": "ROTATE SCREEN"
+    "title": "REMOTE CONTROL",
+    "up": "Up",
+    "volDown": "Volume down",
+    "volUp": "Volume up"
   },
   "health": {
+    "allGood": "All good here.",
+    "battery": "Battery",
     "chartAria": "Temperature over the last {minutes} minutes, between {min} and {max} degrees",
+    "chartLabel": "Temperature · last {minutes} min",
     "chartTitle": "Last {minutes} min · min {min}°C · max {max}°C",
     "collecting": "Collecting the temperature history…",
-    "tooHot": "Too hot: give the device a rest or improve the ventilation behind the TV.",
-    "warm": "Warm: avoid leaving the device in a stuffy spot or in the sun.",
-    "unplugged": "Unplugged: for TV use, keep the charger connected.",
-    "notCharging": "Plugged in but not charging: check the cable and the charger.",
     "needDevice": "Connect the device to follow battery, temperature and free space.",
+    "notCharging": "Plugged in but not charging: check the cable and the charger.",
     "readFailed": "Could not read the data right now — retrying…",
     "reading": "Reading the device data…",
-    "allGood": "All good here."
+    "storage": "Storage",
+    "storageAria": "Storage {pct}% used",
+    "storageFree": "{free} free of {total}",
+    "storageFull": "Storage almost full: use the Pit stop, just below.",
+    "subCharging": "charging",
+    "subFull": "fully charged",
+    "subHot": "very hot",
+    "subNormal": "normal",
+    "subOnBattery": "on battery",
+    "subPlugged": "plugged in",
+    "subWarm": "warm",
+    "temperature": "Temperature",
+    "title": "Telemetry",
+    "tooHot": "Too hot: give the device a rest or improve the ventilation behind the TV.",
+    "unplugged": "Unplugged: for TV use, keep the charger connected.",
+    "warm": "Warm: avoid leaving the device in a stuffy spot or in the sun."
   },
   "tvRes": {
     "title": "What is your TV's resolution?",
@@ -610,6 +636,7 @@
     "backToResolution": "Back to the resolution"
   },
   "progress": {
+    "empty": "Nothing has run yet. Steps appear here during execution.",
     "playProtect": {
       "steps": [
         "On the phone, open the Google Play app",
@@ -621,32 +648,35 @@
       "show": "How to allow it on the phone →",
       "hide": "Hide guide"
     },
-    "shellTitle": "Your shell, your call.",
+    "save": "Save",
     "shellBody": "DexArmor is the frame — every setting applied is one piece of the setup you are building. Don't like a piece? Tap {undo} next to it: it comes off right away, without dismantling the rest.",
-    "empty": "Nothing has run yet. Steps appear here during execution."
+    "shellTitle": "Your shell, your call.",
+    "title": "Progress",
+    "undo": "Undo"
   },
   "reset": {
-    "title": "Full revert",
-    "intro": "This will undo EVERYTHING applied to this device, returning it to its previous state. To undo a single item, use “Revert a specific change” in the sidebar. This will be undone:",
-    "nothing": "Nothing to revert.",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Revert everything",
+    "dexWarning": "DeX mode, if you turned it off, has to be switched back on manually in the device settings. As a last resort, a factory reset on the phone reverts everything safely.",
+    "done": "Revert complete",
+    "export": "Export journal",
+    "exported": "Journal exported.",
+    "import": "Import journal",
     "interfaceOnly": "Is it only the phone interface that looks off? You don't need to undo everything: restore the original interface from the first setup — apps, files and your saved TV mode stay put.",
     "interfaceReset": "Restore the phone interface",
-    "dexWarning": "DeX mode, if you turned it off, has to be switched back on manually in the device settings. As a last resort, a factory reset on the phone reverts everything safely.",
-    "sessionEnd": "When you revert everything, the stored record of this setup is deleted — saved TV mode, history and preferences — and DexArmor starts a fresh session, as on first use. The phone's apps and personal files are not affected.",
-    "cancel": "Cancel",
-    "confirm": "Revert everything",
-    "export": "Export journal",
-    "import": "Import journal",
-    "exported": "Journal exported.",
-    "close": "Close",
+    "intro": "This will undo EVERYTHING applied to this device, returning it to its previous state. To undo a single item, use “Revert a specific change” in the sidebar. This will be undone:",
+    "manualStep": "Needs a manual step — {detail}",
+    "newSession": "New session started — the previous record was deleted. The device can be set up from scratch whenever you like.",
+    "nothing": "Nothing to revert.",
     "running": "Reverting…",
-    "done": "Revert complete",
+    "sessionEnd": "When you revert everything, the stored record of this setup is deleted — saved TV mode, history and preferences — and DexArmor starts a fresh session, as on first use. The phone's apps and personal files are not affected.",
     "summary": "Reverted: {done} of {total} {unit}.",
-    "unitOne": "item",
+    "title": "Full revert",
     "unitMany": "items",
-    "warnOne": "{n} item needs a step from you — see the warnings above. If you'd rather revert everything at once, a factory reset on the device is the guarantee.",
+    "unitOne": "item",
     "warnMany": "{n} items need a step from you — see the warnings above. If you'd rather revert everything at once, a factory reset on the device is the guarantee.",
-    "newSession": "New session started — the previous record was deleted. The device can be set up from scratch whenever you like."
+    "warnOne": "{n} item needs a step from you — see the warnings above. If you'd rather revert everything at once, a factory reset on the device is the guarantee."
   },
   "close": {
     "title": "Before you go…",
@@ -657,34 +687,39 @@
     "closeAnyway": "Close anyway"
   },
   "device": {
-    "phoneMode": "Phone mode",
-    "recommended": "Recommended setup",
     "applyManual": "Apply manual selection",
-    "applying": "Applying…",
-    "dragHint": "Drag files or APKs onto this window to send them to the phone",
-    "recommendedHelp": "Applies the ideal TV set in one click — we only ask for your TV's resolution. Screen lock, gestures and app cleanup are up to you, on the left.",
-    "orSelect": "Or pick modifications on the left and apply them here.",
     "applyMore": "Apply more settings",
-    "picker": "Device",
-    "unknownDevice": "Device",
+    "applying": "Applying…",
+    "battery": "Battery",
+    "dragHint": "Drag files or APKs onto this window to send them to the phone",
+    "orSelect": "Or pick modifications on the left and apply them here.",
     "pendingPhone": "Mode switch incomplete — finish going back to phone",
-    "pendingTv": "Mode switch incomplete — finish activating TV"
+    "pendingTv": "Mode switch incomplete — finish activating TV",
+    "phoneMode": "Phone mode",
+    "picker": "Device",
+    "recommended": "Recommended setup",
+    "recommendedHelp": "Applies the ideal TV set in one click — we only ask for your TV's resolution. Screen lock, gestures and app cleanup are up to you, on the left.",
+    "tvMode": "TV mode active",
+    "unknownDevice": "Device"
   },
   "status": {
-    "ready": "Ready",
     "actionNeeded": "Action needed",
     "blocked": "Blocked",
+    "deviceSerial": "Device: {serial}",
     "querying": "Looking for devices…",
+    "ready": "Ready",
+    "recovered": "The connection was restarted automatically.",
     "recovering": "Restarting the connection…",
     "requerying": "Checking again…",
-    "recovered": "The connection was restarted automatically.",
+    "retry": "Check again",
     "start": "Start setup"
   },
   "dexGuide": {
-    "title": "DeX or TV Experience?",
-    "how": "How to turn DeX off",
+    "back": "Back",
     "disable": "Turn DeX off",
-    "pickVersion": "Choose your device's version."
+    "how": "How to turn DeX off",
+    "pickVersion": "Choose your device's version.",
+    "title": "DeX or TV Experience?"
   },
   "controlCenter": {
     "title": "Control center",
@@ -695,22 +730,34 @@
     "body": "Plug the device into the computer with the USB cable. The screen updates on its own as soon as it is detected."
   },
   "app": {
-    "undone": "Undone — the device is back to its previous state",
-    "undoFailed": "Could not undo: {error}",
-    "playProtectBlocked": "Android blocked it for security. See the guide →",
-    "signatureMismatch": "A version is already installed with a different signature.",
     "needDeviceForProfile": "Connect the device to save a profile.",
-    "reportTitle": "DexArmor — Setup report",
+    "playProtectBlocked": "Android blocked it for security. See the guide →",
+    "reportAndroidDate": "Android: {android}  |  Date: {date}",
     "reportDevice": "Device: {model} ({serial})",
+    "reportDone": "OK",
+    "reportError": "ERROR",
+    "reportPending": "PENDING",
+    "reportRunning": "IN PROGRESS",
+    "reportTitle": "DexArmor — Setup report",
+    "reportWarning": "WARNING",
+    "signatureMismatch": "A version is already installed with a different signature.",
+    "undoFailed": "Could not undo: {error}",
+    "undone": "Undone — the device is back to its previous state",
     "unknownModel": "unknown"
   },
   "phoneScreen": {
-    "validated": "Device validated.",
-    "next": "Continue",
     "almost": "Almost there",
     "authorize": "Cable connected. On the phone screen, tap \"Allow\" to authorize this computer.",
+    "chooseNext": "You can pick the changes and continue.",
+    "connected": "Connected!",
+    "next": "Continue",
     "preparing": "Preparing your TV box",
-    "ready": "Your TV box is ready"
+    "ready": "Your TV box is ready",
+    "searching": "Looking for device…",
+    "tvReadyModel": "{model} is set up. Unplug the cable and connect it to the TV through the HDMI output.",
+    "tvReadyNoModel": "All set. Unplug the cable and connect it to the TV through the HDMI output.",
+    "validated": "Device validated.",
+    "validatedModel": "{model} validated."
   },
   "scrcpy": {
     "windowTitle": "DexArmor — Phone screen",
@@ -718,6 +765,7 @@
     "exited": "scrcpy exited with code {code}"
   },
   "tutorial": {
+    "back": "Back",
     "s1": {
       "title": "Open Settings",
       "body": "On the phone, go to Settings › About phone › Software information."
