@@ -113,11 +113,17 @@ ls -lah release/DexArmor-*-x64*.exe
 ## ⚠️ A SAÍDA DO BUILD WINDOWS MUDOU DE PASTA (28/07/2026)
 
 ```json
-"dist:win": "... electron-builder --win --config.directories.output=../dexarmor-instaladores"
+"dist:win": "... --config.directories.output=/private/tmp/dexarmor-build && npm run verify:win"
 ```
 
-O `npm run dist:win` **não escreve mais em `release/`**. Sai em
-`~/dexarmor-instaladores/` (o `..` resolve a partir da raiz do projeto).
+O `npm run dist:win` **não escreve mais em `release/`** — sai em
+`/private/tmp/dexarmor-build` e roda um verificador no fim.
+
+> **Primeira tentativa, e por que falhou.** A saída foi movida para
+> `~/dexarmor-instaladores/` e o instalador foi apagado **lá também**. O
+> Kaspersky varre a **pasta pessoal inteira**; trocar de pasta dentro dela não
+> adianta. Só `/private/tmp` escapou em todos os testes. Fica o registro para
+> ninguém repetir a tentativa achando que resolve.
 
 **Por quê — medido, não suposto.** O Kaspersky desta máquina **apaga o
 instalador NSIS** minutos depois de o `electron-builder` criá-lo em `release/`.
@@ -136,6 +142,17 @@ havia começado a modificar/apagar na origem. O alvo `nsis` mantém `CRCCheck`
 ligado e se autoverifica ao iniciar; o `portable` roda com `CRCCheck off` (ver o
 script gerado no `builder-debug.yml`), e por isso não reclamava — o que fazia o
 problema parecer intermitente.
+
+
+**O portátil NUNCA foi apagado** — em nenhuma pasta, em nenhuma rodada. Quando
+o instalador sumir antes de você conseguir copiar, ele é o caminho que
+funciona: não instala, não desinstala, e não tem checagem de integridade para
+falhar.
+
+**`npm run verify:win`** (roda sozinho no fim do `dist:win`) faz o que o
+"BUILD SUCCESSFUL" não faz: abre cada `.exe` com `7z t` — que descompacta e
+confere entrada por entrada — e imprime o SHA-256. Exige `brew install p7zip`;
+sem ele, avisa e segue só com o hash.
 
 **Regra de operação:**
 

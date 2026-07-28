@@ -11,9 +11,10 @@
     "build:renderer": "node scripts/check-i18n.js && vite build",
     "start": "npm run build:renderer && electron .",
     "dist": "npm run build:renderer && electron-builder",
-    "dist:win": "npm run build:renderer && electron-builder --win --config.directories.output=../dexarmor-instaladores",
+    "dist:win": "npm run build:renderer && electron-builder --win --config.directories.output=/private/tmp/dexarmor-build && npm run verify:win",
     "dist:mac": "npm run build:renderer && electron-builder --mac",
-    "dist:linux": "npm run build:renderer && electron-builder --linux"
+    "dist:linux": "npm run build:renderer && electron-builder --linux",
+    "verify:win": "node scripts/verify-win.js"
   },
   "author": "",
   "license": "MIT",
@@ -48,23 +49,43 @@
       {
         "from": "platform-tools/${os}",
         "to": "platform-tools",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "scrcpy/${os}",
         "to": "scrcpy",
-        "filter": ["**/*", "!README.txt", "!adb", "!adb.exe", "!*.1"]
+        "filter": [
+          "**/*",
+          "!README.txt",
+          "!adb",
+          "!adb.exe",
+          "!*.1"
+        ]
       },
       {
         "from": "apks",
         "to": "apks",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "win": {
       "target": [
-        { "target": "nsis", "arch": ["x64"] },
-        { "target": "portable", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
       "artifactName": "${productName}-${version}-${arch}.${ext}"
     },
@@ -77,14 +98,25 @@
       "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
     },
     "mac": {
-      "target": [{ "target": "dmg", "arch": ["x64", "arm64"] }],
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
       "category": "public.app-category.utilities",
       "extendInfo": {
         "NSLocalNetworkUsageDescription": "O DexArmor usa a rede local para conectar ao seu celular por Wi-Fi (modo sem fio e espelhamento sem cabo)."
       }
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Utility",
       "maintainer": "DexArmor"
     }
