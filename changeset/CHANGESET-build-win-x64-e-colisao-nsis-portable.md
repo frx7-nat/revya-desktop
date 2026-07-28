@@ -108,10 +108,17 @@ ls -lah release/DexArmor-*-x64*.exe
 #   DexArmor-0.1.0-x64-portable.exe  (portable)
 ```
 
-**Observação para venda:** o `.exe` sai **sem assinatura digital**, então o
-Windows exibe o alerta SmartScreen ("O Windows protegeu o seu PC" → "Mais
-informações" → "Executar assim mesmo"). Para eliminar isso nos clientes finais,
-avaliar um certificado de code signing.
+**Observação para distribuição:** o `.exe` sai **sem assinatura digital**, então
+o Windows exibe o alerta SmartScreen ("O Windows protegeu o seu PC" → "Mais
+informações" → "Executar assim mesmo"). Para eliminar isso, avaliar um
+certificado de code signing.
+
+> **O atrito pesa MAIS num app gratuito** (nota de 28/07/2026, quando ficou
+> decidido distribuir de graça). Quem pagou tem investimento e atravessa o
+> aviso; quem está baixando um programa gratuito e desconhecido, muitas vezes
+> simplesmente desiste. A tensão é honesta: certificado de code signing é caro
+> de justificar sem receita direta — mas agora ele compete com a receita dos
+> links de afiliado e das doações, não com nada.
 
 ---
 

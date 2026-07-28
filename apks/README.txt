@@ -4,10 +4,18 @@ APKS EMBUTIDOS NO PROGRAMA
 REGRA (27/07/2026): só entra aqui APK QUE NOS PERTENCE.
 
 O catálogo de aplicativos de terceiros (streaming, ferramentas, emuladores e
-o Projectivy Launcher) foi REMOVIDO do DexArmor. Motivo: redistribuir o APK
-de outra empresa dentro de um programa vendido é um problema legal nosso. O
-DexArmor faz a transformação do celular; os aplicativos que o usuário quiser
-ele instala a partir dos arquivos dele, arrastando para a janela do programa
+o Projectivy Launcher) foi REMOVIDO do DexArmor. Motivo: REDISTRIBUIR o APK
+de outra empresa, sem licença para isso, é problema de direito autoral.
+
+ATENÇÃO AO MOTIVO (corrigido em 28/07/2026). Até esta data a frase acima dizia
+"dentro de um programa vendido". Está errado e é perigoso: distribuir software
+de terceiros sem licença é infração INDEPENDENTEMENTE de haver cobrança —
+grátis também é distribuição. Quando o DexArmor passou a ser gratuito, a
+redação antiga sugeria que a regra tinha caído. Não caiu. Cobrar nunca foi a
+parte que importava.
+
+O DexArmor faz a transformação do celular; os aplicativos que o usuário quiser
+ele instala a partir dos arquivos DELE, arrastando para a janela do programa
 ("Instalar no celular" — aceita .apk, .apkm e .xapk).
 
 Os arquivos que estavam aqui foram movidos para fora do projeto, em

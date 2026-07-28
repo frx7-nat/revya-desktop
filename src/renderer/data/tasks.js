@@ -386,7 +386,7 @@ export const ACCESSORY_GROUPS = [
     items: [
       { id: 'ac-osmo-cage', url: 'https://s.click.aliexpress.com/e/_c43rvubf', store: 'AliExpress' },
       { id: 'ac-osmo-bastao', url: 'https://s.click.aliexpress.com/e/_c3LHFnyH', store: 'AliExpress' },
-      { id: 'ac-osmo-engate', url: 'https://s.click.aliexpress.com/e/_c4om5fa1', store: 'AliExpress' },
+      { id: 'ac-osmo-engate', url: 'https://s.click.aliexpress.com/e/_c3cFxYMj', store: 'AliExpress' },
       { id: 'ac-osmo-peito', url: 'https://s.click.aliexpress.com/e/_c3WTRfDf', store: 'AliExpress' },
       { id: 'ac-osmo-pelicula', url: 'https://s.click.aliexpress.com/e/_c4om5fa1', store: 'AliExpress' },
     ],

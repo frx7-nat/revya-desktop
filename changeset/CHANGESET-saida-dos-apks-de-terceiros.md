@@ -2,11 +2,19 @@
 
 ## Por quê
 
-O DexArmor é um produto vendido. Embutir e redistribuir o APK de outra empresa
-(Netflix, Disney+, Aptoide, AetherSX2, Projectivy…) é risco legal do projeto,
-não do usuário. A decisão: o programa passa a fazer **apenas a transformação do
-celular**. Os aplicativos são escolha e responsabilidade de quem usa, e entram
-pelo caminho que o app já tinha — o arrastar-e-soltar.
+Embutir e redistribuir o APK de outra empresa (Netflix, Disney+, Aptoide,
+AetherSX2, Projectivy…) **sem licença para redistribuir** é risco legal do
+projeto, não do usuário. A decisão: o programa passa a fazer **apenas a
+transformação do celular**. Os aplicativos são escolha e responsabilidade de
+quem usa, e entram pelo caminho que o app já tinha — o arrastar-e-soltar.
+
+> **Correção de 28/07/2026.** Este parágrafo começava com "O DexArmor é um
+> produto vendido", como se a cobrança fosse o que criava o risco. **Não é.**
+> Redistribuir software de terceiros sem licença é infração de direito autoral
+> com ou sem cobrança — grátis também é distribuição. A redação antiga ficou
+> perigosa no dia em que o produto virou gratuito (28/07), porque sugeria que a
+> regra tinha caído junto. Não caiu: o critério é a LICENÇA, nunca o preço.
+> A regra viva está em `apks/README.txt`, com o mesmo alerta.
 
 ## O que saiu
 
