@@ -56,7 +56,21 @@ adb disconnect
 - [ ] O programa **não** trava nem mostra erro cru
 - [ ] Ao reconectar o cabo, o app volta sozinho ao estado `ready`
 
-**Anotar:** quanto tempo levou para perceber a reconexão. _(preencher)_
+### ✅ EXECUTADO em 29/07 — PASSA
+
+```
+estado       no_devices · blocked
+autoRecover  null              (correto: não há o que recuperar sem aparelho)
+fases        querying -> done
+detecção     ~6 s para notar a ausência · ~4 s para notar a volta
+```
+
+Volta a `ready` sozinho, sem clique.
+
+> **Isto afia o achado do cenário 2.** A mensagem "Nenhum Galaxy detectado", com
+> os passos sobre cabo e Depuração USB, está **correta aqui** — não há aparelho
+> mesmo. O problema lá não é o texto: é a recuperação ter **levado** a este
+> estado indevidamente, a partir de um aparelho que existia e só perdera a rede.
 
 ---
 
@@ -389,6 +403,36 @@ adb disconnect 192.168.3.9:5555
 - [ ] Se havia uma execução em andamento, ela **para** — não continua no vazio
 - [ ] `adb connect <ip>:5555` devolve o app ao normal
 
+### ✅ EXECUTADO em 29/07 — PASSA · e ESTREITA o achado do cenário 2
+
+S23 Ultra só por Wi-Fi, troca para modo TV interrompida no 3º item de 9 com
+modo avião.
+
+**O diálogo mantém o contexto da fila** — o app **não** abandonou o progresso
+pela tela "Nenhum Galaxy detectado". Mesma mensagem clara do cenário 4, e ela
+já menciona "o cabo (ou o Wi-Fi)".
+
+**O pareamento sem fio SOBREVIVEU:**
+
+```
+t+05s … t+25s   192.168.3.3:5555   offline   (entrada viva, não destruída)
+```
+
+Isso **restringe o achado `ALTO` do cenário 2**: a recuperação destrutiva só
+roda quando o app está **ocioso na tela de conexão**. Durante uma troca em
+andamento, o diálogo é dono do fluxo e o `kill-server` não é acionado. O
+defeito é real, mas não atinge quem está no meio de uma operação — que era o
+pior desfecho imaginável.
+
+**Volta do modo avião:** a conexão se restabelece sozinha; a tela **não** retoma
+automaticamente. É correto — o diálogo pede explicitamente "toque em Tentar de
+novo", e retomar sem ordem seria pior para quem desistiu no meio.
+
+**Retomada por Wi-Fi:** completou a fila, 11 ativas, 0 dormentes.
+
+**Volta ao modo celular: retrato IDÊNTICO ao de referência.** A reversibilidade
+sobrevive também à queda de rede.
+
 ---
 
 ## Fechamento
@@ -399,10 +443,24 @@ adb disconnect 192.168.3.9:5555
       erros ADB" para verificado, com as ressalvas que aparecerem
 - [ ] Aparelho devolvido ao estado inicial e conferido contra o retrato
 
-### Achados
+### Achados — execução de 29/07/2026
 
-_(preencher durante a execução — um por linha, com o cenário de origem)_
-
-| # | cenário | achado | severidade sugerida |
+| # | cenário | achado | severidade |
 | --- | --- | --- | --- |
-| | | | |
+| 1 | 2 · recuperação automática | `kill-server` **destrói** o pareamento sem fio em vez de restaurá-lo; o app cai em "Nenhum Galaxy detectado" com passos sobre cabo USB e **nunca reconecta**, mesmo com o aparelho de volta à rede. Restrição medida no cenário 6: só ocorre com o app **ocioso na tela de conexão** | **ALTO** |
+| 2 | 5 · ADB ausente | os passos são escritos para **desenvolvedor** ("ADB empacotado", "platform-tools no PATH"). Para quem baixou um `.dmg`, a ação útil seria "reinstale o programa" — que não é dita | **MÉDIO** |
+| 3 | 4 · interrupção | `tw-rotate` falha **no meio de si mesmo** (trava a rotação, não gira), deixando registro e aparelho em desacordo. Auto-corrige no ciclo seguinte; risco só se o usuário parar ali e nunca mais alternar | **BAIXO** |
+| 4 | transversal | conferência pós-troca acusa **divergência falsa** — `confirmStable` tem ~1,4 s de paciência e o override de 4K não assenta a tempo. Reproduzido **3 vezes**; passou a 9/9 justamente quando a resolução foi aplicada isolada | **MÉDIO** |
+
+### O que o roteiro confirmou funcionando
+
+- Classificação dos estados: `noDevices`, `unauthorized`, `adbMissing` e
+  `offline` foram todos identificados corretamente
+- `autoRecover: null` onde recuperação não faria sentido (`unauthorized`,
+  `noDevices`) — o app não desperdiça tentativa
+- Diálogo de interrupção: identifica o item, explica a causa, diz o que fazer,
+  promete continuidade e **cumpre** a promessa
+- Retentativa automática antes de desistir (`retry-transitorio`, 2 tentativas)
+- **Reversibilidade preservada em todos os cenários**, inclusive após
+  interrupção por cabo e por queda de rede, com personalizações do usuário
+  intactas
