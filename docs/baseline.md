@@ -250,6 +250,21 @@ cenários executados no S23 Ultra (cabo e Wi-Fi).
 
 ---
 
+## 5e. Reconferido após a Fase 3 — 29/07
+
+Ciclo completo no S23 Ultra por Wi-Fi, com o build contendo as cinco correções
+da Fase 3 (R1, R2, R3, R5, R8).
+
+- **Retrato idêntico** ao de referência, campo por campo, com as
+  personalizações preservadas
+- `fingerprint-pos-troca`: **9/9 na ida e 9/9 na volta** — antes da correção a
+  ida acusava divergência falsa em 3 de 3 medições
+
+As linhas verificadas em §5b, §5c e §5d **continuam válidas** com o código
+corrigido.
+
+---
+
 ## 6. NÃO verificado — e é isso que a revisão não pode assumir
 
 | item | situação |

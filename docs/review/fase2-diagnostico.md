@@ -348,6 +348,26 @@ cabo. Criada a variante `diagnostics.offlineWireless`.
 | modo avião ligado | `no_devices`, pareamento destruído | `offline`, pareamento **sobreviveu**, `recoveryAttempted: false` |
 | modo avião desligado | preso em "conecte o cabo" indefinidamente | **`ready` em 1 segundo**, sem intervenção |
 
+### Baseline reconferido em aparelho — 29/07, S23 Ultra por Wi-Fi
+
+Ciclo completo celular → TV → celular, pela interface real, com o build
+contendo as cinco correções.
+
+**Retrato IDÊNTICO ao de referência**, campo por campo — densidade 560, fonte
+0,8 e `com.rama.mako` preservados. Nenhuma regressão.
+
+**E a prova que faltava para o R2:**
+
+```
+ida    fingerprint-pos-troca   9/9 conferidos no aparelho
+volta  fingerprint-pos-troca   9/9 conferidos no aparelho
+```
+
+Nas três medições anteriores à correção, a IDA sempre acusava divergência falsa
+(7/8, 8/9, 8/9). Com a mesma operação pesada — 4K com densidade pareada — agora
+passa **9/9 nas duas direções**. O falso positivo que minava a confiança no
+diagnóstico do próprio app está resolvido.
+
 ### Ferramentas da Fase 1 reexecutadas
 
 Sem ciclos, sem dependência órfã, `knip` não acusa o módulo novo. A duplicação
