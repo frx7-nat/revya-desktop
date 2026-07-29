@@ -6,6 +6,32 @@ instrução, junto com o `diff-codigo.patch` desta mesma pasta.
 
 ---
 
+## Escopo, e onde achar o material
+
+Você está na raiz de um repositório git. O que está em revisão é o intervalo
+entre a referência `pre-review-v1` (antes) e `HEAD` (agora).
+
+Comece por:
+
+```bash
+git diff pre-review-v1..HEAD -- src/ scripts/ build/ package.json
+```
+
+O mesmo diff está gravado em `docs/review/fase4/diff-codigo.patch` (573 linhas)
+caso prefira lê-lo de arquivo.
+
+Revise **apenas código**: `src/`, `scripts/`, `build/`, `package.json`. O
+intervalo completo também traz ~2000 linhas de `docs/` e `changeset/` — é a
+papelada desta mesma revisão (relatórios, roteiros, este arquivo). Contra 237
+linhas de código. **Não comente essas linhas**; use-as como referência quando
+precisar, nunca como alvo.
+
+E não pare no diff: o repositório inteiro está à sua disposição, em modo
+somente leitura. Abra os arquivos vizinhos — várias das perguntas abaixo só têm
+resposta fora das linhas que mudaram.
+
+---
+
 ## Papel
 
 Você é um engenheiro sênior contratado para **quebrar** este código antes que
