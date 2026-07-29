@@ -4,7 +4,72 @@
 
 **Princípio central:** diagnóstico e correção são etapas separadas. Nenhuma alteração de código ocorre antes do relatório de diagnóstico estar aprovado.
 
-**Escopo:** app desktop (Electron/macOS, com suporte Windows em teste) e launcher Android (fachada do modo TV).
+**Escopo:** app desktop (Electron; macOS e **Windows, validado em PC real em 28/07/2026**) e launcher Android (fachada do modo TV).
+
+---
+
+> ## ⚠️ Revisão do plano — 29/07/2026
+>
+> O plano foi escrito antes da sessão de 28/07 e pedia trabalho sobre coisas
+> que **não existem**. Corrigido abaixo; registrado aqui para quem comparar com
+> a versão anterior.
+>
+> **Removido — não existe no código:**
+>
+> | item original | realidade |
+> | --- | --- |
+> | "integridade da verificação de **licença**/registro de dispositivo" (Fases 2 e 4) | não existe, e **não vai existir**: decidiu-se em 28/07 distribuir o app **gratuitamente**. Sem venda não há licença |
+> | "validação do **JSON remoto do changelog**" | não existe. O app não faz chamada de rede alguma — a única é o `https.get` do `downloadApk`, e nenhuma task usa |
+>
+> **Respondido — a pergunta já tem resposta:**
+>
+> - "verificar se R8/minify está ativo no release" → está **desativado**
+>   (`isMinifyEnabled = false`). Deixa de ser investigação e vira **decisão**:
+>   ligar ou não, sabendo que R8 em Compose exige conferir regras de ProGuard.
+>
+> **Acrescentado ao escopo — código novo de 28/07, nada dele revisado:**
+>
+> - `scripts/after-pack.js` — assinatura ad-hoc do macOS (sem ela o Gatekeeper
+>   classificava o app como **malware** e o movia para o Lixo)
+> - `build/installer.nsh` — `CRCCheck off` no instalador Windows
+> - `scripts/verify-win.js` — verificação e empacotamento dos artefatos
+> - `preferredTask()` no `main.js` + `CAPTURABLE_KINDS` no `runner.js` —
+>   perfil salvo × catálogo na ponte de modos
+> - `src/renderer/utils/locale.js` — formatação de número/data por idioma
+> - guarda de foco no `win.on('close')` — o app travava o instalador
+>
+> **Ferramental que já existe e a Fase 1 deve incorporar:**
+>
+> - `npm run check:i18n` (três checagens; roda no `build:renderer`)
+> - tarefa `checkI18n` do Gradle, presa ao `preBuild`
+> - `npm run verify:win`
+>
+> Ver `changeset/` de ambos os repositórios e o `I18N.md`.
+
+---
+
+## Sobre a troca de nome do produto
+
+Está em avaliação renomear o DexArmor. **A ordem recomendada é revisar
+primeiro**, porque a revisão vai apagar código — renomear antes é renomear o
+que será deletado. A Fase 5 já prevê conferência de terminologia visível ao
+usuário, que é onde o rename cosmético encaixa.
+
+**Uma exceção**, se o nome já estiver decidido: o `applicationId` do Android
+(`tech.dexarmor.launcher`) não é texto, é **identidade**. Trocá-lo cria um app
+diferente — o antigo não atualiza e os dois convivem instalados. Como as Fases
+0, 3 e 5 verificam comportamento **em aparelho**, mudá-lo no fim invalida essas
+verificações e obriga a refazer o estado dos aparelhos.
+
+Se o nome estiver decidido, troque os identificadores estruturais
+(`applicationId`, a árvore dos 25 arquivos `.kt`, `appId`, `name`) **antes da
+Fase 0**. Se ainda não estiver, siga o plano e assuma que o teste final de
+aparelho será refeito depois do rename.
+
+Dimensão medida em 29/07: ~680 ocorrências do nome (259 no desktop, 248 no
+launcher, 43 na landing, 129 no site), das quais 65 são texto visível ao
+usuário. O caminho crítico não é o código — é o domínio `dexarmor.tech` e o
+trabalho de SEO já feito.
 
 ---
 
@@ -12,11 +77,14 @@
 
 *Duração estimada: meia diária. Pré-requisito de tudo.*
 
-- [ ] Criar tag no git em ambos os repositórios: `git tag pre-review-v1 && git push --tags`
+- [ ] Criar tag no git em ambos os repositórios: `git tag pre-review-v1`
+      (o `git push --tags` fica pendente: **nenhum dos dois repositórios tem remote** — ver item 1 do `PENDENCIAS.md` do launcher)
 - [ ] Gerar build de referência de cada aplicação e arquivar os binários (fora do repositório)
 - [ ] Documentar em `docs/baseline.md` o comportamento verificado no aparelho real:
   - [ ] Desktop: conversão completa de um Galaxy em TV box, reversão em um clique, detecção e recuperação de erros ADB
-  - [ ] Launcher: navegação em loop pelas cinco categorias, botão MODO (Dashboard ↔ TV com escala 0,85), ciclo das três cores de acento, menu CONFIG (Sistema → Reordenar seções → Reordenar apps), troca facilitada para outro launcher preservando o DexArmor
+  - [ ] Launcher: navegação em loop pelas **seis** categorias (multimídia, navegação, launchers, emuladores, ferramentas, outros — `Category.kt`), botão MODO (**TV é o padrão** desde 25/07; TV compacta 15% sobre o canvas do Dashboard), ciclo das três cores de acento, menu CONFIG (Sistema → Reordenar seções → Reordenar apps), troca facilitada para outro launcher preservando o DexArmor
+  - [ ] Launcher: tela **contribua** (QR gerado em tempo de desenho; Pix em pt-BR, PayPal no fallback internacional)
+  - [ ] **Atualização release→release** (v3 → v4 por cima, sem desinstalar) — validada em 28/07 nos dois aparelhos
 - [ ] Registrar versões de ambiente: Node, Electron, Gradle, SDK Android, modelo e versão do One UI do aparelho de teste
 
 **Critério de saída:** existe um estado recuperável e uma lista verificável do que "funcionar" significa.
@@ -41,7 +109,9 @@
 - [ ] `./gradlew lint` — com atenção a `UnusedResources`, `UnusedIds`, recursos de layout órfãos
 - [ ] `detekt` — complexidade ciclomática, funções longas, duplicação
 - [ ] `ktlint` (ou o formatador do projeto) aplicado uniformemente
-- [ ] Verificar se R8/minify está ativo no build de release e o que ele elimina
+- [ ] R8/minify: **já se sabe que está desativado** (`isMinifyEnabled = false`).
+      Decidir se liga — e, se ligar, conferir as regras de ProGuard para Compose
+      antes de confiar no APK resultante
 
 ### 1.3 Consolidação
 
@@ -78,8 +148,9 @@ Executar no Claude Code com instrução explícita de não modificar arquivos. C
    - Inconsistência de padrão entre arquivos (três formas diferentes de fazer a mesma coisa)
    - Nomes genéricos (`handleData`, `processResult`, `utils.js` inchado)
 4. **Auditoria de segurança dirigida** (adaptação do escopo OWASP/STRIDE ao contexto):
-   - Desktop: sanitização de comandos ADB, `contextIsolation`/`nodeIntegration` no Electron, validação do JSON remoto do changelog, integridade da verificação de licença/registro de dispositivo
-   - Launcher: permissões declaradas vs. usadas, exposição de components (activities/receivers exportados), tratamento do intent de HOME
+   - Desktop: sanitização de comandos ADB, `contextIsolation`/`nodeIntegration` no Electron, validação do que entra no registro de reversão (a importação exige `okStr`), escrita atômica + `.bak` do `revertStore`
+   - Empacotamento (código de 28/07, nunca revisado): `after-pack.js`, `installer.nsh`, `verify-win.js` — o que assinam, o que verificam, e o que passa sem verificação
+   - Launcher: permissões declaradas vs. usadas (hoje **zero** no manifesto — conferir se continua verdade), exposição de components (activities/receivers exportados), tratamento do intent de HOME
 5. **Recomendações**, cada uma com esforço estimado (P/M/G) e risco de regressão (baixo/médio/alto)
 
 - [ ] Revisar o diagnóstico pessoalmente e marcar cada recomendação como **aprovada / recusada / adiada**
@@ -119,7 +190,7 @@ Regras transversais:
 *Duração estimada: meia a 1 diária. Um modelo diferente do que escreveu o código.*
 
 - [ ] Submeter o diff acumulado (`git diff pre-review-v1..main`) a um segundo modelo (Codex CLI, Gemini CLI ou equivalente) com papel adversarial: "tente quebrar este código; aponte o que o autor não viu"
-- [ ] Focar a sessão nos pontos de maior consequência: pipeline ADB de conversão/reversão, recuperação de erro, verificação de licença, persistência de estado do launcher
+- [ ] Focar a sessão nos pontos de maior consequência: pipeline ADB de conversão/reversão, recuperação de erro, **a ponte de modos** (`preferredTask`, perfil vivo × catálogo), persistência de estado do launcher
 - [ ] Comparar os achados com o diagnóstico da Fase 2 — divergências entre modelos são os pontos que merecem sua atenção manual
 - [ ] Triar e, se necessário, abrir um último branch temático (voltando ao processo da Fase 3)
 
