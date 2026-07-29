@@ -262,17 +262,35 @@ Esforço: **P** ≤ 2h · **M** meio dia · **G** ≥ 1 dia
 
 | # | recomendação | esforço | risco de regressão | triagem |
 | --- | --- | --- | --- | --- |
-| R1 | **A1** — guardar os endpoints sem fio antes do `kill-server` e reemitir `adb connect` depois; ou não aplicar essa recuperação a conexão sem fio | M | **médio** — mexe no caminho de recuperação | ☐ |
-| R2 | **M1** — aumentar a paciência do `confirmStable` para as tasks pesadas (resolução/densidade), ou torná-la proporcional ao tipo | P | baixo | ☐ |
-| R3 | **M2** — reescrever os passos do `adbMissing` para o usuário final ("reinstale o programa") | P | nenhum | ☐ |
-| R4 | **M3** — extrair a ponte de modos do `main.js` para `src/main/modeBridge.js` | M | **médio** — é a lógica mais delicada; exige o baseline da Fase 0 | ☐ |
-| R5 | **M4** — unificar os tokens de design num módulo só | P | baixo | ☐ |
-| R6 | **M5** — extrair `GuideDialog` e `StatusDialog` | M | médio | ☐ |
-| R7 | **B1** — avaliar tornar o `tw-rotate` atômico, ou registrar o passo parcial | P | baixo | ☐ |
-| R8 | **B2** — remover `MAX_STR`, ou implementar a verificação que ele sugeria | P | nenhum | ☐ |
-| R9 | **B4** — adotar formatador; **na Fase 5**, não antes (enterraria o diff que a Fase 4 compara) | P | baixo, mas diff enorme | ☐ |
-| R10 | **B5** — decidir sobre R8/minify | P | **alto** se ativado sem conferir ProGuard | ☐ |
-| R11 | `npm audit fix --force` (electron-builder 26.x) — só quando houver outro motivo para mexer no empacotamento | M | **alto** — revalidar as duas plataformas | ☐ |
+| R1 | **A1** — guardar os endpoints sem fio antes do `kill-server` e reemitir `adb connect` depois; ou não aplicar essa recuperação a conexão sem fio | M | **médio** — mexe no caminho de recuperação | **✅ aprovada** |
+| R2 | **M1** — aumentar a paciência do `confirmStable` para as tasks pesadas (resolução/densidade), ou torná-la proporcional ao tipo | P | baixo | **✅ aprovada** |
+| R3 | **M2** — reescrever os passos do `adbMissing` para o usuário final ("reinstale o programa") | P | nenhum | **✅ aprovada** |
+| R4 | **M3** — extrair a ponte de modos do `main.js` para `src/main/modeBridge.js` | M | **médio** — é a lógica mais delicada; exige o baseline da Fase 0 | adiada |
+| R5 | **M4** — unificar os tokens de design num módulo só | P | baixo | **✅ aprovada** |
+| R6 | **M5** — extrair `GuideDialog` e `StatusDialog` | M | médio | adiada |
+| R7 | **B1** — avaliar tornar o `tw-rotate` atômico, ou registrar o passo parcial | P | baixo | adiada |
+| R8 | **B2** — remover `MAX_STR`, ou implementar a verificação que ele sugeria | P | nenhum | **✅ aprovada** |
+| R9 | **B4** — adotar formatador; **na Fase 5**, não antes (enterraria o diff que a Fase 4 compara) | P | baixo, mas diff enorme | adiada |
+| R10 | **B5** — decidir sobre R8/minify | P | **alto** se ativado sem conferir ProGuard | adiada |
+| R11 | `npm audit fix --force` (electron-builder 26.x) — só quando houver outro motivo para mexer no empacotamento | M | **alto** — revalidar as duas plataformas | adiada |
+
+### Triagem — 29/07/2026
+
+**Aprovadas para a Fase 3:** R1, R2, R3, R5, R8.
+
+**Adiadas, com motivo:**
+
+| # | motivo |
+| --- | --- |
+| R4 · extrair a ponte de modos | maior superfície do lote; melhor sozinha, com o baseline à mão |
+| R6 · cascas de diálogo | idem — e o diagnóstico avisa para não fazer junto com R4 |
+| R9 · formatador | Fase 5, por decisão do próprio plano: enterraria o diff que a Fase 4 compara |
+| R10 · R8/minify | decisão de produto, não correção |
+| R11 · electron-builder 26 | ganho zero para o usuário; só quando houver outro motivo para mexer no empacotamento |
+
+O critério do agrupamento: as cinco aprovadas **não se sobrepõem em
+superfície**, então uma regressão é atribuível. E o R1 exige aparelho por
+Wi-Fi — que está montado.
 
 ### Ordem sugerida para a Fase 3
 
