@@ -82,8 +82,8 @@ sessões de 27–28/07):
 | S23 Ultra | SM-S918B | 16 |
 | S8 | LineageOS | (usado em 21/07, não nas sessões recentes) |
 
-**One UI:** `ro.build.version.oneui` = **80000** (One UI 8.0) no S21 FE, lido
-em 29/07. Falta ler o do S23 Ultra.
+**One UI:** S21 FE = **80000** (8.0) · S23 Ultra = **80500** (8.5). Lidos em
+29/07. Os dois em Android 16 / SDK 36.
 
 ---
 
@@ -164,6 +164,60 @@ no diagnóstico do próprio app).
 
 ---
 
+## 5c. Ciclo celular ⇄ TV — VERIFICADO em 29/07 (S23 Ultra)
+
+Segunda evidência, e mais exigente que a do S21 FE: One UI **8.5**, uma task a
+mais (`tw-gestures`) e — o que importa — **personalizações no modo celular**
+que a volta precisava preservar.
+
+| item | antes (celular) | em modo TV | após a volta |
+| --- | --- | --- | --- |
+| densidade | Override **560** | 640 | Override **560** ✓ |
+| fonte | **0,8** | 1,15 | **0,8** ✓ |
+| resolução | sem override | `2160x3840` | sem override ✓ |
+| gestos (`navigation_mode`) | 0 | **2** | 0 ✓ |
+| não perturbe | 0 | 1 | 0 ✓ |
+| **home** | **`com.rama.mako`** | `tech.dexarmor.launcher` | **`com.rama.mako`** ✓ |
+
+O `com.rama.mako` é launcher de **terceiro**. A volta o restaurou — é a
+correção R1 de 16/07 confirmada em aparelho: o app não impõe a One UI Home nem
+engole o launcher que o usuário escolheu.
+
+Fonte 0,8 e densidade 560 também voltaram: o app devolve o valor **do usuário**,
+não o padrão do sistema.
+
+### O achado da conferência impaciente se REPRODUZ
+
+```
+S21 FE      7/8 ok · 1 differing
+S23 Ultra   8/9 ok · 1 divergente(s)
+```
+
+Nos dois casos, rodando a mesma `verifyTask` minutos depois: **tudo OK** (9/9 e
+10/10). Dois aparelhos, dois One UI diferentes, mesmo comportamento — o defeito
+é do **código**, não do aparelho. Sobe de "provável" para **reproduzível**.
+
+### Diferença encontrada na volta: rotação automática
+
+`accelerometer_rotation` era **0** antes do teste e voltou **1**.
+
+**Não é regressão** — é comportamento projetado, documentado em dois pontos do
+`main.js`. A rotação é a única task de modo **sem `phoneRevert`** (o campo está
+`null` de propósito): se uma volta falhasse no meio, os valores de TV (tela
+girada e travada) seriam capturados como "estado do celular" e o aparelho
+alternaria torto para sempre. Então ela volta **sempre ao `entry.revert`
+original**, que aqui gravou `accel: "1"`.
+
+**A consequência, porém, é real:** qualquer alteração que o usuário faça na
+rotação automática em modo celular é **perdida em silêncio** no ciclo seguinte.
+
+Vale triar na Fase 2 — não para reverter a proteção, que tem motivo sólido, mas
+para avaliar um meio-termo: capturar a rotação do celular **quando ela não
+tiver cara de TV**, que é exatamente o que a vacina `captureLooksLikeTv` já faz
+para os outros tipos.
+
+---
+
 ## 6. NÃO verificado — e é isso que a revisão não pode assumir
 
 | item | situação |
@@ -184,11 +238,15 @@ no diagnóstico do próprio app).
 - [x] Binários de referência arquivados fora do repositório, com SHA-256
 - [x] Versões de ambiente registradas
 - [x] Este documento
-- [ ] **Rodar o teste completo de conversão + reversão num aparelho** e promover
-      as linhas da seção 6 que passarem
-- [ ] Ler `ro.build.version.oneui` dos dois aparelhos
+- [x] **Ciclo conversão + reversão** verificado em **dois** aparelhos (§5b, §5c)
+- [x] `ro.build.version.oneui` dos dois aparelhos
+- [ ] Detecção e recuperação de erros ADB — único item do plano ainda não
+      exercitado
 
-> A Fase 0 fica **incompleta de propósito** enquanto os dois itens acima não
-> forem feitos. O congelamento e os binários já existem — o que falta é a parte
-> da linha de base que só um aparelho conectado pode dar, e ela é justamente a
-> que protege o núcleo do produto (a reversibilidade) durante os refactors.
+> **A reversibilidade — núcleo do produto — está verificada em dois aparelhos,
+> com One UI diferentes e com personalizações preservadas.** É a rede que a
+> Fase 3 vai usar.
+>
+> Resta a recuperação de erros ADB. Ela exige provocar falha de propósito
+> (desconectar no meio, negar autorização), e é melhor fazê-la como roteiro
+> próprio do que improvisar agora.
