@@ -162,23 +162,41 @@ async function checkDevices(opts = {}) {
       for (const subcommand of recovery) {
         await runAdb(adbPath, [subcommand], timeoutMs);
       }
-      await sleep(recoveryDelayMs); // dá tempo do daemon reiniciar
-      // Refaz cada conexão sem fio que existia antes. Melhor-esforço: se o
-      // aparelho ainda estiver fora do ar, o `connect` falha e o diagnóstico
-      // seguinte reporta o estado real — que é o comportamento correto. O
-      // timeout é curto de propósito: conectar a um endpoint inalcançável
-      // demora até o TCP desistir, e a recuperação não pode ficar presa nisso.
-      for (const endpoint of wireless) {
-        try {
-          await runAdb(adbPath, ['connect', endpoint], RECONNECT_TIMEOUT_MS);
-        } catch { /* aparelho ainda fora do ar: o diagnóstico abaixo dirá */ }
-      }
     } catch (err) {
       if (err.adbNotFound) {
         onStatus('done');
         return { ...adbNaoEncontrado(), recoveryAttempted: true };
       }
       // Falha na recuperação não é fatal: seguimos para reconsultar mesmo assim.
+      // E seguimos ANTES para a reconexão abaixo — ver o porquê ali.
+    }
+
+    await sleep(recoveryDelayMs); // dá tempo do daemon reiniciar
+
+    // Refaz as conexões `host:porta` que existiam antes.
+    //
+    // FORA do `try` acima, de propósito (achado 3 da Fase 4). Quando os
+    // subcomandos falham no meio — `kill-server` conclui, `start-server`
+    // estoura o timeout — os transportes JÁ foram derrubados. Era exatamente aí
+    // que a reconexão deixava de rodar, e é exatamente aí que ela mais importa:
+    // é reparo colateral de um estrago já feito, não um passo opcional do
+    // caminho feliz. O `adb connect` sobe um servidor por conta própria se não
+    // houver nenhum, então funciona mesmo com o `start-server` falho.
+    //
+    // EM PARALELO, não em fila (achado 2 da Fase 4). Endpoints TCP mortos ficam
+    // listados como `offline` e se acumulam — havia um `192.168.3.3:5555` de um
+    // teste do dia anterior ainda na lista desta máquina. Em fila, cada um podia
+    // consumir os 4 s inteiros do timeout: 9 endpoints eram 36 s com a tela
+    // presa em "recuperando". Em paralelo o total é ~4 s, qualquer que seja N,
+    // e o servidor do adb atende clientes concorrentes sem problema.
+    //
+    // Melhor-esforço: se o aparelho ainda estiver fora do ar, o `connect` falha
+    // e o diagnóstico seguinte reporta o estado real — que é o correto.
+    // `allSettled` nunca rejeita, então não precisa de `try` próprio.
+    if (wireless.length > 0) {
+      await Promise.allSettled(
+        wireless.map((endpoint) => runAdb(adbPath, ['connect', endpoint], RECONNECT_TIMEOUT_MS)),
+      );
     }
 
     // 3) Reconsulta após o reinício -------------------------------------------
