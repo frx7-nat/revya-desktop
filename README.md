@@ -1,10 +1,34 @@
 # DexArmor
 
-App desktop (Electron) que provisiona celulares Samsung como dispositivos de
+App desktop (Electron) que converte celulares Samsung Galaxy em dispositivos de
 mídia para TV via ADB — sem root. Remove bloatware, instala o launcher de TV
 próprio, aplica ajustes de sistema, e sabe **desfazer tudo** (registro de
 reversão por aparelho). Aplicativos de terceiros não são distribuídos: o
 usuário instala os dele arrastando o APK para a janela.
+
+Gratuito. A receita vem de doação (Pix e PayPal) e de links de afiliado dos
+acessórios — não há versão paga, licença nem telemetria.
+
+Bilíngue: português e inglês, 698 chaves de catálogo.
+
+## Os dois modos
+
+O conceito central do app, e o que separa este projeto de um script de ADB: o
+aparelho **alterna** entre modo celular e modo TV, quantas vezes o usuário
+quiser, sem perder o que ele personalizou de nenhum dos lados.
+
+Cada entrada do registro de reversão guarda três camadas:
+
+| camada | o que é |
+| --- | --- |
+| `revert` | o estado ORIGINAL, de antes da primeira aplicação |
+| `phoneRevert` | o retrato VIVO do modo celular, recapturado a cada ida ao TV |
+| `task` | o perfil TV vivo — o que o usuário ajustou vira o novo perfil |
+
+Sem a camada do meio, voltar ao celular devolveria o aparelho ao estado de
+meses atrás. Sem a terceira, o usuário perderia a resolução e a rotação que
+descobriu servirem na TV dele. O `modeScope` de cada task (`mode` ou
+`structural`) é o que decide o que alterna e o que fica.
 
 ## Estrutura
 
@@ -14,38 +38,54 @@ src/
     adb.js              Wrapper de baixo nível em torno do adb (comandos por função)
     adbDiagnostics.js   Diagnóstico de estados do ADB em linguagem simples
     adbOrchestrator.js  Detecção + recuperação automática do servidor ADB
+  i18n/
+    pt.json / en.json   Catálogos em JSON
+    index.cjs           Núcleo de tradução, em CommonJS — os DOIS processos leem
   main/
-    main.js             Processo principal Electron + handlers IPC
+    main.js             Processo principal Electron + handlers IPC + ponte de modos
     preload.js          Ponte segura (contextBridge) main <-> renderer
     runner.js           Orquestrador: task do catálogo -> chamadas ADB (+ verificação)
     revertStore.js      Registro de reversão em disco (por serial de fábrica)
+    settingsStore.js    Preferências do programa (hoje só o idioma)
     scrcpy.js           Espelhamento da tela do aparelho (scrcpy)
   renderer/
-    index.html          Entrada HTML
-    main.jsx            Bootstrap do React
     Root.jsx            Gate de entrada: tela "Conecte seu Galaxy" antes do App
     App.jsx             Layout de 3 colunas e estado da aplicação
-    theme/theme.js      Tema MUI customizado (escuro, acento âmbar)
+    theme/theme.js      Tema MUI (escuro, acento âmbar)
+    theme/tokens.js     Tokens de cor dos painéis técnicos (design BMW M)
     data/tasks.js       Catálogo de modificações + preset recomendado (auditável)
+    data/contribute.js  Doação (Pix/PayPal) e acessórios com link de afiliado
+    utils/locale.js     Números e datas conforme o idioma
     screens/
       ConnectPhoneScreen.jsx  Tela-gate com diagnóstico ao vivo do ADB
     components/
       TaskPanel.jsx         Aba esquerda  — modificações, check-up e reversão
-      DevicePanel.jsx       Aba central   — aparelho, preset recomendado, Wi-Fi, espelhamento
+      DevicePanel.jsx       Aba central   — aparelho, preset, Wi-Fi, espelhamento
       ProgressPanel.jsx     Aba direita   — progresso passo a passo + relatório
-      DeviceStatusCard.jsx  Cartão de diagnóstico da tela de conexão
-      TvResolutionDialog.jsx  Pergunta da resolução da TV (preset recomendado)
+      ControlCenter.jsx     Central de Controle (saúde, perfis, limpeza)
+      HealthPanel.jsx / ProfilesPanel.jsx / CleanupPanel.jsx
+      RemoteControl.jsx     Controle remoto virtual (teclas por ADB)
+      SendOverlay.jsx       Arrastar-e-soltar arquivos para o celular
+      ModeSwitchDialog.jsx  Alternância celular ⇄ TV
       CheckupDialog.jsx     Verifica se os ajustes aplicados continuam valendo
-      ResetDialog.jsx       Reversão das alterações (+ exportar/importar registro)
-      CloseDialog.jsx       Pop-up de fechamento (apresenta acessórios)
-      DexGuideDialog.jsx    Guia "Desative o DeX"
+      ResetDialog.jsx       Reversão (+ exportar/importar registro)
+      ContributeDialog.jsx / ContributeTab.jsx   Doação e acessórios
+      DexGuideDialog.jsx / FirstSetupGuideDialog.jsx / SideloadGuideDialog.jsx
       PhoneMock.jsx / PhoneScreen.jsx / PhoneAccessories.jsx  Celular central
+scripts/
+  check-i18n.js         Guarda de tradução (roda no build; ver changeset/I18N.md)
+  after-pack.js         Assinatura ad-hoc do .app antes do DMG (macOS)
+  verify-win.js         Testa a integridade dos .exe gerados
+build/
+  installer.nsh         `CRCCheck off` — ver "Gerar instaladores"
+docs/
+  baseline.md           O que "funcionar" significa, verificado em aparelho real
+  roteiro-erros-adb.md  Os seis cenários de falha de ADB, com o medido
+  review/               A revisão de código de 28-29/07/2026, fase a fase
 platform-tools/         (você adiciona) binários ADB por plataforma:
   win/                  adb.exe + AdbWinApi.dll + AdbWinUsbApi.dll
-  mac/                  adb (sem extensão, chmod +x)
-  linux/                adb (sem extensão, chmod +x)
+  mac/  linux/          adb (sem extensão, chmod +x)
 scrcpy/                 (você adiciona) release oficial do scrcpy por plataforma
-                        (ver scrcpy/README.txt) — botão "Ver tela do celular"
 apks/                   só o APK próprio: launchers/{Launcher} DexArmor TV.apk
 ```
 
@@ -63,39 +103,44 @@ apks/                   só o APK próprio: launchers/{Launcher} DexArmor TV.apk
 
 No CI (GitHub Actions), platform-tools e scrcpy são baixados automaticamente.
 
-## Rodar em desenvolvimento
+## Rodar
 
 ```
-npm run dev
+npm run dev     # Vite (5173) + Electron, com hot reload do renderer
+npm start       # build do renderer + Electron sem servidor de dev
+npm run check:i18n
 ```
-
-Sobe o servidor do Vite (porta 5173) e o Electron juntos, com hot reload do
-renderer. O Electron espera o Vite ficar pronto antes de abrir a janela.
-
-## Rodar build de produção localmente
-
-```
-npm start
-```
-
-Faz o build do renderer com Vite e abre o Electron carregando o HTML buildado
-(sem servidor de dev). Útil para testar como ficará empacotado.
 
 ## Gerar instaladores
 
 ```
-npm run dist:win     # NSIS (instalador) + portable .exe
+npm run dist:win     # NSIS (instalador) + portable .exe, x64
 npm run dist:mac     # .dmg (Intel x64 + Apple Silicon arm64)
 npm run dist:linux   # AppImage + .deb
-npm run dist         # plataforma atual
+npm run verify:win   # testa a integridade dos .exe e imprime o SHA-256
 ```
 
 Cada comando builda o renderer antes de empacotar. O filtro `${os}` no
 `extraResources` inclui só os binários (ADB e scrcpy) da plataforma alvo. As
 dependências de UI (React/MUI) ficam em `devDependencies` — o bundle do Vite já
-embute tudo, então nenhum `node_modules` vai para o instalador. Builds de Mac
-precisam rodar em macOS; o ideal é gerar cada plataforma no seu próprio sistema
-(ou em CI).
+embute tudo. Builds de Mac precisam rodar em macOS.
+
+Três armadilhas resolvidas em 28/07/2026, todas registradas em `changeset/`:
+
+- **macOS acusava "Malware Bloqueado".** Sem assinatura nenhuma, o Gatekeeper
+  dava veredito `revoked` — que **não tem** o contorno de "abrir mesmo assim".
+  `scripts/after-pack.js` assina o `.app` em modo ad-hoc antes do DMG.
+- **O instalador do Windows dava "integrity check failed".** O portable
+  funcionava e o instalador não; a diferença medida estava num bit do cabeçalho
+  NSIS (`flags 0x4 = NO_CRC` no portable, `0x0` no instalador). `build/installer.nsh`
+  desliga o CRC.
+- **O app não fechava durante a atualização**, travando desinstalar e
+  reinstalar. Resolvido em `main.js`: o pedido de fechamento só é interceptado
+  quando parte do usuário (`win.isFocused()`).
+
+> Antivírus apagam instaladores NSIS dentro do `$HOME` — inclusive numa pasta
+> criada só para eles, o que foi tentado e **não** funcionou. A saída de
+> Windows vai para `/private/tmp/dexarmor-build`.
 
 ## Decisões de design
 
@@ -111,11 +156,15 @@ precisam rodar em macOS; o ideal é gerar cada plataforma no seu próprio sistem
   (`ro.serialno`), então continua válido alternando entre USB e Wi-Fi, e pode
   ser exportado/importado para reverter a partir de outro computador.
 - **Escrita verificada**: settings são lidos de volta após o `put`; falha
-  silenciosa vira erro real. O check-up reusa essa ideia para conferir se os
-  ajustes continuam valendo depois de updates/reboots.
+  silenciosa vira erro real. Uma leitura divergente é reconferida até
+  estabilizar (~4,5 s), porque o One UI reescreve alguns valores por conta
+  própria logo depois da troca de modo. O check-up reusa a mesma ideia.
 - **Preset recomendado ≠ decisões do usuário**: o botão de 1 clique aplica só o
   que é seguro em qualquer aparelho; resolução da TV é perguntada num diálogo
   (com densidade pareada), e bloqueio de tela/streaming ficam na seleção manual.
+- **Nenhum texto de interface no código**: tudo vem do catálogo, e três guardas
+  quebram o build se faltar tradução. Elas não substituem abrir o app nos dois
+  idiomas — ver `changeset/I18N.md`.
 
 ## Limites conhecidos
 
@@ -127,3 +176,6 @@ precisam rodar em macOS; o ideal é gerar cada plataforma no seu próprio sistem
   deixar o aparelho instável.
 - Com a resolução 16:9 forçada, o painel do celular mostra a interface como uma
   faixa com barras pretas — é esperado; a imagem espelhada preenche a TV.
+- Conexão sem fio por `adb connect ip:5555` não sobrevive a um reinício do
+  servidor ADB, e nada a refaz sozinha; o app reconecta os endpoints que
+  conhecia. A Depuração sem fio do Android (mDNS) não tem esse problema.
