@@ -284,6 +284,42 @@ mv adb.bak adb
 
 - [ ] Confirmado que voltou (`ls -l adb`) e o app opera de novo
 
+### ⚠️ EXECUTADO em 29/07 — PASSA EM PARTE · achado `MÉDIO`
+
+> **Atenção ao caminho certo.** O app EMPACOTADO usa
+> `DexArmor.app/Contents/Resources/platform-tools/adb`, não a cópia do projeto
+> (`adbPath()` decide pelo `isProd`). Renomear a do projeto com o app
+> empacotado rodando daria um falso "passou".
+
+**O que acertou:**
+
+```
+título     "ADB não encontrado"  ·  selo "Bloqueado"
+mensagem   explica que o ADB é necessário para falar com o Galaxy
+```
+
+Sem caminho de arquivo cru, sem stack trace, o app **não fechou sozinho**, e
+oferece "Verificar de novo". Ao restaurar o binário, volta a `ready`.
+
+**O que falha — os passos são escritos para DESENVOLVEDOR:**
+
+> 1. Verifique se o **ADB foi empacotado** junto com o aplicativo.
+> 2. Se você instalou manualmente, confirme que a pasta **platform-tools está
+>    no PATH**.
+
+O usuário-alvo não sabe o que é ADB, o que significa "empacotado", nem o que é
+PATH. Ele não instalou nada manualmente — baixou um `.dmg` e arrastou para
+Aplicativos. A única ação útil para ele seria **"reinstale o programa"**, que é
+exatamente o que os passos não dizem.
+
+`MÉDIO`: estado raro (o ADB vai dentro do instalável), mas quando ocorre o
+usuário fica travado, porque a saída oferecida não existe no mundo dele.
+
+> Confirma a suspeita que motivou incluir este cenário: é o estado com maior
+> chance de mensagem inútil **porque ninguém o vê durante o desenvolvimento** —
+> quem escreveu o texto estava com a cabeça no ambiente de dev, onde as duas
+> verificações fazem sentido.
+
 ---
 
 ## Cenário 6 — Conexão Wi-Fi ADB cai
