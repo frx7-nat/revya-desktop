@@ -262,14 +262,14 @@ Esforço: **P** ≤ 2h · **M** meio dia · **G** ≥ 1 dia
 
 | # | recomendação | esforço | risco de regressão | triagem |
 | --- | --- | --- | --- | --- |
-| R1 | **A1** — guardar os endpoints sem fio antes do `kill-server` e reemitir `adb connect` depois; ou não aplicar essa recuperação a conexão sem fio | M | **médio** — mexe no caminho de recuperação | **✅ aprovada** |
-| R2 | **M1** — aumentar a paciência do `confirmStable` para as tasks pesadas (resolução/densidade), ou torná-la proporcional ao tipo | P | baixo | **✅ aprovada** |
-| R3 | **M2** — reescrever os passos do `adbMissing` para o usuário final ("reinstale o programa") | P | nenhum | **✅ aprovada** |
+| R1 | **A1** — guardar os endpoints sem fio antes do `kill-server` e reemitir `adb connect` depois; ou não aplicar essa recuperação a conexão sem fio | M | **médio** — mexe no caminho de recuperação | **✅ FEITA** |
+| R2 | **M1** — aumentar a paciência do `confirmStable` para as tasks pesadas (resolução/densidade), ou torná-la proporcional ao tipo | P | baixo | **✅ FEITA** |
+| R3 | **M2** — reescrever os passos do `adbMissing` para o usuário final ("reinstale o programa") | P | nenhum | **✅ FEITA** |
 | R4 | **M3** — extrair a ponte de modos do `main.js` para `src/main/modeBridge.js` | M | **médio** — é a lógica mais delicada; exige o baseline da Fase 0 | adiada |
-| R5 | **M4** — unificar os tokens de design num módulo só | P | baixo | **✅ aprovada** |
+| R5 | **M4** — unificar os tokens de design num módulo só | P | baixo | **✅ FEITA** |
 | R6 | **M5** — extrair `GuideDialog` e `StatusDialog` | M | médio | adiada |
 | R7 | **B1** — avaliar tornar o `tw-rotate` atômico, ou registrar o passo parcial | P | baixo | adiada |
-| R8 | **B2** — remover `MAX_STR`, ou implementar a verificação que ele sugeria | P | nenhum | **✅ aprovada** |
+| R8 | **B2** — remover `MAX_STR`, ou implementar a verificação que ele sugeria | P | nenhum | **✅ FEITA** |
 | R9 | **B4** — adotar formatador; **na Fase 5**, não antes (enterraria o diff que a Fase 4 compara) | P | baixo, mas diff enorme | adiada |
 | R10 | **B5** — decidir sobre R8/minify | P | **alto** se ativado sem conferir ProGuard | adiada |
 | R11 | `npm audit fix --force` (electron-builder 26.x) — só quando houver outro motivo para mexer no empacotamento | M | **alto** — revalidar as duas plataformas | adiada |
@@ -306,3 +306,50 @@ Severidade decrescente, risco crescente — e cada uma em branch próprio:
 
 **Não recomendo** fazer R4 e R6 na mesma passagem: são os dois de maior
 superfície, e juntos tornam impossível atribuir uma regressão a um deles.
+
+---
+
+## Fase 3 — executada em 29/07/2026
+
+As cinco aprovadas foram feitas, cada uma em branch própria, mergeadas com
+`--no-ff` para o histórico preservar o agrupamento.
+
+| # | commit | validação |
+| --- | --- | --- |
+| R3 | `8d0b4ee` | texto conferido nos dois idiomas |
+| R8 | `dae8bad` | verificado que a constante não apontava lacuna real |
+| R2 | `9d0d7b4` | **em aparelho** — varredura completa, só o `tw-res-4k` consome a paciência nova (4,7 s) |
+| R5 | `55bd2e0` | zero hexadecimais soltos; conferido que nenhum token era `undefined` antes |
+| R1 | `fix/recuperacao-wifi` | **em aparelho, o ciclo inteiro** — ver abaixo |
+
+### O R1 cresceu durante a execução, e por bom motivo
+
+A direção registrada no diagnóstico era "guardar os endpoints antes do
+`kill-server` e reconectar depois". Ao implementar, apareceu um furo nessa
+ideia: se a recuperação roda enquanto o aparelho está inalcançável, o `connect`
+falha, a entrada some, e as consultas seguintes não têm o que restaurar. A
+correção valeria só numa janela estreita.
+
+A evidência do cenário 6 apontava o melhor caminho: **uma entrada `offline` sem
+fio se recupera sozinha**. Então a correção principal virou *não aplicar*
+`kill-server` nesse caso — o remédio atrapalhava um caso que já se curava. A
+reconexão de endpoints ficou como proteção **colateral**, para quando a
+recuperação rodar por causa de outro aparelho.
+
+E isso obrigou a uma terceira mudança não prevista: o texto de `offline`
+prometia "o DexArmor vai reiniciar a conexão automaticamente" — promessa que o
+app deixou de cumprir nesse caso — e mandava trocar o **cabo** num aparelho sem
+cabo. Criada a variante `diagnostics.offlineWireless`.
+
+**Medido no S23 Ultra, só por Wi-Fi:**
+
+| | antes | depois |
+| --- | --- | --- |
+| modo avião ligado | `no_devices`, pareamento destruído | `offline`, pareamento **sobreviveu**, `recoveryAttempted: false` |
+| modo avião desligado | preso em "conecte o cabo" indefinidamente | **`ready` em 1 segundo**, sem intervenção |
+
+### Ferramentas da Fase 1 reexecutadas
+
+Sem ciclos, sem dependência órfã, `knip` não acusa o módulo novo. A duplicação
+caiu de 1,72% para 1,70% — pouco, e esperado: o R5 atacava tokens, não os
+esqueletos de diálogo, que seguem sendo o R6 adiado.
