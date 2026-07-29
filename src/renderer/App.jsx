@@ -581,7 +581,7 @@ export default function App() {
               hasDevice={!!device} running={running}
               mirrorStatus={mirrorStatus} onStartMirror={startMirror}
               wifiStatus={wifiStatus} onEnableWifi={enableWifi}
-              isWifi={!!device?.serial?.includes(':')}
+              isWifi={!!device?.wireless}
               revertEntries={revertEntries} onRevertOne={revertOne}
               onLoadJournal={loadJournal}
               profiles={profiles} canSaveProfile={modeInfo.active > 0}

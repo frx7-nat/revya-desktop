@@ -179,3 +179,10 @@ Três armadilhas resolvidas em 28/07/2026, todas registradas em `changeset/`:
 - Conexão sem fio por `adb connect ip:5555` não sobrevive a um reinício do
   servidor ADB, e nada a refaz sozinha; o app reconecta os endpoints que
   conhecia. A Depuração sem fio do Android (mDNS) não tem esse problema.
+- Se a **Depuração sem fio** do Android estiver ligada *além* da conexão que o
+  próprio app cria, o mesmo telefone aparece **duas vezes** no seletor de
+  aparelho, com o mesmo rótulo. Escolher qualquer uma das duas funciona — o
+  registro de reversão é indexado pelo serial de fábrica, então as duas apontam
+  para a mesma entrada. Não é deduplicado porque distinguir as duas exige uma
+  consulta a mais por aparelho no caminho de seleção, que é o trecho mais
+  crítico do app; a ambiguidade incomoda menos que o risco de mexer ali.
