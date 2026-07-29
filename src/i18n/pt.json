@@ -393,6 +393,61 @@
     "verifiedSome": "{verified}/{checked} ok · {failed} divergente(s) — use \"Corrigir agora\""
   },
   "diagnostics": {
+    "adbMissing": {
+      "title": "Faltou um componente do programa",
+      "message": "O DexArmor precisa de um componente interno (o ADB) para conversar com o Galaxy, e ele não foi encontrado. Isso costuma indicar instalação incompleta ou arquivo removido por antivírus.",
+      "steps": [
+        "Feche o DexArmor e abra de novo — às vezes basta isso.",
+        "Se continuar, reinstale o programa a partir do arquivo de instalação original.",
+        "Se você usa antivírus, confira a quarentena dele: alguns removem componentes do DexArmor por engano."
+      ]
+    },
+    "noDevices": {
+      "title": "Nenhum Galaxy detectado",
+      "message": "O computador não está enxergando nenhum dispositivo.",
+      "steps": [
+        "Confirme que o cabo está conectado — e que é um cabo de DADOS, não só de carga.",
+        "Ative a Depuração USB: Configurações → Opções de desenvolvedor → Depuração USB.",
+        "Se as Opções de desenvolvedor não aparecem: Configurações → Sobre o telefone → toque 7 vezes em \"Número da versão\".",
+        "No Windows, instale o driver USB da Samsung se o aparelho não aparecer."
+      ]
+    },
+    "noPermissions": {
+      "title": "Sem permissão para acessar o dispositivo",
+      "message": "O computador detectou o Galaxy mas não consegue acessá-lo. Costuma ser o serviço do ADB travado ou o driver USB ausente/desatualizado (Windows).",
+      "steps": [
+        "Aguarde — o DexArmor vai reiniciar o serviço do ADB automaticamente.",
+        "No Windows: reinstale o driver USB da Samsung e tente de novo.",
+        "No Mac/Linux: reconecte o cabo após o reinício do serviço."
+      ]
+    },
+    "offline": {
+      "title": "Dispositivo não está respondendo",
+      "message": "O Galaxy aparece, mas não está respondendo aos comandos. Geralmente é o serviço do ADB travado, cabo ruim ou o aparelho em estado estranho.",
+      "steps": [
+        "Aguarde — o DexArmor vai reiniciar a conexão automaticamente.",
+        "Se continuar, troque o cabo USB ou a porta do computador.",
+        "Desconecte e reconecte o telefone."
+      ]
+    },
+    "offlineWireless": {
+      "title": "Sem contato pela rede",
+      "message": "O Galaxy está pareado por Wi-Fi, mas parou de responder. Quase sempre é oscilação da rede — e ele volta sozinho assim que reaparecer.",
+      "steps": [
+        "Confira se o aparelho continua ligado e na mesma rede Wi-Fi que este computador.",
+        "Se ele estiver em modo avião ou com o Wi-Fi desligado, basta religar.",
+        "A conexão se restabelece sozinha — não é preciso reconectar nada à mão.",
+        "Se demorar, ligue o cabo USB: ele funciona mesmo com a rede fora do ar."
+      ]
+    },
+    "otherMode": {
+      "title": "Telefone em modo especial",
+      "message": "O Galaxy está em um modo que não permite a configuração agora (recovery, bootloader ou similar).",
+      "steps": [
+        "Reinicie o telefone normalmente até o sistema Android carregar.",
+        "Reconecte e tente de novo."
+      ]
+    },
     "ready": {
       "title": "Galaxy pronto",
       "message": "Dispositivo autorizado e respondendo. Pode iniciar a configuração.",
@@ -408,57 +463,12 @@
         "Se o aviso não aparecer: puxe a barra de notificações e mude o modo USB de \"Apenas carga\" para \"Transferência de arquivos (MTP)\"."
       ]
     },
-    "offline": {
-      "title": "Dispositivo não está respondendo",
-      "message": "O Galaxy aparece, mas não está respondendo aos comandos. Geralmente é o serviço do ADB travado, cabo ruim ou o aparelho em estado estranho.",
-      "steps": [
-        "Aguarde — o DexArmor vai reiniciar a conexão automaticamente.",
-        "Se continuar, troque o cabo USB ou a porta do computador.",
-        "Desconecte e reconecte o telefone."
-      ]
-    },
-    "noPermissions": {
-      "title": "Sem permissão para acessar o dispositivo",
-      "message": "O computador detectou o Galaxy mas não consegue acessá-lo. Costuma ser o serviço do ADB travado ou o driver USB ausente/desatualizado (Windows).",
-      "steps": [
-        "Aguarde — o DexArmor vai reiniciar o serviço do ADB automaticamente.",
-        "No Windows: reinstale o driver USB da Samsung e tente de novo.",
-        "No Mac/Linux: reconecte o cabo após o reinício do serviço."
-      ]
-    },
-    "noDevices": {
-      "title": "Nenhum Galaxy detectado",
-      "message": "O computador não está enxergando nenhum dispositivo.",
-      "steps": [
-        "Confirme que o cabo está conectado — e que é um cabo de DADOS, não só de carga.",
-        "Ative a Depuração USB: Configurações → Opções de desenvolvedor → Depuração USB.",
-        "Se as Opções de desenvolvedor não aparecem: Configurações → Sobre o telefone → toque 7 vezes em \"Número da versão\".",
-        "No Windows, instale o driver USB da Samsung se o aparelho não aparecer."
-      ]
-    },
-    "otherMode": {
-      "title": "Telefone em modo especial",
-      "message": "O Galaxy está em um modo que não permite a configuração agora (recovery, bootloader ou similar).",
-      "steps": [
-        "Reinicie o telefone normalmente até o sistema Android carregar.",
-        "Reconecte e tente de novo."
-      ]
-    },
     "unknown": {
       "title": "Estado não reconhecido",
       "message": "O dispositivo retornou um estado que o DexArmor ainda não conhece. Reinicie o telefone e a conexão e tente novamente.",
       "steps": [
         "Desconecte e reconecte o telefone.",
         "Reinicie o aparelho se o problema continuar."
-      ]
-    },
-    "adbMissing": {
-      "title": "Faltou um componente do programa",
-      "message": "O DexArmor precisa de um componente interno (o ADB) para conversar com o Galaxy, e ele não foi encontrado. Isso costuma indicar instalação incompleta ou arquivo removido por antivírus.",
-      "steps": [
-        "Feche o DexArmor e abra de novo — às vezes basta isso.",
-        "Se continuar, reinstale o programa a partir do arquivo de instalação original.",
-        "Se você usa antivírus, confira a quarentena dele: alguns removem componentes do DexArmor por engano."
       ]
     }
   },
