@@ -70,8 +70,10 @@ export default function DevicePanel({
   const isTv = phase === 'tv';
   const validated = phase === 'success' || phase === 'working' || isTv;
   const searching = phase === 'tutorial' || phase === 'waiting';
-  // Conexão atual já é Wi-Fi quando o serial tem formato ip:porta.
-  const isWifi = !!device?.serial?.includes(':');
+  // Quem decide se a conexão é sem fio é o main (ver src/adb/serial.js). O
+  // renderer NÃO inspeciona o serial: a Depuração sem fio do Android produz um
+  // serial mDNS sem dois-pontos, e a checagem antiga o classificava como USB.
+  const isWifi = !!device?.wireless;
 
   return (
     <Box sx={{
@@ -116,7 +118,7 @@ export default function DevicePanel({
               >
                 {devices.map((d) => (
                   <MenuItem key={d.serial} value={d.serial}>
-                    {(d.model || d.serial)}{d.serial.includes(':') ? ' · Wi-Fi' : ' · USB'}
+                    {(d.model || d.serial)}{d.wireless ? ' · Wi-Fi' : ' · USB'}
                   </MenuItem>
                 ))}
               </Select>

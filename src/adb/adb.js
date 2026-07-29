@@ -6,6 +6,7 @@ const { execFile, spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const { t } = require('../i18n/runtime.cjs');
+const { ehSemFio } = require('./serial.js');
 
 // Mapeia o process.platform do Node para o nome de pasta usado no projeto.
 // macOS reporta 'darwin'; aqui guardamos os binários em platform-tools/mac.
@@ -66,7 +67,12 @@ async function listDevices() {
       const info = Object.fromEntries(
         rest.map((kv) => kv.split(':')).filter((p) => p.length === 2)
       );
-      return { serial, state, model: info.model, device: info.device };
+      // `wireless` vem resolvido daqui de propósito. Antes o renderer decidia
+      // com `serial.includes(':')`, o que rotulava um aparelho da Depuração sem
+      // fio (serial mDNS, sem dois-pontos) como "· USB" no seletor — sem cabo
+      // nenhum ligado. Regra da casa: lógica de ADB no main, o renderer só
+      // renderiza. Ver `serial.js`.
+      return { serial, state, model: info.model, device: info.device, wireless: ehSemFio(serial) };
     });
 }
 
@@ -95,6 +101,7 @@ async function describeDevice(serial) {
     sdk: Number(sdk),
     battery: levelMatch ? Number(levelMatch[1]) : null,
     dexSupport,
+    wireless: ehSemFio(serial), // ver a nota em listDevices
   };
 }
 
