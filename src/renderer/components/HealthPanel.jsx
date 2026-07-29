@@ -18,11 +18,8 @@ import ErrorIcon from '@mui/icons-material/Error';
 import SquareIcon from './SquareIcon';
 import { useT } from '../i18n';
 import { num } from '../utils/locale';
+import { TOK } from '../theme/tokens';
 
-const TOK = {
-  surfaceSoft: '#0d0d0d', hairlineStrong: '#262626', hairline: '#3c3c3c',
-  dataBlue: '#1c69d4', warning: '#f4b400', red: '#e22718',
-};
 
 // Separador decimal segue o IDIOMA — ver src/renderer/utils/locale.js.
 function gb(bytes, language) {

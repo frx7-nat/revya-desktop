@@ -24,8 +24,8 @@ import { ALL_TASKS } from '../data/tasks';
 import { friendlyError } from '../utils/errors';
 import { useT } from '../i18n';
 import { num } from '../utils/locale';
+import { TOK } from '../theme/tokens';
 
-const TOK = { surfaceSoft: '#0d0d0d', hairlineStrong: '#262626', hairline: '#3c3c3c' };
 
 // pacote -> nome amigável: primeiro o catálogo do app, depois apps comuns,
 // por fim o último trecho do pacote (melhor que exibir "com.x.y" ao leigo).

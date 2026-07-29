@@ -25,8 +25,8 @@ import { friendlyError } from '../utils/errors';
 import { useT } from '../i18n';
 import { decimal, shortDate } from '../utils/locale';
 import RichText from '../i18n/RichText';
+import { TOK } from '../theme/tokens';
 
-const TOK = { surfaceSoft: '#0d0d0d', hairlineStrong: '#262626', hairline: '#3c3c3c' };
 
 // Resumo amigável do que um perfil carrega, a partir das tasks salvas.
 // Recebe `t` (tradução) e `language` por PARÂMETRO: é função pura, não
