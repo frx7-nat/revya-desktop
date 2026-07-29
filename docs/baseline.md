@@ -82,8 +82,8 @@ sessões de 27–28/07):
 | S23 Ultra | SM-S918B | 16 |
 | S8 | LineageOS | (usado em 21/07, não nas sessões recentes) |
 
-> **A versão do One UI ficou pendente** — `ro.build.version.oneui` não foi lido
-> porque os aparelhos estavam fora do ar. Completar na próxima conexão.
+**One UI:** `ro.build.version.oneui` = **80000** (One UI 8.0) no S21 FE, lido
+em 29/07. Falta ler o do S23 Ultra.
 
 ---
 
@@ -117,11 +117,57 @@ sessões de 27–28/07):
 
 ---
 
+## 5b. Ciclo celular ⇄ TV — VERIFICADO em 29/07 (S21 FE)
+
+Executado pela **interface real do app** (build de referência), com medição por
+ADB antes e depois. É o item central do baseline: reversibilidade.
+
+**Ida (celular → TV):** todos os alvos aplicados.
+
+| | antes | depois |
+| --- | --- | --- |
+| resolução | sem override | `2160x3840` (4K, lido em retrato — normalização documentada) |
+| densidade | 480 | `640` (pareada) |
+| fonte | 1.0 | 1.15 |
+| rotação | 0 | 1 |
+| não perturbe | 0 | 1 |
+| animações | 1.0 ×3 | 0 ×3 |
+| **home** | One UI Home | **`tech.dexarmor.launcher`** |
+
+O launcher aplicado é o **próprio**, não o Projectivy — o cenário que o
+`preferredTask` (28/07) passou a garantir.
+
+**Volta (TV → celular): retrato IDÊNTICO ao original**, campo por campo. As 8
+tasks de modo voltaram a dormentes; `lnch-dexarmor` e `tw-battery` seguiram
+ativas (corretas, são estruturais); o `phoneRevert` foi recapturado.
+
+### Achado: a conferência pós-troca acusa divergência FALSA
+
+O diário registrou, na ida:
+
+```
+fingerprint-pos-troca   7/8 ok · 1 differing — use "Fix now"
+```
+
+Rodando a **mesma** `verifyTask` do app minutos depois, contra o mesmo
+aparelho: **9 de 9 OK**. Ninguém tocou em nada entre as duas medições.
+
+Causa provável: `confirmStable` tenta 2 vezes com 700 ms — cerca de **1,4 s de
+paciência**. O override de 4K com densidade pareada força o sistema a refazer o
+layout inteiro e pode passar disso. A volta, que não tem essa operação pesada,
+conferiu 8/8.
+
+**Por que importa:** o usuário leigo vê "use Corrigir agora" e reexecuta
+operações que já estavam certas. Vai para a Fase 2 como achado — provável
+`MÉDIO` (não corrompe estado, mas induz ação desnecessária e mina a confiança
+no diagnóstico do próprio app).
+
+---
+
 ## 6. NÃO verificado — e é isso que a revisão não pode assumir
 
 | item | situação |
 | --- | --- |
-| **Conversão completa + reversão em um clique**, ponta a ponta | feito em 21/07 com 3 aparelhos (24 trocas, 0 falhas), mas **não repetido** depois das mudanças de 27–28/07 |
 | **Detecção e recuperação de erros ADB** | não exercitada nesta rodada |
 | **Pop-up de acessórios ao fechar** | não consegui reproduzi-lo em teste automatizado; a rede de 800 ms fecha direto quando a tela não confirma. **Conferir manualmente** — virou receita agora que o app é gratuito |
 | Navegação em loop, ciclo de acento, menu CONFIG | validados até 26/07; não reconferidos depois do i18n |
