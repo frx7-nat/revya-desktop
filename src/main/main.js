@@ -938,9 +938,13 @@ ipcMain.handle('revert:export', async (_e, serial) => {
 // import: um kind órfão entraria na esteira e só quebraria mais tarde, numa
 // reversão. A allowlist vem do próprio runner (REVERT_KINDS), para nunca
 // divergir do que o revertEntry sabe desfazer.
+// Este teto de ARQUIVO é o que protege contra campo gigante: nenhuma string
+// isolada pode passar de 2 MB se o arquivo inteiro não passa. Havia aqui um
+// `MAX_STR = 20000` declarado e nunca usado, removido em 29/07/2026 — ele
+// sugeria uma lacuna que não existe. Se for reintroduzir limite por campo,
+// saiba que é reforço, não correção.
 const MAX_IMPORT_BYTES = 2 * 1024 * 1024; // um registro real tem KBs
 const MAX_IMPORT_ENTRIES = 500;
-const MAX_STR = 20000;
 function okStr(v, max) {
   return typeof v === 'string' && v.length > 0 && v.length <= max && !v.includes('\0');
 }
