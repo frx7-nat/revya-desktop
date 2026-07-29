@@ -173,7 +173,44 @@ depuração USB**. Depois desconectar e reconectar o cabo, **sem** tocar em
 - [ ] A mensagem **diz o que fazer**: olhar a tela do celular e tocar em Permitir
 - [ ] Ao autorizar (marcando "Sempre permitir"), o app volta a `ready` sozinho
 
-**Anotar:** a mensagem foi suficiente para agir sem ajuda externa? _(preencher)_
+### ✅ EXECUTADO em 29/07 — PASSA
+
+S23 Ultra, autorizações revogadas e cabo reconectado, com o diálogo do Android
+em pé e sem tocar em nada.
+
+```
+adb          RXCX50450PW  unauthorized
+estado       unauthorized          (não caiu em noDevices nem unknown)
+severidade   action_needed         (exige ação, não é bloqueio)
+autoRecover  null                  (correto — só o usuário pode autorizar)
+fases        querying -> done      (nem tentou recuperar, e bem)
+título       "Autorize o computador no telefone"
+```
+
+A interface **corresponde** ao diagnóstico (confirmado pela usuária na tela).
+
+Os quatro passos cobrem as armadilhas reais, não só o caminho feliz:
+
+1. **Desbloqueie a tela** — o aviso do Android só aparece com a tela desbloqueada
+2. Toque em "Permitir"
+3. **Marque "Sempre permitir deste computador"** — sem isso o problema volta a
+   cada reconexão
+4. Se o aviso não aparecer: mudar o modo USB de "Apenas carga" para **MTP**
+
+O 1 e o 4 são os dois motivos mais comuns de o diálogo não surgir. Estarem ali
+é a diferença entre o usuário resolver sozinho e desistir.
+
+**Após tocar em Permitir:** volta a `ready` em **1 segundo**, sem nenhum clique
+no app.
+
+> **Contraste com o cenário 2.** Aqui o app acerta em tudo: classifica certo,
+> **não** tenta recuperação (que seria inútil — só o usuário pode autorizar), e
+> diz exatamente onde olhar. É a mesma tela, o mesmo código de diagnóstico. A
+> diferença é que o cenário 2 aciona uma recuperação que não serve para
+> conexão sem fio. Isso reforça que o achado `ALTO` está na **recuperação**,
+> não no diagnóstico.
+
+
 
 ---
 
