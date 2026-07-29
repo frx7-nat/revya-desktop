@@ -608,7 +608,25 @@ async function revertEntry(serial, entry) {
 // única logo após a troca pega um valor intermediário — falso "não confirmou".
 // Relê até estabilizar. O custo (a espera) é pago SÓ quando a 1ª leitura
 // diverge do esperado — no caminho feliz é leitura única, sem atraso.
-async function confirmStable(readFn, isOk, { retries = 2, settleMs = 700 } = {}) {
+//
+// PACIÊNCIA AMPLIADA em 29/07/2026 (era `retries: 2, settleMs: 700` = ~1,4 s).
+//
+// Medido no roteiro da Fase 0: a conferência pós-troca acusava divergência
+// FALSA em 3 de 4 trocas — S21 FE por cabo (7/8), S23 Ultra por cabo (8/9) e
+// S23 por Wi-Fi (8/9). Nas três, rodar a MESMA `verifyTask` minutos depois dava
+// tudo OK, sem ninguém tocar no aparelho.
+//
+// A quarta medição é a que explica: quando a resolução foi aplicada ISOLADA
+// (na retomada de uma troca interrompida), a conferência passou 9/9. Ou seja,
+// o override de 4K com densidade pareada assenta em mais de 1,4 s quando
+// disputa o aparelho com o resto da fila.
+//
+// O efeito era o usuário leigo ver "use Corrigir agora" e reexecutar operação
+// que já estava certa — e passar a desconfiar do diagnóstico do próprio app.
+//
+// ~4,5 s cobrem o observado com folga. O custo continua sendo pago só quando a
+// leitura diverge: no caminho feliz nada muda.
+async function confirmStable(readFn, isOk, { retries = 4, settleMs = 900 } = {}) {
   let value = await readFn();
   if (isOk(value)) return { value, ok: true };
   for (let i = 0; i < retries; i++) {
