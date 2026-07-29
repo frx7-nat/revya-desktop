@@ -6,14 +6,15 @@
 
 import React from 'react';
 import { Box } from '@mui/material';
+import { TOK } from '../theme/tokens';
 
 export default function SquareIcon({ children, size = 26 }) {
   return (
     <Box sx={{
       width: size, height: size, flexShrink: 0,
       borderRadius: 0,                       // {rounded.none} — o quadrado É a marca
-      bgcolor: '#1a1a1a',                    // {colors.surface-card}
-      border: '1px solid #3c3c3c',           // {colors.hairline}
+      bgcolor: TOK.surfaceCard,
+      border: `1px solid ${TOK.hairline}`,
       display: 'grid', placeItems: 'center',
     }}>
       {children}

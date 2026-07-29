@@ -27,6 +27,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import ScreenRotationIcon from '@mui/icons-material/ScreenRotation';
 import { useT } from '../i18n';
+import { TOK } from '../theme/tokens';
 
 // Um botão da grade. O <span> em volta existe porque Tooltip precisa de um
 // filho que aceite eventos mesmo com o Button desabilitado.
@@ -44,7 +45,7 @@ function Key({ title, onPress, disabled, wide, primary, children }) {
             // "sharp rectangles read as engineered precision").
             minWidth: 0, flex: 1, height: 40, p: 0, borderRadius: 0,
             fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.08em',
-            ...(primary ? {} : { borderColor: '#3c3c3c', color: 'text.primary' }),
+            ...(primary ? {} : { borderColor: TOK.hairline, color: 'text.primary' }),
           }}
         >
           {children}
@@ -90,8 +91,8 @@ export default function RemoteControl({ serial, disabled, dockRight, onRotated }
       sx={{
         position: 'fixed', right: dockRight ?? 18, bottom: 0, zIndex: 1200,
         width: 168, p: 1.2, borderRadius: 0, // canto reto (design BMW M)
-        border: '1px solid #3c3c3c',
-        background: 'linear-gradient(160deg, #1a1a1a 0%, #0d0d0d 80%)',
+        border: `1px solid ${TOK.hairline}`,
+        background: `linear-gradient(160deg, ${TOK.surfaceCard} 0%, ${TOK.surfaceSoft} 80%)`,
         // O truque do "controle largado no canto": quase invisível em repouso,
         // inteiro ao passar o mouse ou navegar por teclado até ele.
         opacity: 0.35,
