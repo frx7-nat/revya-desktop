@@ -18,16 +18,13 @@ import ProgressPanel from './ProgressPanel';
 import { useT } from '../i18n';
 
 // Cores do documento de referência (DESIGN-bmw-m.md).
-export const M_TRICOLOR = ['#0066b1', '#1c69d4', '#e22718'];
-export const M_TOKENS = {
-  surfaceSoft: '#0d0d0d',
-  surfaceCard: '#1a1a1a',
-  hairline: '#3c3c3c',
-  hairlineStrong: '#262626',
-  dataBlue: '#1c69d4',   // marca de dados (série única) — o azul heritage
-  warning: '#f4b400',
-  red: '#e22718',
-};
+//
+// Sem `export`: usado só aqui, na faixa tricolor do topo. O `M_TOKENS` que
+// morava ao lado foi removido em 29/07/2026 — nunca foi importado por ninguém,
+// e duplicava os mesmos hexadecimais que HealthPanel, ProfilesPanel e
+// CleanupPanel já declaram cada um por conta própria (ver
+// docs/review/fase1-mecanica.md). Unificar os quatro é trabalho da Fase 3.
+const M_TRICOLOR = ['#0066b1', '#1c69d4', '#e22718'];
 
 export default function ControlCenter({
   serial, healthActive, refreshKey,
