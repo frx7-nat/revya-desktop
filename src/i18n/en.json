@@ -453,11 +453,12 @@
       ]
     },
     "adbMissing": {
-      "title": "ADB not found",
-      "message": "DexArmor could not find ADB on the system. It is required to talk to the Galaxy.",
+      "title": "A program component is missing",
+      "message": "DexArmor needs an internal component (ADB) to talk to your Galaxy, and it could not be found. This usually means an incomplete installation, or a file removed by antivirus software.",
       "steps": [
-        "Check that ADB was packaged together with the application.",
-        "If you installed it manually, confirm that the platform-tools folder is on your PATH."
+        "Close DexArmor and open it again — sometimes that is enough.",
+        "If it persists, reinstall the program from the original installer.",
+        "If you use antivirus software, check its quarantine: some remove DexArmor components by mistake."
       ]
     }
   },
