@@ -19,7 +19,12 @@
 
 const { execFile } = require('child_process');
 const { promisify } = require('util');
-const { diagnose, adbNaoEncontrado, parseAdbDevices } = require('./adbDiagnostics.js');
+const {
+  diagnose,
+  adbNaoEncontrado,
+  parseAdbDevices,
+  killServerDestroi,
+} = require('./adbDiagnostics.js');
 
 const execFileAsync = promisify(execFile);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -99,11 +104,11 @@ async function checkDevices(opts = {}) {
 
   // 2) Recuperação automática (no máximo uma vez) ------------------------------
   //
-  // NÃO recuperar quando o aparelho em foco é SEM FIO e está `offline`.
+  // NÃO recuperar quando o foco é um endpoint `host:porta` `offline`.
   //
   // A recuperação é `kill-server` + `start-server`, e o `kill-server` derruba
-  // toda conexão TCP. Para um endpoint sem fio isso apaga o pareamento em vez
-  // de restaurá-lo — e nada o traz de volta sozinho.
+  // toda conexão TCP. Para um `adb connect host:porta` isso apaga a conexão em
+  // vez de restaurá-la — e nada a traz de volta sozinha.
   //
   // Medido em 29/07/2026, e a comparação é o que decide:
   //
@@ -111,28 +116,31 @@ async function checkDevices(opts = {}) {
   //     tela caiu em "Nenhum Galaxy detectado" com passos sobre cabo USB, e
   //     PERMANECEU assim mesmo depois de o aparelho voltar à rede.
   //   SEM a recuperação  (cenário 6, onde o diálogo de troca era dono do
-  //     fluxo): a entrada ficou `offline`, o pareamento sobreviveu, e a conexão
-  //     voltou sozinha quando o aparelho retornou.
+  //     fluxo): a entrada ficou `offline`, a conexão sobreviveu, e voltou
+  //     sozinha quando o aparelho retornou.
   //
-  // Ou seja: sem fio, `offline` se resolve pela espera. A "recuperação"
-  // atrapalhava um caso que já se curava.
+  // Ou seja: aqui `offline` se resolve pela espera. A "recuperação" atrapalhava
+  // um caso que já se curava.
   //
-  // Só este caso é excluído. `noPermissions` e `unknown` seguem recuperando —
-  // são estados de USB, e ali o reinício do servidor de fato ajuda.
+  // O critério é `killServerDestroi`, NÃO `ehSemFio`: um aparelho da Depuração
+  // sem fio (mDNS) também é sem fio, mas o servidor do adb o redescobre ao
+  // subir. Ali reiniciar é inofensivo e pode até resolver — pular seria abrir
+  // mão de um conserto de graça. A distinção é do achado 1 da Fase 4.
+  //
+  // `noPermissions` e `unknown` seguem recuperando — são estados de USB, e ali
+  // o reinício do servidor de fato ajuda.
   const foco = result.actionable || {};
-  const focoSemFio = /^[^\s:]+:\d+$/.test(foco.serial || '');
-  const pularRecuperacao = focoSemFio && foco.state === 'offline';
+  const pularRecuperacao = killServerDestroi(foco.serial) && foco.state === 'offline';
 
   const recovery = pularRecuperacao ? null : (foco && foco.autoRecover);
   if (recover && Array.isArray(recovery) && recovery.length > 0) {
     onStatus('recovering');
-    // Endpoints SEM FIO presentes ANTES da recuperação.
+    // Endpoints `host:porta` presentes ANTES da recuperação.
     //
     // O `kill-server` derruba o daemon inteiro, e com ele TODA conexão TCP —
     // não só a que está com problema. Para um aparelho por cabo isso é
-    // inofensivo (o USB é reenumerado sozinho). Para um sem fio, apaga o
-    // pareamento: o aparelho some da lista e não volta, porque nada refaz o
-    // `adb connect`.
+    // inofensivo (o USB é reenumerado sozinho). Para um `adb connect`, apaga a
+    // conexão: o aparelho some da lista e não volta, porque nada a refaz.
     //
     // O efeito medido em 29/07/2026 (roteiro de erros ADB, cenário 2): um S23
     // por Wi-Fi que ficou `offline` por alguns segundos caía em "Nenhum Galaxy
@@ -143,9 +151,12 @@ async function checkDevices(opts = {}) {
     //
     // É o cenário primário do produto — o aparelho mora na TV, por Wi-Fi, e
     // rede oscila.
+    // Só os `host:porta`. Os endpoints mDNS ficam de fora de propósito — o
+    // servidor do adb os redescobre sozinho ao subir, e tentar reconectá-los
+    // custaria o timeout inteiro à toa quando o aparelho estiver fora do ar.
     const wireless = parseAdbDevices(rawOutput)
       .map((d) => d.serial)
-      .filter((s) => /^[^\s:]+:\d+$/.test(s));
+      .filter(killServerDestroi);
     try {
       // ex.: ['kill-server', 'start-server'] — operação global do ADB
       for (const subcommand of recovery) {
