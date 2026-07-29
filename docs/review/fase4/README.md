@@ -10,20 +10,45 @@ que já está.
 | `PROMPT-adversarial.md` | a instrução — cole no outro modelo |
 | `diff-codigo.patch` | 573 linhas · o diff `pre-review-v1..main` só de código |
 | `diff-resumo.txt` | 13 arquivos, 237 inserções, 95 remoções |
+| `rodar-codex.sh` | atalho para abrir o Codex no repositório, somente leitura |
 
 Os documentos da revisão ficaram **fora** do diff de propósito: o outro modelo
 deve julgar o código, não a papelada sobre ele.
 
-## Como rodar
+## Como rodar — Codex CLI (recomendado)
 
 ```bash
-cd "/Users/natalierjunior/dexarmor - app - atualizado - cópia 2/docs/review/fase4"
-
-# exemplo com um CLI qualquer — adapte ao que você usar
-cat PROMPT-adversarial.md diff-codigo.patch | <seu-cli>
+brew install codex     # ou: npm i -g @openai/codex
+codex login            # abre o navegador
 ```
 
-Ou abra os dois arquivos e cole no chat do modelo escolhido.
+Depois:
+
+```bash
+"/Users/natalierjunior/dexarmor - app - atualizado - cópia 2/docs/review/fase4/rodar-codex.sh"
+```
+
+E cole, quando ele abrir:
+
+> Leia `docs/review/fase4/PROMPT-adversarial.md` e execute o que ele pede.
+> Você tem o repositório inteiro à disposição — abra os arquivos reais, não só
+> o diff.
+
+**Por que dentro do repositório, e não colando o patch:** um diff mostra as
+linhas que mudaram, não o que as cerca. Metade das perguntas do prompt —
+"onde essa string é definida?", "algum chamador passa opções próprias?" — só
+tem resposta abrindo os arquivos vizinhos, que não estão no patch.
+
+**Por que somente leitura:** o revisor deve APONTAR defeitos, não consertá-los.
+Um achado consertado sozinho é um achado que ninguém leu, e a comparação com o
+diagnóstico da Fase 2 depende do texto do achado.
+
+## Sem instalar nada
+
+Abra `PROMPT-adversarial.md` e `diff-codigo.patch`, cole os dois no chat do
+modelo escolhido (ChatGPT, Gemini, o que for). Funciona, mas o revisor fica
+limitado ao que está no patch — vale para uma segunda opinião rápida, não para
+a passada completa.
 
 ## Por que não pular esta fase
 
