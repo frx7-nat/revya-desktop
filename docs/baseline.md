@@ -265,10 +265,29 @@ corrigido.
 
 ---
 
+## 5f. Fase 4 — correções da revisão adversarial, 29/07
+
+Três achados do revisor externo (Codex), consertados em R12, R13 e R14. Triagem
+e o medido em `docs/review/fase4/triagem.md`.
+
+Verificado **em bancada**, não em aparelho:
+
+- 9 formatos de serial pelos predicados `ehSemFio` / `killServerDestroi`,
+  incluindo o mDNS que era o defeito, `emulator-5554` e vazio/`null`/`undefined`
+- mensagem ponta a ponta: mDNS `offline` passou a ler "Sem contato pela rede"
+  em vez dos passos de cabo
+- com adb falso (9 endpoints sem fio, foco USB `offline`, `start-server`
+  travado): **0 de 9** reconexões antes, **9 de 9** depois; disparos espalhados
+  em 0,01 s (paralelos), contra ~36 s em fila
+- adb real: 0,2 s, sem regressão
+
+---
+
 ## 6. NÃO verificado — e é isso que a revisão não pode assumir
 
 | item | situação |
 | --- | --- |
+| **As correções da Fase 4 em aparelho** | R12/R13/R14 só passaram por bancada (§5f). O caminho mDNS em especial exige parear um Galaxy pela Depuração sem fio do Android — **o DexArmor nunca produz esse formato sozinho**, então nenhum teste anterior o exercitou |
 | **Pop-up de acessórios ao fechar** | não consegui reproduzi-lo em teste automatizado; a rede de 800 ms fecha direto quando a tela não confirma. **Conferir manualmente** — virou receita agora que o app é gratuito |
 | Navegação em loop, ciclo de acento, menu CONFIG | validados até 26/07; não reconferidos depois do i18n |
 | Fluidez em S8/S9 | nunca medida (item 2 do `PENDENCIAS`) |
@@ -303,3 +322,45 @@ primeira vez.
 **Próximo passo:** Fase 1 — auditoria mecânica. Ela roda com ferramentas
 determinísticas e **não depende de aparelho nem de acompanhamento**, então pode
 ser feita quando houver tempo.
+
+---
+
+## 8. Estado ao fim da revisão — 29/07/2026
+
+Fases 0 a 4 concluídas. O caminho inteiro está em `docs/review/`, uma pasta por
+fase, com o medido em cada uma.
+
+| fase | o que produziu |
+| --- | --- |
+| 0 | esta linha de base, e quatro achados de partida |
+| 1 | auditoria mecânica, código morto removido |
+| 2 | diagnóstico (somente leitura): 5 recomendações aprovadas, 6 adiadas com motivo |
+| 3 | R1, R2, R3, R5, R8 aplicadas, cada uma em branch temático |
+| 4 | revisão adversarial por outro modelo → R12, R13, R14 |
+
+**Acumulado desde `pre-review-v1`:** 13 arquivos de código, +314 −96.
+
+### A lição que se repetiu, e vale mais que os achados
+
+**Guarda verde não é interface verificada, e build verde não é artefato bom.**
+
+- Três defeitos de i18n passaram por guardas que estavam verdes; só apareceram
+  quando o app foi aberto em inglês.
+- Os três defeitos de distribuição (Gatekeeper, CRC do NSIS, app que não
+  fechava) passaram por builds que terminaram sem erro.
+- Os achados da Fase 0 só existiram porque os caminhos de erro foram
+  exercitados **de propósito** — arrancando o cabo, derrubando a rede.
+- O defeito ALTO da Fase 0 exigiu refazer um cenário do roteiro que estava
+  **errado**: o primeiro não alcançava o código que pretendia testar, e seis
+  capturas de tela byte a byte idênticas foram o que provou isso.
+
+### O que a Fase 4 provou sobre autorrevisão
+
+O diagnóstico da Fase 2 foi escrito pelo mesmo modelo que escreveu o código, e
+concluiu que a base era sólida. **Não levantou nenhum dos três achados que um
+revisor externo encontrou em três minutos.** Pior: o prompt entregue a esse
+revisor afirmava que o formato mDNS "foi considerado" — uma garantia falsa que
+poderia ter enterrado justamente o achado principal. Ele conferiu assim mesmo.
+
+Quem repetir esta revisão no futuro: **não pule a Fase 4**, e não confie no
+relatório da Fase 2 por ele parecer favorável.
