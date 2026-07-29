@@ -453,11 +453,12 @@
       ]
     },
     "adbMissing": {
-      "title": "ADB não encontrado",
-      "message": "O DexArmor não encontrou o ADB no sistema. Ele é necessário para se comunicar com o Galaxy.",
+      "title": "Faltou um componente do programa",
+      "message": "O DexArmor precisa de um componente interno (o ADB) para conversar com o Galaxy, e ele não foi encontrado. Isso costuma indicar instalação incompleta ou arquivo removido por antivírus.",
       "steps": [
-        "Verifique se o ADB foi empacotado junto com o aplicativo.",
-        "Se você instalou manualmente, confirme que a pasta platform-tools está no PATH."
+        "Feche o DexArmor e abra de novo — às vezes basta isso.",
+        "Se continuar, reinstale o programa a partir do arquivo de instalação original.",
+        "Se você usa antivírus, confira a quarentena dele: alguns removem componentes do DexArmor por engano."
       ]
     }
   },
