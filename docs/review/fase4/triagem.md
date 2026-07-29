@@ -132,14 +132,48 @@ arquivos diferentes — e o achado 1 é a primeira consequência disso.
 
 ---
 
-## Encaminhamento
+## Encaminhamento — FEITO em 29/07/2026
 
-O plano manda reabrir a Fase 3 em branch temático para achado `ALTO`. Mesmo com
-a minha reclassificação para `MÉDIO`, os três procedem e o conserto é barato:
+Os três consertados, em dois branches temáticos, com o ciclo da Fase 3.
 
-- **R12** — unificar `ehSemFio` num só lugar, exportado, e ensiná-lo a
-  reconhecer mDNS (achado 1)
-- **R13** — `Promise.allSettled` no laço de reconexão (achado 2)
-- **R14** — `try` próprio para a reconexão (achado 3)
+### R12 · `f695553` — serial sem fio numa definição só, mDNS reconhecido
 
-R12 tem de vir primeiro: os outros dois mexem no mesmo trecho.
+Uma definição exportada no lugar de três cópias, e **dois** predicados onde o
+revisor propunha um:
+
+| predicado | formatos | decide |
+| --- | --- | --- |
+| `ehSemFio` | `host:porta` **e** mDNS | a MENSAGEM |
+| `killServerDestroi` | só `host:porta` | PULAR a recuperação, e o que reconectar |
+
+A separação é minha, não dele, e vem de ele ter errado o dano: como o
+`kill-server` **não** destrói o pareamento mDNS, pular a recuperação ali seria
+abrir mão de um conserto de graça — reiniciar o servidor é justamente o que
+refaz a descoberta.
+
+Aferido: 9 formatos de serial (`host:porta`, mDNS com e sem ponto final, USB
+Samsung real, `emulator-5554`, vazio/`null`/`undefined`) e a mensagem ponta a
+ponta — o mDNS `offline` agora lê *"Sem contato pela rede"*.
+
+### R13 + R14 · `ffc9a36` — reconexão paralela e fora do `try`
+
+Medido com um adb falso (9 endpoints sem fio, foco USB `offline`,
+`start-server` travado):
+
+| | antes | depois |
+| --- | --- | --- |
+| reconexões disparadas | **0 de 9** | **9 de 9** |
+| tempo | 1,1 s | 6,0 s |
+| espalhamento dos disparos | — | 0,01 s (paralelo) |
+
+Os 5 s a mais são o preço do reparo e só ocorrem no caminho de falha. Os 0 de 9
+são a prova de que o achado 3 era regressão real, não hipótese.
+
+Conferido também com o adb real (0,2 s, sem regressão), `check-i18n` (698
+chaves) e `build:renderer`.
+
+### O que ainda não foi verificado
+
+Nada disto passou por **aparelho real** ainda. O caminho do mDNS, em especial,
+depende de parear um Galaxy pela Depuração sem fio do Android — o DexArmor
+nunca produz esse formato sozinho. Fica para o ciclo de aparelho da Fase 5.
