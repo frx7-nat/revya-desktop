@@ -218,11 +218,42 @@ para os outros tipos.
 
 ---
 
+## 5d. Detecção e recuperação de erros ADB — VERIFICADO em 29/07
+
+Roteiro completo em [`roteiro-erros-adb.md`](./roteiro-erros-adb.md), seis
+cenários executados no S23 Ultra (cabo e Wi-Fi).
+
+**Funciona:**
+
+| item | evidência |
+| --- | --- |
+| Classificação dos estados | `noDevices`, `unauthorized`, `adbMissing` e `offline` identificados corretamente |
+| `autoRecover: null` onde não cabe | em `unauthorized` o app **não** tenta recuperar — só o usuário pode autorizar |
+| Diálogo de interrupção | identifica o item que falhou, explica a causa, diz o que fazer, promete continuidade e **cumpre** |
+| Retentativa automática | 2 tentativas antes de desistir (`retry-transitorio` no diário) |
+| Detecção de ausência/volta | ~6 s e ~4 s, sem clique |
+| **Reversibilidade sob falha** | retrato **idêntico** ao de referência após interrupção por cabo **e** por queda de rede, com personalizações do usuário intactas |
+
+**Quatro achados**, detalhados no roteiro:
+
+| # | achado | severidade |
+| --- | --- | --- |
+| 1 | `kill-server` **destrói** o pareamento Wi-Fi e o app nunca reconecta — só com o app ocioso na tela de conexão | **ALTO** |
+| 2 | mensagem de `adbMissing` escrita para desenvolvedor | **MÉDIO** |
+| 3 | `tw-rotate` falha no meio de si mesmo; auto-corrige no ciclo seguinte | **BAIXO** |
+| 4 | conferência pós-troca acusa divergência falsa (reproduzida 3×) | **MÉDIO** |
+
+> **Nenhum dos quatro é regressão** — todos são comportamento pré-existente,
+> descoberto agora porque este foi o primeiro exercício deliberado dos caminhos
+> de erro. Entram na Fase 2 como achados de partida, não como quebra de
+> baseline.
+
+---
+
 ## 6. NÃO verificado — e é isso que a revisão não pode assumir
 
 | item | situação |
 | --- | --- |
-| **Detecção e recuperação de erros ADB** | não exercitada nesta rodada |
 | **Pop-up de acessórios ao fechar** | não consegui reproduzi-lo em teste automatizado; a rede de 800 ms fecha direto quando a tela não confirma. **Conferir manualmente** — virou receita agora que o app é gratuito |
 | Navegação em loop, ciclo de acento, menu CONFIG | validados até 26/07; não reconferidos depois do i18n |
 | Fluidez em S8/S9 | nunca medida (item 2 do `PENDENCIAS`) |
@@ -240,13 +271,20 @@ para os outros tipos.
 - [x] Este documento
 - [x] **Ciclo conversão + reversão** verificado em **dois** aparelhos (§5b, §5c)
 - [x] `ro.build.version.oneui` dos dois aparelhos
-- [ ] Detecção e recuperação de erros ADB — único item do plano ainda não
-      exercitado
+- [x] **Detecção e recuperação de erros ADB** (§5d) — seis cenários
+
+### ✅ FASE 0 CONCLUÍDA — 29/07/2026
 
 > **A reversibilidade — núcleo do produto — está verificada em dois aparelhos,
-> com One UI diferentes e com personalizações preservadas.** É a rede que a
-> Fase 3 vai usar.
->
-> Resta a recuperação de erros ADB. Ela exige provocar falha de propósito
-> (desconectar no meio, negar autorização), e é melhor fazê-la como roteiro
-> próprio do que improvisar agora.
+> com One UI diferentes, com personalizações preservadas e sob falha
+> deliberada** (cabo arrancado no meio da fila, rede caída no meio da fila).
+> É a rede que a Fase 3 vai usar.
+
+**Quatro achados de partida** para a Fase 2 (1 `ALTO`, 2 `MÉDIO`, 1 `BAIXO`),
+todos em §5d. Nenhum é regressão: são comportamentos que sempre estiveram lá e
+só apareceram porque os caminhos de erro foram exercitados de propósito pela
+primeira vez.
+
+**Próximo passo:** Fase 1 — auditoria mecânica. Ela roda com ferramentas
+determinísticas e **não depende de aparelho nem de acompanhamento**, então pode
+ser feita quando houver tempo.
