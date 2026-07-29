@@ -250,8 +250,57 @@ for e in d['entries']: print(' ', e['taskId'], '· revert:', bool(e.get('revert'
 - [ ] A **Reversão completa** desfaz tudo e devolve o aparelho ao estado inicial
 - [ ] O diário registra o evento
 
-**Anotar:** estado do aparelho após a reversão comparado ao retrato inicial.
-_(preencher)_
+### ✅ EXECUTADO em 29/07 — PASSA
+
+S23 Ultra por cabo, troca para modo TV interrompida no 5º item de 9.
+
+**O diálogo de erro é exemplar.** Mostra os 4 itens concluídos com marca verde,
+o item que falhou em vermelho com a causa, e o pendente com indicador de espera.
+A mensagem:
+
+> "O aparelho desconectou no meio do caminho. Confira o cabo (ou o Wi-Fi) e
+> toque em **Tentar de novo** — a troca continua de onde parou."
+
+Faz as quatro coisas que importam: identifica **qual** item falhou, explica a
+causa em linguagem comum, diz o que fazer, e **tranquiliza sobre a
+continuidade**. Oferece as duas saídas ("Tentar de novo" / "Parar por aqui") e
+**não culpa o programa** — que é o risco quando o cabo é o culpado.
+
+O app ainda tentou **duas vezes** antes de desistir (`retry-transitorio · tv ·
+tw-rotate · tentativa 1` e `2` no diário).
+
+**Registro no estado parcial — consistente:**
+
+```
+aplicadas (6)      lnch-dexarmor, tw-anim, tw-battery, tw-dnd, tw-font, tw-screen
+não aplicadas (5)  tw-gestures, tw-home, tw-res-4k, tw-rotate, tw-sound
+```
+
+Nenhuma entrada órfã, nenhum revert perdido.
+
+**Retomada:** "Tentar de novo" completou a fila. 11 ativas, 0 dormentes,
+`fingerprint-pos-troca 9/9`. A promessa de "continua de onde parou" se cumpre.
+
+**Volta ao modo celular: retrato IDÊNTICO ao de referência**, campo por campo —
+incluindo densidade 560, fonte 0,8 e `com.rama.mako`.
+
+### Achado `BAIXO`: divergência transitória em task de dois passos
+
+O `tw-rotate` falhou **no meio de si mesmo**: travou a rotação automática
+(`accel: 1 → 0`) mas não chegou a girar a tela. O registro o manteve
+`dormant: true` — "não aplicado" — enquanto o aparelho já carregava um valor de
+TV.
+
+Registro e aparelho discordaram por alguns minutos. **Auto-corrigiu-se** no
+ciclo seguinte: após retomar e voltar, o `accel` retornou a 1.
+
+**Risco residual:** se o usuário clicar em "Parar por aqui" e nunca mais
+alternar, o celular fica com a rotação automática desligada e a entrada
+dormente não tem o que desfazer. O check-up talvez pegue; não foi testado.
+
+`BAIXO` porque o caminho normal (retomar ou alternar de novo) corrige sozinho.
+É o único caso entre as tasks de modo que altera **duas** coisas e pode falhar
+entre uma e outra — vale a Fase 2 confirmar se há outras.
 
 ---
 
