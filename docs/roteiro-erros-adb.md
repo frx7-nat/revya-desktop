@@ -60,29 +60,57 @@ adb disconnect
 
 ---
 
-## Cenário 2 — Recuperação automática (servidor ADB derrubado)
+## Cenário 2 — Recuperação automática
 
-O caso que o app tenta resolver **sozinho**, sem envolver o usuário. É a
-funcionalidade que o `recover` do `checkDevices` existe para cobrir.
+> ### ⚠️ Correção de 29/07: `adb kill-server` NÃO serve para este teste
+>
+> A primeira versão deste roteiro mandava derrubar o servidor com
+> `adb kill-server`. **Foi executado e não funciona como teste.** Seis capturas
+> da janela do app, em t+0/1/2/3/5/8 s, saíram **byte a byte idênticas** — a
+> tela não mudou em instante nenhum.
+>
+> O motivo está no código, não no app estar quebrado. A recuperação só dispara
+> quando o diagnóstico devolve `actionable.autoRecover` não-vazio
+> (`adbOrchestrator.js:95`), e isso acontece em **três** dos oito estados:
+>
+> | estado | `autoRecover` |
+> | --- | --- |
+> | `ready`, `unauthorized`, `noDevices`, `otherMode` | `null` — não recupera |
+> | **`offline`**, **`noPermissions`**, **`unknown`** | `['kill-server', 'start-server']` |
+>
+> Matar o servidor não produz nenhum dos três: o cliente do `adb` **religa o
+> daemon sozinho** na consulta seguinte, o diagnóstico volta `ready`, e não há
+> o que recuperar. O comportamento observado estava **certo** — o teste é que
+> não alcançava o código que pretendia exercitar.
+>
+> **Isso é achado por si só:** a queda do servidor ADB é invisível para o
+> usuário e se cura sozinha. Bom comportamento — mas significa que a mensagem
+> `status.recovered` ("A conexão foi reiniciada automaticamente") **nunca
+> aparece nesse caminho**. Conferir na Fase 2 se ela aparece em algum outro, ou
+> se é promessa de interface sem uso.
 
-**Provocar** (com o aparelho conectado e o app aberto):
+**Provocar de verdade** — é preciso um aparelho conectado que fique
+inalcançável, que é o cenário real deste produto (aparelho na TV, por Wi-Fi):
 
 ```bash
-adb kill-server
+adb tcpip 5555            # com o cabo ligado
+adb connect <ip>:5555     # confirmar que aparece como "device"
+# desconectar o cabo USB, deixando só o Wi-Fi
 ```
+
+Com o app aberto e o aparelho em Wi-Fi, **ligar o modo avião** no aparelho (ou
+desligar o Wi-Fi dele). A entrada no `adb devices` passa a `offline`.
 
 **Esperado:**
 
-- [ ] O app percebe a queda
-- [ ] Mostra `status.recovering` ("Reiniciando a conexão…")
-- [ ] Reinicia o servidor sozinho e volta a `ready`
-- [ ] Ao fim, informa `status.recovered` ("A conexão foi reiniciada automaticamente")
-- [ ] **Não** exige nenhuma ação do usuário
+- [ ] Estado `offline`, com título e mensagem próprios
+- [ ] O app tenta a recuperação: `status.recovering` ("Reiniciando a conexão…")
+- [ ] Depois `status.requerying` ("Verificando de novo…")
+- [ ] Se o aparelho voltar (desligar o modo avião), retorna a `ready`
+- [ ] Se **não** voltar, a mensagem final explica o que fazer
 
-**Anotar:** tempo total até voltar ao normal. _(preencher)_
-
-> Se o app **não** se recuperar sozinho aqui, é achado `ALTO`: a recuperação
-> automática é a promessa central desta tela.
+> Conectar a um IP onde não há nada **não serve**: o `adb connect` falha com
+> "Operation timed out" e não cria entrada alguma. Testado em 29/07.
 
 ---
 
