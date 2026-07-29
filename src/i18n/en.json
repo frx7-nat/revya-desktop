@@ -393,6 +393,61 @@
     "verifiedSome": "{verified}/{checked} ok · {failed} differing — use \"Fix now\""
   },
   "diagnostics": {
+    "adbMissing": {
+      "title": "A program component is missing",
+      "message": "DexArmor needs an internal component (ADB) to talk to your Galaxy, and it could not be found. This usually means an incomplete installation, or a file removed by antivirus software.",
+      "steps": [
+        "Close DexArmor and open it again — sometimes that is enough.",
+        "If it persists, reinstall the program from the original installer.",
+        "If you use antivirus software, check its quarantine: some remove DexArmor components by mistake."
+      ]
+    },
+    "noDevices": {
+      "title": "No Galaxy detected",
+      "message": "The computer is not seeing any device.",
+      "steps": [
+        "Make sure the cable is connected — and that it is a DATA cable, not just a charging one.",
+        "Turn on USB Debugging: Settings → Developer options → USB debugging.",
+        "If Developer options are not there: Settings → About phone → tap \"Build number\" 7 times.",
+        "On Windows, install the Samsung USB driver if the device does not show up."
+      ]
+    },
+    "noPermissions": {
+      "title": "No permission to access the device",
+      "message": "The computer detected the Galaxy but cannot reach it. This is usually a stuck ADB service or a missing/outdated USB driver (Windows).",
+      "steps": [
+        "Hold on — DexArmor will restart the ADB service automatically.",
+        "On Windows: reinstall the Samsung USB driver and try again.",
+        "On Mac/Linux: reconnect the cable after the service restarts."
+      ]
+    },
+    "offline": {
+      "title": "Device is not responding",
+      "message": "The Galaxy shows up but is not responding to commands. Usually it is a stuck ADB service, a bad cable, or the device in an odd state.",
+      "steps": [
+        "Hold on — DexArmor will restart the connection automatically.",
+        "If it persists, change the USB cable or the computer port.",
+        "Unplug and reconnect the phone."
+      ]
+    },
+    "offlineWireless": {
+      "title": "No contact over the network",
+      "message": "Your Galaxy is paired over Wi-Fi but stopped responding. This is almost always a network hiccup — it comes back on its own once the device reappears.",
+      "steps": [
+        "Check that the device is still on and on the same Wi-Fi network as this computer.",
+        "If it is in airplane mode or has Wi-Fi off, just turn it back on.",
+        "The connection restores itself — you do not need to reconnect anything by hand.",
+        "If it takes too long, plug in the USB cable: it works even with the network down."
+      ]
+    },
+    "otherMode": {
+      "title": "Phone in a special mode",
+      "message": "The Galaxy is in a mode that does not allow setup right now (recovery, bootloader or similar).",
+      "steps": [
+        "Restart the phone normally until Android has loaded.",
+        "Reconnect and try again."
+      ]
+    },
     "ready": {
       "title": "Galaxy ready",
       "message": "Device authorized and responding. You can start the setup.",
@@ -408,57 +463,12 @@
         "If the prompt does not appear: pull down the notification bar and change the USB mode from \"Charging only\" to \"File transfer (MTP)\"."
       ]
     },
-    "offline": {
-      "title": "Device is not responding",
-      "message": "The Galaxy shows up but is not responding to commands. Usually it is a stuck ADB service, a bad cable, or the device in an odd state.",
-      "steps": [
-        "Hold on — DexArmor will restart the connection automatically.",
-        "If it persists, change the USB cable or the computer port.",
-        "Unplug and reconnect the phone."
-      ]
-    },
-    "noPermissions": {
-      "title": "No permission to access the device",
-      "message": "The computer detected the Galaxy but cannot reach it. This is usually a stuck ADB service or a missing/outdated USB driver (Windows).",
-      "steps": [
-        "Hold on — DexArmor will restart the ADB service automatically.",
-        "On Windows: reinstall the Samsung USB driver and try again.",
-        "On Mac/Linux: reconnect the cable after the service restarts."
-      ]
-    },
-    "noDevices": {
-      "title": "No Galaxy detected",
-      "message": "The computer is not seeing any device.",
-      "steps": [
-        "Make sure the cable is connected — and that it is a DATA cable, not just a charging one.",
-        "Turn on USB Debugging: Settings → Developer options → USB debugging.",
-        "If Developer options are not there: Settings → About phone → tap \"Build number\" 7 times.",
-        "On Windows, install the Samsung USB driver if the device does not show up."
-      ]
-    },
-    "otherMode": {
-      "title": "Phone in a special mode",
-      "message": "The Galaxy is in a mode that does not allow setup right now (recovery, bootloader or similar).",
-      "steps": [
-        "Restart the phone normally until Android has loaded.",
-        "Reconnect and try again."
-      ]
-    },
     "unknown": {
       "title": "Unrecognized state",
       "message": "The device returned a state DexArmor does not know yet. Restart the phone and the connection, then try again.",
       "steps": [
         "Unplug and reconnect the phone.",
         "Restart the device if the problem continues."
-      ]
-    },
-    "adbMissing": {
-      "title": "A program component is missing",
-      "message": "DexArmor needs an internal component (ADB) to talk to your Galaxy, and it could not be found. This usually means an incomplete installation, or a file removed by antivirus software.",
-      "steps": [
-        "Close DexArmor and open it again — sometimes that is enough.",
-        "If it persists, reinstall the program from the original installer.",
-        "If you use antivirus software, check its quarantine: some remove DexArmor components by mistake."
       ]
     }
   },

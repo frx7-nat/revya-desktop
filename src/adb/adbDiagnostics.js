@@ -99,15 +99,32 @@ function parseAdbDevices(rawOutput) {
  * Monta o objeto de diagnóstico de um único dispositivo, pronto para a UI.
  * @param {{serial: string, state: string}} device
  */
+// Um serial no formato `host:porta` é uma conexão SEM FIO (`adb connect`).
+// Seriais de USB são alfanuméricos sem dois-pontos.
+const ehSemFio = (serial) => /^[^\s:]+:\d+$/.test(serial || '');
+
 function describeDevice({ serial, state }) {
   const info = MESSAGES[state] || MESSAGES[DeviceState.UNKNOWN];
+
+  // `offline` SEM FIO tem causa e saída diferentes do `offline` por cabo, e a
+  // partir de 29/07/2026 tem também COMPORTAMENTO diferente: o orquestrador
+  // deixou de aplicar `kill-server` nesse caso, porque ali ele apagava o
+  // pareamento em vez de restaurá-lo (ver adbOrchestrator.js).
+  //
+  // Sem esta variante o usuário leria "aguarde, o DexArmor vai reiniciar a
+  // conexão automaticamente" — promessa que o app deixou de cumprir — seguida
+  // de dois passos sobre trocar o CABO, num aparelho que não tem cabo nenhum.
+  const key = (state === DeviceState.OFFLINE && ehSemFio(serial))
+    ? 'diagnostics.offlineWireless'
+    : info.key;
+
   return {
     serial,
     state,
     severity: info.severity,
-    title: t(`${info.key}.title`),
-    message: t(`${info.key}.message`),
-    steps: tList(`${info.key}.steps`),
+    title: t(`${key}.title`),
+    message: t(`${key}.message`),
+    steps: tList(`${key}.steps`),
     autoRecover: info.autoRecover, // null OU array de subcomandos do adb (ex.: ['kill-server','start-server'])
     isReady: state === DeviceState.READY,
   };
