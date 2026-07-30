@@ -5,6 +5,13 @@ nos dois repositórios). Ordenado por importância **e por dependência**: cada
 item pressupõe os anteriores. A ordem é o que evita retrabalho — fazer o 4
 antes do 2 obriga a refazer o 4.
 
+> **Atualizado em 30/07/2026**, na sessão que adiantou o que não depende do
+> nome. Mexeu em três itens: **0** (pacote de backup montado e a chave
+> verificada contra o APK — falta você levar para fora do disco), **3** (backup
+> provisório em `git bundle`, e a descoberta de que o repositório sozinho não
+> reconstrói o produto) e **4** (guia escrito em `docs/exclusoes-kaspersky.md`).
+> O item 1 continua sendo o único bloqueio, e continua sendo decisão sua.
+
 ---
 
 ## Onde o projeto está hoje
@@ -50,6 +57,26 @@ lançamento é o pior desfecho técnico possível, e não tem conserto.
 > `dexarmor-launcher/app/build.gradle.kts:36`, é local e invisível ao usuário —
 > renomear não compra nada e quebra o build. O `CN=DexArmor` do certificado
 > também fica: ele não aparece em lugar nenhum que o usuário veja.
+
+### Estado em 30/07/2026 — pacote montado, falta levar
+
+`~/Desktop/BACKUP-CHAVE-ASSINATURA-ANDROID/` tem o `.jks`, o
+`keystore.properties`, o keystore em base64 (para colar numa nota de
+gerenciador de senhas), `SHA256.txt` e as instruções de restauração.
+
+Duas coisas foram **verificadas**, não presumidas:
+
+- o keystore **abre** com a senha que está no `keystore.properties` — alias
+  `dexarmor`, `PrivateKeyEntry`, `CN=DexArmor, O=DexArmor, C=BR`, válido até
+  04/07/2126
+- o certificado é **o mesmo** que assina o APK distribuído hoje: SHA-256
+  `3c0bbc45f2ae…` no keystore e no
+  `apks/launchers/{Launcher} DexArmor TV.apk`
+
+**O que falta é físico e é seu:** arrastar a pasta para um pendrive e/ou colar o
+base64 num cofre de senhas. Enquanto os dois backups estiverem só neste disco, o
+risco irreversível continua exatamente onde estava — um pacote pronto no Desktop
+não é um backup.
 
 ---
 
@@ -147,16 +174,44 @@ Dois repositórios, dois remotes. Privado por padrão — abrir depois é um cli
 fechar depois de indexado, não.
 
 > Fica aqui e não no item 0 porque um repositório com o nome errado é
-> retrabalho; a chave, não. Se você quiser o backup do código hoje mesmo, um
-> `.zip` dos dois diretórios num disco externo resolve sem criar nada com nome
-> provisório.
+> retrabalho; a chave, não.
+
+### Backup provisório feito em 30/07/2026
+
+`~/Desktop/BACKUP-CODIGO-30-07-2026/` — `git bundle --all` dos dois
+repositórios, 1,9 MB no total, `git bundle verify` dizendo *"records a complete
+history"* nos dois. As cinco tags estão dentro (conferido com `git ls-remote` no
+próprio arquivo, não presumido). Isto tira a revisão de código desta máquina
+sem criar nada no GitHub com nome provisório — **não substitui o item 3**, que
+continua esperando o nome final.
+
+Uma coisa que só apareceu ao montar o pacote, e que muda o item 6:
+
+> **O repositório sozinho não reconstrói o produto.** O APK do launcher está
+> ignorado por `apks/**/*.apk`, e os binários de `adb` e `scrcpy` também. Um
+> clone limpo não tem com o que instalar o launcher: falta baixar adb/scrcpy e
+> buildar o APK, o que exige a chave do item 0. Se o canal de download do item 6
+> for GitHub Releases, o APK tem de ser anexado ao release — o código-fonte
+> publicado não o contém.
+
+Também não está versionado o resultado bruto da revisão adversarial
+(`docs/review/fase4/resultado-codex-*.md` e o `.log-*`, ignorados por um
+`.gitignore` local sem motivo escrito). A `triagem.md` que os interpreta está no
+git; o material bruto, não. Os dois foram para `nao-versionados/` no pacote —
+outro modelo rodando de novo não produz o mesmo texto.
 
 ---
 
 ## 4. Exclusão do Kaspersky
 
-Precisa da interface gráfica e da senha de administrador — não dá por linha de
-comando, e é por isso que ainda não foi feito.
+Precisa da interface gráfica — não dá por linha de comando, e é por isso que
+ainda não foi feito.
+
+**O passo-a-passo está em [`docs/exclusoes-kaspersky.md`](./docs/exclusoes-kaspersky.md)**,
+escrito em 30/07/2026: os caminhos exatos a excluir, o caminho na interface do
+Kaspersky **para Mac** (Preferências → Ameaças → Zona confiável — a
+documentação de Windows manda em outro menu), o reparo do Electron e as três
+checagens que provam que pegou.
 
 O que o antivírus faz nesta máquina, medido:
 
@@ -167,9 +222,20 @@ O que o antivírus faz nesta máquina, medido:
   impede `electron .`; a build **x64 empacotada** sobrevive
 - **nunca** toca em `.dmg` nem em `.zip`
 
-Excluir a pasta do projeto e `/private/tmp/dexarmor-build` devolve o caminho
-normal de desenvolvimento. Sem isso o trabalho continua possível, só mais
-desconfortável.
+Dois achados de 30/07 que estão no guia e mudam o que fazer:
+
+- o `Electron.app` **já foi apagado** de `node_modules/electron/dist/` (sobraram
+  `LICENSE` e `version`). Excluir a pasta não o traz de volta: é preciso
+  `rm -rf node_modules/electron/dist && node node_modules/electron/install.js`,
+  e o zip está no cache local, então funciona sem internet
+- excluir a **pasta** e marcar o **aplicativo** confiável são coisas diferentes.
+  A pasta impede o scan em disco; o exit 137 vem da vigilância de
+  comportamento. Só o segundo faz `electron .` parar de morrer
+
+Sem isso o trabalho continua possível, só mais desconfortável.
+
+> As exclusões são por caminho absoluto. Se o item 2 renomear pastas, elas
+> apontam para o vazio **sem aviso** e o antivírus volta a comer o Electron.
 
 ---
 
