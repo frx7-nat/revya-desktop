@@ -1,0 +1,51 @@
+src/renderer/App.jsx:62:  // Diálogo da etapa "DeX vs Experiência de TV".
+src/renderer/App.jsx:644:      {/* Etapa DeX vs Experiência de TV. */}
+src/renderer/components/DevicePanel.jsx:133:              // i18n-ok — "DeX" é marca da Samsung, igual em todo idioma.
+src/renderer/components/DevicePanel.jsx:134:              <Chip icon={<CheckCircleIcon />} label="DeX" color="success" variant="outlined" size="small" />
+src/renderer/components/ResetDialog.jsx:4://   1) Confirmação — lista o que será desfeito + aviso do DeX.
+src/renderer/components/ResetDialog.jsx:167:            {/* Aviso do DeX: a reversão por software não religa o DeX. */}
+src/renderer/components/DexGuideDialog.jsx:2:// Etapa "DeX vs Experiência de TV", exibida num diálogo após o aparelho ser
+src/renderer/components/DexGuideDialog.jsx:4://   1) Explicação — por que desativar o DeX (comparação lado a lado).
+src/renderer/components/DexGuideDialog.jsx:28:// Aviso destacado: o DeX só aparece nas configurações com o HDMI conectado.
+src/renderer/components/DexGuideDialog.jsx:127:      {/* Aviso só para quem tem DeX (não faz sentido para 'nodex'). */}
+src/renderer/components/TaskPanel.jsx:532:          {/* Atalho fixo no topo: abre o tutorial de desativar o DeX.
+src/renderer/components/SideloadGuideDialog.jsx:85:            fora da loja, no mesmo tom de aviso do guia do DeX. */}
+src/renderer/data/dexGuide.js:2:// Conteúdo da etapa "DeX vs Experiência de TV".
+src/renderer/data/dexGuide.js:5://   1) EXPLAIN  — por que essa etapa existe (a diferença entre DeX e TV).
+src/renderer/data/dexGuide.js:6://   2) STEPS    — como desligar o DeX, com variação por versão do One UI,
+src/renderer/data/dexGuide.js:51:// Aviso importante: em muitos aparelhos (ex.: S21 FE), o menu do Samsung DeX
+src/adb/adb.js:94:  // DeX está presente em Galaxy S/Note/A de gama média pra cima.
+src/i18n/pt.json:260:    "disableDex": "Desative o DeX",
+src/i18n/pt.json:674:    "dexWarning": "O modo DeX, se você o desativou, precisa ser religado manualmente nas configurações do aparelho. Em último caso, o reset de fábrica do celular reverte tudo com segurança.",
+src/i18n/pt.json:732:    "disable": "Desativar o DeX",
+src/i18n/pt.json:733:    "how": "Como desativar o DeX",
+src/i18n/pt.json:735:    "title": "DeX ou Experiência de TV?"
+src/i18n/pt.json:847:    "intro": "Alguns aparelhos Samsung têm o modo DeX. Ao conectar no HDMI, o DeX abre sozinho e assume a tela — e isso atrapalha a experiência de TV que acabamos de montar.",
+src/i18n/pt.json:849:      "title": "Modo DeX",
+src/i18n/pt.json:856:    "conclusion": "Por isso, em aparelhos com DeX, é preciso desativar a abertura automática dele. Sem DeX no caminho, o celular abre direto na interface de TV ao ligar no HDMI.",
+src/i18n/pt.json:857:    "note": "Os nomes das opções podem variar um pouco conforme o modelo e a versão. Se não encontrar pelo caminho acima, busque por \"DeX\" na busca dos Ajustes.",
+src/i18n/pt.json:858:    "hdmiWarning": "O menu do DeX só aparece nas configurações com o aparelho já conectado à TV pelo HDMI. Sem o cabo ligado, a opção fica indisponível — por isso o ideal é fazer este passo ao final, já com o celular na TV.",
+src/i18n/pt.json:867:        "title": "Entre no Samsung DeX",
+src/i18n/pt.json:868:        "body": "Toque em \"Samsung DeX\"."
+src/i18n/pt.json:876:        "body": "Agora, ao conectar no HDMI, o aparelho abre na interface de TV em vez do DeX."
+src/i18n/pt.json:884:        "body": "No celular, vá em Ajustes › Dispositivos conectados › Samsung DeX."
+src/i18n/pt.json:892:        "body": "Selecione \"Espelhar\" em vez de \"Estender\". Espelhar abre a interface de TV; estender abre o DeX."
+src/i18n/pt.json:900:      "label": "Meu aparelho não tem DeX",
+src/i18n/pt.json:904:        "body": "Sem DeX, o aparelho já abre direto na interface de TV ao conectar no HDMI. Pode pular esta etapa."
+src/i18n/en.json:260:    "disableDex": "Turn DeX off",
+src/i18n/en.json:674:    "dexWarning": "DeX mode, if you turned it off, has to be switched back on manually in the device settings. As a last resort, a factory reset on the phone reverts everything safely.",
+src/i18n/en.json:732:    "disable": "Turn DeX off",
+src/i18n/en.json:733:    "how": "How to turn DeX off",
+src/i18n/en.json:735:    "title": "DeX or TV Experience?"
+src/i18n/en.json:847:    "intro": "Some Samsung devices have DeX mode. When you plug into HDMI, DeX opens on its own and takes over the screen — which gets in the way of the TV experience we just built.",
+src/i18n/en.json:849:      "title": "DeX mode",
+src/i18n/en.json:856:    "conclusion": "So on devices with DeX, its automatic launch has to be turned off. With DeX out of the way, the phone opens straight into the TV interface when plugged into HDMI.",
+src/i18n/en.json:857:    "note": "Option names can vary a little by model and version. If you can't find it through the path above, search for \"DeX\" in the Settings search.",
+src/i18n/en.json:858:    "hdmiWarning": "The DeX menu only appears in settings once the device is already connected to the TV over HDMI. Without the cable plugged in, the option is unavailable — which is why this step is best done at the end, with the phone already on the TV.",
+src/i18n/en.json:867:        "title": "Go into Samsung DeX",
+src/i18n/en.json:868:        "body": "Tap \"Samsung DeX\"."
+src/i18n/en.json:876:        "body": "Now, when you plug into HDMI, the device opens the TV interface instead of DeX."
+src/i18n/en.json:884:        "body": "On the phone, go to Settings › Connected devices › Samsung DeX."
+src/i18n/en.json:892:        "body": "Select \"Mirror\" instead of \"Extend\". Mirror opens the TV interface; extend opens DeX."
+src/i18n/en.json:900:      "label": "My device has no DeX",
+src/i18n/en.json:904:        "body": "Without DeX, the device already opens straight into the TV interface over HDMI. You can skip this step."
