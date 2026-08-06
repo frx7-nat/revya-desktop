@@ -83,13 +83,13 @@ export const TASK_GROUPS = [
         //                    a v4 POR CIMA, sem desinstalar. É o teste do
         //                    caminho de atualização (item 1 do PENDENCIAS).
         //   5 (06/08/2026) — renomeação para Revya. As v2..v4 acima são de
-        //                    OUTRO pacote (tech.dexarmor.launcher): para o
-        //                    Android, `tv.revya.launcher` é um app novo, então
-        //                    nenhum aparelho tem versão dele e a primeira
-        //                    execução instala do zero. O launcher antigo NÃO
-        //                    é desinstalado por isso — ele fica no aparelho
-        //                    como app independente até alguém removê-lo à mão
-        //                    (`adb uninstall tech.dexarmor.launcher`).
+        //                    OUTRO pacote, o do nome anterior do produto: para
+        //                    o Android, `tv.revya.launcher` é um app novo, e
+        //                    por isso nenhum aparelho tem versão dele — a
+        //                    primeira execução instala do zero. O launcher
+        //                    anterior NÃO sai por causa disso: fica instalado
+        //                    como app independente até alguém removê-lo à mão.
+        //                    O comando está em changeset/RENAME-REVYA.md.
         minVersionCode: 5,
         source: { type: 'local', dir: 'launchers', apk: '{Launcher} Revya TV.apk' } },
 
