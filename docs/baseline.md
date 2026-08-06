@@ -26,7 +26,7 @@ quebrar qualquer item marcado como **verificado** aqui, é regressão.
 
 | repositório | tag | commit |
 | --- | --- | --- |
-| desktop (`revya - app - atualizado - cópia 2`) | `pre-review-v1` | `91d2333` |
+| desktop (`dexarmor - app - atualizado - cópia 2`, hoje `~/revya`) | `pre-review-v1` | `91d2333` |
 | launcher (`revya-launcher`) | `pre-review-v1` | `31d8fb6` |
 
 **Nenhum dos dois tem remote**, então não há `git push --tags`. As tags existem

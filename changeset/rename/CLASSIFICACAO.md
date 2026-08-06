@@ -76,7 +76,7 @@ projeto Android em `~/dexarmor-launcher` (Fase 5).
 ## Exceções do gate da Fase 6 (lista FECHADA, conferida em 06/08/2026)
 
 O plano manda `grep -rniE 'dexarmor' README.md docs/ --include='*.md'` vazio.
-Ele não fica: sobram 8 linhas, todas deliberadas. A lista abaixo é exaustiva —
+Ele não fica: sobram 9 linhas, todas deliberadas. A lista abaixo é exaustiva —
 qualquer linha ALÉM destas é resíduo de verdade e deve ser tratada.
 
 | arquivo:linha | conteúdo | por que fica |
@@ -85,7 +85,8 @@ qualquer linha ALÉM destas é resíduo de verdade e deve ser tratada.
 | `docs/exclusoes-kaspersky.md:48` | `/Users/natalierjunior/dexarmor-launcher` | caminho real de exclusão do antivírus; apontar para pasta inexistente não protege nada |
 | `docs/exclusoes-kaspersky.md:61` | `dexarmor-launcher` (texto) | idem, explicando a linha acima |
 | `docs/exclusoes-kaspersky.md:67-68` | a própria nota que explica 21/48/61 | — |
-| `docs/baseline.md:12` | a nota que explica 142 e 187 | — |
+| `docs/baseline.md:12` | a nota que explica 29, 142 e 187 | — |
+| `docs/baseline.md:29` | `dexarmor - app - atualizado - cópia 2` | pasta onde a linha de base foi congelada em 29/07; hoje é `~/revya`, e a linha diz as duas coisas |
 | `docs/baseline.md:142` | `tech.dexarmor.launcher` | medição em aparelho real, 29/07/2026 |
 | `docs/baseline.md:187` | `tech.dexarmor.launcher` | idem |
 
