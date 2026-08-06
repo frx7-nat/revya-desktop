@@ -111,20 +111,41 @@ aplicativos distintos para o macOS.
 Os DMG antigos (`DexArmor-0.1.0*.dmg`) continuam em `release/` e **não devem ser
 distribuídos**.
 
-### 8.3 Em aparelho real — PENDENTE
+### 8.3 Em aparelho real — PASSOU
 
-Não executado: nenhum aparelho conectado (`adb devices` vazio). É a única parte
-do plano que depende de hardware, e é o critério de aceite final. O roteiro está
-na Fase 8.3 do `MIGRACAO-REVYA-plano-executavel.md`.
+Executado no **Galaxy S23 Ultra (SM-S918B, Android 16, serial RXCX50450PW)**,
+ciclo completo, em 06/08/2026.
 
-**Enquanto não passar, a branch `rename-revya` não deve ser mesclada na `main`
-nem receber a tag `revya-1.0`** — o plano gate a fusão nesse teste.
+Pré-condição conferida antes de tocar em qualquer coisa: home era o
+`com.rama.mako` (launcher de terceiro, do próprio usuário), sem override de
+resolução, e o diário antigo trazia as entradas como `dormant: true` — o
+"modo celular" que o plano exige. O `screen_off_timeout` alto **não** era
+resíduo: o próprio registro guardava `prev: "2147483647"`.
 
-Antes de rodar, no aparelho:
+| passo | resultado |
+|---|---|
+| 1. `adb uninstall tech.dexarmor.launcher` | ok — não era o home, o aparelho não ficou sem launcher |
+| 2. DexArmor antigo na máquina | nunca esteve em `/Applications`; só as builds em `release/` |
+| 3. Revya abre e conecta | "Conectado! SM-S918B validado", DeX verde, telemetria ao vivo |
+| 4. userData virgem | guia de primeira configuração apareceu, como esperado |
+| 5. Configuração recomendada + modo TV | **8/8**, `Modo TV ativo` |
+| 6. Voltar ao modo celular | **8/8** — retrato IDÊNTICO ao original, campo por campo |
+| 7. Reversão completa | aparelho restaurado; diário com **0 entradas pendentes** |
+| 8. Launcher novo como home no modo TV | `tv.revya.launcher/tv.revya.launcher.MainActivity` ✓ |
+| 8. Título do espelhamento | **"SM-S918B — Revya"** ✓ |
 
-```bash
-adb uninstall tech.dexarmor.launcher   # o launcher antigo, que sobrevive à troca
-```
+O que a renomeação poderia ter quebrado em silêncio, e não quebrou:
 
-E na máquina, desinstalar o DexArmor antigo: `appId` diferente = apps distintos,
-os dois convivem.
+- a chave `lnch-revya` resolveu o rótulo **"Revya TV (launcher)"** na barra de
+  progresso e no diálogo de reversão — se a chave e o id do `tasks.js` tivessem
+  ficado dessincronizados, o rótulo sairia vazio com a guarda de i18n verde;
+- o APK `{Launcher} Revya TV.apk` instalou como `tv.revya.launcher` versionCode
+  **5**, e o `minVersionCode: 5` do catálogo aceitou;
+- o modo TV definiu o pacote NOVO como home, e a volta restaurou o
+  `com.rama.mako` — não a One UI Home.
+
+Perfil de modo TV aplicado (bate com `docs/baseline.md`): override 2160x3840,
+densidade 640, fonte 1.15, `user_rotation` 1, `zen_mode` 1.
+
+**Critério de aceite final do plano: CUMPRIDO** (1 aparelho de 3; S21 FE e S8
+não foram testados).
