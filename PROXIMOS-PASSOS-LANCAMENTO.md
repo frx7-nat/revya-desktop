@@ -28,10 +28,13 @@ Tudo abaixo está **feito e verificado em aparelho**. Não refaça nada disto.
 | Links de afiliado | 31 de 31 respondendo 200 |
 | i18n | 698 chaves, pt e en, três guardas verdes |
 
-Instaláveis em `~/Desktop/DexArmor-0.1.0/` (a pasta guarda o nome antigo
-porque é do que ela tem dentro): **morreram no item 2** — foram gerados sob o
-nome e o `appId` antigos e não devem ser distribuídos. Os válidos são os que a
-Fase 8 da migração gerar.
+Os instaláveis antigos **morreram no item 2** e foram **apagados** em
+06/08/2026: tinham o nome e o `appId` velhos, e arquivo que não se deve
+distribuir guardado ao lado do que se deve é acidente esperando acontecer.
+Se algum dia forem necessários, a tag `ultimo-dexarmor` reconstrói.
+
+Os válidos são os da Fase 8 da migração: `release/Revya-0.1.0.dmg` e
+`-arm64.dmg`, e os dois `.exe` em `/private/tmp/revya-build`.
 
 ---
 

@@ -18,7 +18,7 @@ desconfortável — e o desconforto já cobrou duas sessões de diagnóstico err
 | apaga o `Electron.app` recém-baixado dentro de `node_modules` | `electron .` não roda |
 | mata binário do Electron recém-construído com SIGKILL (exit 137) | idem |
 | apaga instaladores NSIS em **qualquer lugar** da pasta pessoal | por isso a saída de Windows vai para `/private/tmp/revya-build` |
-| **nunca** toca em `.dmg` nem em `.zip` | os DMG e ZIP em `~/Desktop/DexArmor-0.1.0/` estão intactos |
+| **nunca** toca em `.dmg` nem em `.zip` | medido em 30/07 numa pasta de DMG e ZIP no Desktop: nenhum foi tocado |
 
 Criar uma pasta só para os instaladores **não** resolve — foi tentado.
 
@@ -64,11 +64,10 @@ o mesmo padrão que ele mata no Electron.
 
 > **Sobre os nomes (06/08/2026).** O produto virou **Revya**, mas os caminhos
 > desta lista são caminhos REAIS no disco e valem como estão: a pasta do
-> desktop virou `~/revya`, enquanto `~/dexarmor-launcher` e
-> `~/Desktop/DexArmor-0.1.0/` continuam com o nome antigo porque não foram
-> renomeadas. Exclusão de antivírus que aponta para caminho inexistente não
-> protege nada — se um dia renomear alguma delas, corrija aqui **e** refaça a
-> exclusão na interface do Kaspersky.
+> desktop virou `~/revya`, enquanto `~/dexarmor-launcher` continua com o nome
+> antigo porque não foi renomeada. Exclusão de antivírus que aponta para
+> caminho inexistente não protege nada — se um dia renomear alguma delas,
+> corrija aqui **e** refaça a exclusão na interface do Kaspersky.
 
 ---
 
