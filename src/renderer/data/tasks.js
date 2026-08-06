@@ -63,7 +63,7 @@ export const TASK_GROUPS = [
       // versionCode instalado no aparelho e reinstala com -r quando o
       // embutido for maior. Ao publicar um APK novo, suba os DOIS —
       // o versionCode no build.gradle.kts do launcher e o número aqui.
-      { id: 'lnch-dexarmor', kind: 'install',
+      { id: 'lnch-revya', kind: 'install',
         pkg: 'tech.dexarmor.launcher',
         // Sobe JUNTO com o `versionCode` do app/build.gradle.kts do launcher.
         // Se ficar para trás, o runner compara o instalado contra este mínimo,
@@ -272,7 +272,7 @@ export function isModeTask(task) {
 // de execução vem de ALL_TASKS (launcher instala antes de virar padrão).
 // ---------------------------------------------------------------------------
 export const RECOMMENDED_TASK_IDS = [
-  'lnch-dexarmor',
+  'lnch-revya',
   'tw-screen', 'tw-battery', 'tw-anim', 'tw-font',
   'tw-rotate', 'tw-dnd', 'tw-sound', 'tw-home',
 ];

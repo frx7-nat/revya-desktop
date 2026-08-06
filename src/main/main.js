@@ -953,7 +953,7 @@ function validKindOf(obj) {
 }
 function validateImport(raw) {
   if (!raw || typeof raw !== 'object' || !Array.isArray(raw.entries)) {
-    throw new Error(t('main.import.notDexArmor'));
+    throw new Error(t('main.import.notRevya'));
   }
   if (raw.entries.length > MAX_IMPORT_ENTRIES) {
     throw new Error(t('main.import.tooManyEntries', { n: raw.entries.length }));
