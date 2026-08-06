@@ -25,7 +25,7 @@ codex login            # abre o navegador
 Depois:
 
 ```bash
-"/Users/natalierjunior/dexarmor - app - atualizado - cópia 2/docs/review/fase4/rodar-codex.sh"
+"/Users/natalierjunior/revya/docs/review/fase4/rodar-codex.sh"
 ```
 
 E cole, quando ele abrir:

@@ -227,7 +227,7 @@ decisão, não ruído. Um refactor que os apague empobrece o projeto.
 - arquivo escolhido por diálogo nativo, não por caminho arbitrário
 
 O comentário *"um arquivo enorme é ruído ou ataque, não um registro do
-DexArmor"* mostra modelagem de ameaça deliberada.
+Revya"* mostra modelagem de ameaça deliberada.
 
 **Vulnerabilidades do `npm audit`:** 15, todas em `node-tar` via
 `electron-builder`. **Nenhuma chega ao produto** — o `node_modules` não é
@@ -337,7 +337,7 @@ reconexão de endpoints ficou como proteção **colateral**, para quando a
 recuperação rodar por causa de outro aparelho.
 
 E isso obrigou a uma terceira mudança não prevista: o texto de `offline`
-prometia "o DexArmor vai reiniciar a conexão automaticamente" — promessa que o
+prometia "o Revya vai reiniciar a conexão automaticamente" — promessa que o
 app deixou de cumprir nesse caso — e mandava trocar o **cabo** num aparelho sem
 cabo. Criada a variante `diagnostics.offlineWireless`.
 

@@ -1,4 +1,4 @@
-# DexArmor — Estratégia de Lançamento Completa
+# Revya — Estratégia de Lançamento Completa
 ### Documento de referência — consultar antes de gravar/publicar cada peça
 
 > Última atualização: julho/2026. Este arquivo junta a pesquisa de mercado, o
@@ -29,7 +29,7 @@
 | Tópico | Sinal encontrado | Leitura |
 |---|---|---|
 | Android TV (geral) | r/AndroidTV: 186 mil membros, alta atividade | Público grande e engajado |
-| Samsung DeX | r/SamsungDex: 28 mil membros | Nicho específico e fiel — público-alvo direto do DexArmor |
+| Samsung DeX | r/SamsungDex: 28 mil membros | Nicho específico e fiel — público-alvo direto do Revya |
 | Samsung TV / One UI | r/SamsungTV: 55 mil · r/OneUI: 95 mil | "Samsung" como filtro tem público relevante |
 | Cord-cutting / TV box | r/cordcutters: ~298 mil membros | Maior comunidade do cluster, mas genérica (não Samsung-específica) |
 | "Turn phone into TV box" | Vídeos recorrentes no YouTube (2018–2026) + matéria da How-To Geek (mai/2026) | Tema editorial ativo, não é modismo |
@@ -37,7 +37,7 @@
 | TizenTube | 100% gratuito, ~35 mil commits, ativo | Nicho tem tração, mas esse projeto não monetiza |
 | Android mods (geral) | Atividade constante no XDA em torno de ADB/debloat | Comunidade técnica engajada, porém dispersa |
 
-**Achado central:** a combinação "Samsung especificamente + reaproveitar celular como TV box" aparece repetidamente como problema real e mal resolvido — a própria imprensa (How-To Geek) descreve a experiência em Samsung/Tizen como frustrante, com apps de mirroring "cheios de anúncio" que "nem reconhecem a Samsung TV". Validação direta da dor que o DexArmor resolve.
+**Achado central:** a combinação "Samsung especificamente + reaproveitar celular como TV box" aparece repetidamente como problema real e mal resolvido — a própria imprensa (How-To Geek) descreve a experiência em Samsung/Tizen como frustrante, com apps de mirroring "cheios de anúncio" que "nem reconhecem a Samsung TV". Validação direta da dor que o Revya resolve.
 
 ### Dados de mercado (contexto, não número exato)
 
@@ -50,13 +50,13 @@ ligada na TV" já está consolidado.
 
 ### Concorrentes e adjacentes
 
-| Produto | O que faz | Preço | Relação com o DexArmor |
+| Produto | O que faz | Preço | Relação com o Revya |
 |---|---|---|---|
 | Projectivy Launcher | Launcher alternativo Android TV | Grátis + Premium US$7,49 | Adjacente — resolve a interface, não a conversão do aparelho |
 | TizenTube | Remove anúncio do YouTube em TV Samsung | Grátis | Adjacente — mesmo público, não monetiza |
 | **ADB AppControl / ADB TV** | App desktop que gerencia Android TV boxes via ADB | Licença PRO paga | **Concorrente mais próximo em modelo de negócio** — mas atua em TV boxes prontos, não converte celular |
 | Apps de mirroring genéricos | Espelhamento de tela pro TV | Freemium agressivo | Experiência ruim especificamente em Samsung (confirmado pela imprensa) |
-| Tutoriais manuais (YouTube/XDA/Quora) | "Como transformar Galaxy em TV box" | Grátis (conteúdo) | Não é concorrente de produto — é a demanda que o DexArmor automatiza |
+| Tutoriais manuais (YouTube/XDA/Quora) | "Como transformar Galaxy em TV box" | Grátis (conteúdo) | Não é concorrente de produto — é a demanda que o Revya automatiza |
 
 **Nenhum concorrente direto encontrado** que automatize via ADB a conversão
 completa de um Samsung Galaxy específico em TV box, com diagnóstico e
@@ -94,7 +94,7 @@ esgotamento.
 ### Mês 2 — Prova
 
 - **Vídeo pilar:** "Transformei um Galaxy aposentado numa TV box completa (sem root, e dá pra desfazer tudo)" — convite de beta só no fim
-- **Peça técnica (artigo, não vídeo):** "Por dentro do DexArmor: por que não usa root e como garante que dá pra reverter tudo" — mira XDA/Reddit técnico
+- **Peça técnica (artigo, não vídeo):** "Por dentro do Revya: por que não usa root e como garante que dá pra reverter tudo" — mira XDA/Reddit técnico
 - **Shorts (4):** PS2 via AetherSX2 · "desfaz tudo com 1 clique" · "sem fio, só Wi-Fi" · "bateria não estraga com 24h ligado"
 - **Artigo:** "Como transformar um Samsung Galaxy em TV box (guia completo)" — termina com convite de beta
 - **Distribuição:** primeira aparição orgânica em r/SamsungDex e XDA (comentário útil, não propaganda)
@@ -103,7 +103,7 @@ esgotamento.
 
 - **Vídeo pilar:** "Não compre uma TV box: o celular parado na gaveta já é uma" — comparação honesta de custo, com seção explícita "pra quem NÃO vale a pena"
 - **Shorts (4):** depoimento de beta tester · time-lapse antes/depois · comparação de custo · ponte pro conteúdo de acessórios
-- **Artigo:** "DexArmor está disponível: o que faz, quanto custa e pra quem é" — com seção fixa "isso aqui não faz"
+- **Artigo:** "Revya está disponível: o que faz, quanto custa e pra quem é" — com seção fixa "isso aqui não faz"
 - **Distribuição:** anúncio em r/SamsungDex e r/cordcutters (ângulo "economize"), thread própria no XDA
 
 ### Depois dos 3 meses
@@ -155,7 +155,7 @@ Regra: 3-4 palavras no máximo no texto do thumb; contraste alto (sala escura + 
 **C — expectativa quebrada:**
 > [tentativa comum na TV, 1s de "não rolou"] [corte seco pro resultado funcionando]
 
-**Regra do vídeo 1:** sem menção ao DexArmor. 100% "olha que descoberta legal", sem CTA de produto.
+**Regra do vídeo 1:** sem menção ao Revya. 100% "olha que descoberta legal", sem CTA de produto.
 
 ---
 
@@ -280,7 +280,7 @@ descobrir do que parece)
 - Se mencionar algum acessório (cabo/dock USB-C→HDMI) dentro do texto, manter
   as classes `.inline-prod` / `.ip-name` que o GA4 já rastreia — não criar
   link solto fora desse padrão.
-- **Não linkar para o DexArmor ainda.** Mês 1 é "sem venda" — um link interno
+- **Não linkar para o Revya ainda.** Mês 1 é "sem venda" — um link interno
   pro produto quebraria a lógica do próprio plano. Link interno aqui vai só
   pra conteúdo evergreen já existente (ex.: recomendação de hub HDMI).
 

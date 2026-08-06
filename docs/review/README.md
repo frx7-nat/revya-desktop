@@ -1,6 +1,6 @@
 # Revisão de código — 28 a 29 de julho de 2026
 
-Execução do `plano-revisao-dexarmor.md` (na raiz), fase a fase. Esta pasta é o
+Execução do `plano-revisao-revya.md` (na raiz), fase a fase. Esta pasta é o
 registro do que foi medido, não um relatório de conclusões.
 
 ## Onde está cada fase

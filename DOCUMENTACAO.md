@@ -1,4 +1,4 @@
-# DexArmor — Documentação do Projeto
+# Revya — Documentação do Projeto
 
 > Aplicativo desktop que transforma celulares Samsung compatíveis (saída HDMI +
 > modo DeX) em dispositivos de mídia para TV, com o mínimo de esforço para quem
@@ -8,7 +8,7 @@
 
 ## 1. Visão geral
 
-O DexArmor é um programa de **provisionamento**: ele conecta-se a um celular
+O Revya é um programa de **provisionamento**: ele conecta-se a um celular
 Samsung via ADB e aplica uma série de procedimentos que o preparam para funcionar
 como uma "TV box" — remove apps desnecessários, instala o launcher de TV próprio
 e ajusta o sistema para uso na tela grande.
@@ -22,7 +22,7 @@ botões simples.
 
 - **Remove** aplicativos pré-instalados que não serão usados (Bixby, Galaxy
   Store, apps de escritório, redes sociais).
-- **Instala** o **DexArmor TV**, o launcher próprio — o único APK embutido.
+- **Instala** o **Revya TV**, o launcher próprio — o único APK embutido.
 - **Personaliza** o sistema para uso em TV (tela sempre ligada, animações
   reduzidas, orientação travada, launcher de TV como padrão, etc.).
 - **Recebe** os aplicativos e arquivos do usuário por arrastar-e-soltar
@@ -54,7 +54,7 @@ UI**. O build do front-end é feito pelo **Vite**.
 ### Estrutura de pastas
 
 ```
-dexarmor/
+revya/
 ├── package.json              Dependências, scripts e config do empacotador
 ├── vite.config.mjs           Build do renderer (React)
 ├── .gitignore                Ignora binários, APKs e saídas de build
@@ -117,7 +117,7 @@ dexarmor/
 │   └── README.txt            Instruções de download
 │
 ├── apks/                     Só APK PRÓPRIO (ver apks/README.txt)
-│   └── launchers/            {Launcher} DexArmor TV.apk
+│   └── launchers/            {Launcher} Revya TV.apk
 │
 └── .github/workflows/
     ├── build.yml             CI: instaladores das 3 plataformas (baixa ADB + scrcpy)
@@ -318,7 +318,7 @@ Três blindagens completam a ponte:
 Bixby · Galaxy Store · Apps de escritório · Redes sociais pré-instaladas
 
 ### Instalar o launcher de TV (1)
-**DexArmor TV** — o launcher próprio, padrão do modo TV (ligado ao tweak
+**Revya TV** — o launcher próprio, padrão do modo TV (ligado ao tweak
 `tw-home`). É o **único** APK embutido no programa.
 
 O catálogo de apps de terceiros (streaming, ferramentas, emuladores e o
@@ -327,7 +327,7 @@ dentro de um produto vendido é risco legal do projeto. No lugar dele, o grupo
 mostra um aviso com o guia **"Como instalar apps e enviar arquivos"**
 (`data/sideloadGuide.js` + `SideloadGuideDialog.jsx`), que ensina o
 arrastar-e-soltar. Os arquivos saíram de `apks/` para
-`~/dexarmor-apks-removidos/`.
+`~/revya-apks-removidos/`.
 
 O launcher é instalado a partir do APK offline em `apks/launchers/` pelo
 caminho único `installApkFile()` do runner — que aceita `.apk`, `.apkm` e
@@ -417,7 +417,7 @@ automática e retomada de troca interrompida. Relato em
 
 ### 20/07/2026 — "Enviar para o celular" (arrastar e soltar)
 
-Arrastar qualquer arquivo para a janela do DexArmor abre um destino em tela
+Arrastar qualquer arquivo para a janela do Revya abre um destino em tela
 cheia: solte um `.apk` em **"Instalar no celular"** (instala direto via ADB) ou
 um arquivo comum em **Downloads / Filmes / Músicas / ROMs** (pastas fixas em
 `/sdcard`). Vários arquivos são processados em fila. Detalhes desta rodada (ver
@@ -632,7 +632,7 @@ Modificações, recolhem suavemente. No modo TV (celular girado) não aparecem.
 - **Remoção por usuário não é permanente.** Apps de sistema voltam num reset de
   fábrica — aceitável para uso contínuo.
 - **APKs e licenças.** Resolvido por remoção em 27/07/2026: o programa só
-  embute o APK que nos pertence (o launcher DexArmor TV). Nenhum aplicativo de
+  embute o APK que nos pertence (o launcher Revya TV). Nenhum aplicativo de
   terceiro é redistribuído — o usuário instala os dele pelo arrastar-e-soltar.
   Se um dia voltar a existir APK de terceiro embutido, é preciso verificar a
   licença de redistribuição de cada app e usar apenas fontes oficiais
@@ -653,7 +653,7 @@ Modificações, recolhem suavemente. No modo TV (celular girado) não aparecem.
 - **Envio de arquivos grandes por cabo pode ser interrompido.** Transferências
   longas (`.img`, vídeos) via USB às vezes falham com "write failed" — cabo/porta
   com mau contato ou o celular entrando em suspensão no meio. Não é falha do
-  DexArmor: o app mostra uma mensagem clara e um botão "Tentar de novo"; se
+  Revya: o app mostra uma mensagem clara e um botão "Tentar de novo"; se
   persistir, troque o cabo/porta USB ou use a conexão por Wi-Fi. A barra que
   cresce depende do comando `stat` do aparelho (presente nos Samsung modernos);
   onde não houver, o envio cai no modo animado com tempo decorrido.
@@ -675,7 +675,7 @@ npm run dist:linux # gera AppImage + .deb
 
 ### Antes de rodar, adicionar:
 1. Binários ADB em `platform-tools/<plataforma>/` (baixados do Google).
-2. O APK do launcher próprio em `apks/launchers/{Launcher} DexArmor TV.apk`
+2. O APK do launcher próprio em `apks/launchers/{Launcher} Revya TV.apk`
    (nenhum APK de terceiro entra aqui — ver `apks/README.txt`).
 3. (Opcional) Release do scrcpy em `scrcpy/<plataforma>/` para o botão
    "Ver tela do celular" — ver `scrcpy/README.txt`. Sem ele, o app tenta o

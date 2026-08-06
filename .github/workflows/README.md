@@ -12,7 +12,7 @@ O workflow em `build.yml` gera os instaladores das três plataformas
    git add .
    git commit -m "Primeira versão"
    git branch -M main
-   git remote add origin https://github.com/SEU_USUARIO/dexarmor.git
+   git remote add origin https://github.com/SEU_USUARIO/revya.git
    git push -u origin main
    ```
 3. No GitHub, abra a aba **Actions**. O workflow já aparece.

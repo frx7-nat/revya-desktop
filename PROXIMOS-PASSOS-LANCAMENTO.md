@@ -28,8 +28,10 @@ Tudo abaixo está **feito e verificado em aparelho**. Não refaça nada disto.
 | Links de afiliado | 31 de 31 respondendo 200 |
 | i18n | 698 chaves, pt e en, três guardas verdes |
 
-Instaláveis atuais em `~/Desktop/DexArmor-0.1.0/` com `SHA256.txt`. **Eles
-morrem no item 2** — não os distribua.
+Instaláveis em `~/Desktop/DexArmor-0.1.0/` (a pasta guarda o nome antigo
+porque é do que ela tem dentro): **morreram no item 2** — foram gerados sob o
+nome e o `appId` antigos e não devem ser distribuídos. Os válidos são os que a
+Fase 8 da migração gerar.
 
 ---
 
@@ -68,10 +70,12 @@ Duas coisas foram **verificadas**, não presumidas:
 
 - o keystore **abre** com a senha que está no `keystore.properties` — alias
   `dexarmor`, `PrivateKeyEntry`, `CN=DexArmor, O=DexArmor, C=BR`, válido até
-  04/07/2126
+  04/07/2126. O alias e a CN guardam o nome antigo e **assim ficam**: estão
+  gravados dentro da chave, e chave diferente não atualiza aparelho já
+  instalado (ver o aviso do item 0)
 - o certificado é **o mesmo** que assina o APK distribuído hoje: SHA-256
   `3c0bbc45f2ae…` no keystore e no
-  `apks/launchers/{Launcher} DexArmor TV.apk`
+  `apks/launchers/{Launcher} Revya TV.apk`
 
 **O que falta é físico e é seu:** arrastar a pasta para um pendrive e/ou colar o
 base64 num cofre de senhas. Enquanto os dois backups estiverem só neste disco, o
@@ -80,80 +84,45 @@ não é um backup.
 
 ---
 
-## 1. Decidir o nome
+## 1. Decidir o nome — ✅ FEITO em 06/08/2026
 
-Só a decisão. A execução é o item 2.
+O nome é **Revya**. Verificado antes de decidir: INPI livre, USPTO livre, sem
+apps na Play Store, domínios disponíveis.
 
-O caminho crítico **não é o código** — é o domínio `dexarmor.tech` e o trabalho
-de SEO já feito em cima dele (samsung dex, hdmi). O código sai em uma tarde; o
-posicionamento de busca começa do zero.
-
-Decida com isso na mesa:
-
-- domínio novo disponível?
-- vale perder o SEO acumulado?
-- o nome novo colide com marca de outro?
-
-Enquanto o nome não estiver decidido, **não comece o item 2** — um rename pela
-metade é pior que nenhum.
+O custo que este item pesava — perder o SEO de `dexarmor.tech` (samsung dex,
+hdmi) — foi aceito conscientemente. O posicionamento de busca recomeça do zero
+sob o nome novo.
 
 ---
 
-## 2. Aplicar o nome novo
+## 2. Aplicar o nome novo — ✅ FEITO em 06/08/2026
 
-**É o item mais importante depois do backup, e tem de vir ANTES de gerar
-instaláveis, criar o remote no GitHub, refazer o teste de aparelho e mexer no
-site.** Todos esses quatro consomem o nome. Fazer qualquer um antes é
-retrabalho garantido.
+Executado pelo plano `MIGRACAO-REVYA-plano-executavel.md`, em 8 fases com um
+commit por fase, na branch `rename-revya`. O registro completo (decisões,
+valores novos e o que deliberadamente NÃO mudou) está em
+[`changeset/RENAME-REVYA.md`](changeset/RENAME-REVYA.md).
 
-E tem de vir **antes do lançamento**, não depois: trocar o `applicationId`
-depois que existirem usuários instalados quebra cada um deles.
+O que ficou valendo:
 
-### 2a. O que é IDENTIDADE (muda comportamento, não é texto)
+| onde | valor |
+| --- | --- |
+| produto | **Revya** |
+| `package.json` → `build.appId` | `com.revya.tv` |
+| `package.json` → `name` (userData) | `revya` — pasta virgem, sem migração de dados |
+| launcher: `applicationId` e `namespace` | `tv.revya.launcher` (era `tech.dexarmor.launcher`) |
+| launcher: `versionCode` / `tasks.js` `minVersionCode` | **5** — em lockstep, como sempre |
+| APK no catálogo | `apks/launchers/{Launcher} Revya TV.apk` |
+| saída de build Windows | `/private/tmp/revya-build` |
 
-| onde | valor hoje | consequência de trocar |
-| --- | --- | --- |
-| `dexarmor-launcher/app/build.gradle.kts:58` | `applicationId = "tech.dexarmor.launcher"` | **cria um app diferente.** O antigo não atualiza; os dois convivem instalados |
-| `dexarmor-launcher/app/build.gradle.kts:54` | `namespace = "tech.dexarmor.launcher"` | tem de acompanhar o applicationId |
-| árvore de pacote | `app/src/main/java/tech/dexarmor/launcher/` · **25 arquivos `.kt`** | mover a pasta e trocar o `package` de cada arquivo |
-| `src/renderer/data/tasks.js:67` e `:189` | `pkg: 'tech.dexarmor.launcher'` | **em lockstep.** Se o desktop apontar para o pacote velho, ele instala o launcher e define como home um app que não existe mais |
-| `package.json` → `build.appId` | `com.dexarmor.app` | no macOS é o identificador da assinatura ad-hoc (`scripts/after-pack.js` confere) |
-| `package.json` → `build.productName` | `DexArmor` | nome do `.app`, do DMG e do instalador NSIS |
-| `apks/launchers/{Launcher} DexArmor TV.apk` | nome do arquivo | o desktop procura o APK por nome |
+**Não mudaram, de propósito:** a chave de assinatura (`~/.dexarmor-keys`,
+`CN=DexArmor`) — ver o aviso do item 0 —, o `changeset/`, o `docs/review/` e os
+registros de medição em aparelho (`docs/baseline.md`, `docs/retrato-tv.txt`),
+que são evidência datada e não se reescrevem.
 
-**Consequência no aparelho, e por que fazer agora:** trocar o `applicationId`
-faz o Android tratar o launcher como app novo. Nos seus dois aparelhos de teste
-será preciso **desinstalar o antigo à mão** — e isso apaga o DataStore.
-Fazendo agora, o custo é reconfigurar dois aparelhos seus. Fazendo depois do
-lançamento, o custo é cada usuário.
-
-> O `versionCode` **não** precisa voltar para 1. App novo começa sem histórico,
-> então manter `4` (e o `minVersionCode: 4` do `tasks.js`) é mais seguro que
-> mexer nos dois números à toa.
-
-### 2b. O que é só TEXTO
-
-- **32 strings** em `src/i18n/pt.json` e **32** em `en.json` mencionam o nome.
-  Os dois catálogos precisam ficar com o mesmo conjunto de chaves — `npm run
-  check:i18n` quebra o build se divergirem, e é a sua rede aqui.
-- Documentação: 43 arquivos `.md` no desktop, 11 no launcher. **Não reescreva o
-  histórico** — `changeset/` e `docs/review/` são registro do que aconteceu com
-  um programa que se chamava DexArmor naquele dia. Reescrever apaga a
-  rastreabilidade que a revisão inteira produziu. Ajuste só os documentos de
-  entrada: os dois `README.md`, os dois `CHANGELOG.md`, `DOCUMENTACAO.md`.
-- Site: **3 arquivos HTML** em `dexarmor - site` — mas veja o item 6.
-
-### 2c. Ordem dentro do item 2
-
-1. `applicationId` + `namespace` + mover a árvore dos 25 `.kt`
-2. `./gradlew packageRelease` — tem de passar antes de tocar no desktop
-3. os dois `pkg:` do `tasks.js`, e o nome do arquivo do APK
-4. `appId` e `productName` do `package.json`
-5. as 64 strings dos catálogos + `npm run check:i18n`
-6. os documentos de entrada
-
-Commit em branch próprio, como as fases da revisão. Se o `packageRelease`
-falhar no passo 2, você para ali sem ter contaminado o desktop.
+**O que este item deixou pendente para os outros:** o item 5 refaz os
+instaláveis e o teste em aparelho sob o nome novo; o item 6 refaz o site e o
+domínio. Os aparelhos de teste ainda têm o launcher antigo instalado como app
+independente — o comando para removê-lo está no `RENAME-REVYA.md`.
 
 ---
 
@@ -217,7 +186,7 @@ O que o antivírus faz nesta máquina, medido:
 
 - apaga instaladores NSIS em **qualquer lugar** da pasta pessoal, inclusive numa
   pasta criada só para eles (tentado, não funcionou — a saída de Windows vai
-  para `/private/tmp/dexarmor-build`)
+  para `/private/tmp/revya-build`)
 - mata binários do Electron recém-construídos com SIGKILL (exit 137), o que
   impede `electron .`; a build **x64 empacotada** sobrevive
 - **nunca** toca em `.dmg` nem em `.zip`
@@ -268,7 +237,7 @@ fez diagnosticar errado duas vezes):
 ```bash
 python3 -c "
 import struct, glob
-for p in [x for x in glob.glob('/private/tmp/dexarmor-build/*.exe') if 'portable' not in x.lower()]:
+for p in [x for x in glob.glob('/private/tmp/revya-build/*.exe') if 'portable' not in x.lower()]:
     d=open(p,'rb').read(); i=d.find(bytes.fromhex('efbeadde')+b'NullsoftInst')
     flags=struct.unpack('<I', d[i-4:i])[0]
     print(f'flags=0x{flags:x}  NO_CRC={\"SIM\" if flags & 4 else \"NAO\"}')

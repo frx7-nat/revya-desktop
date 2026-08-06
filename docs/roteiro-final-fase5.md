@@ -1,7 +1,7 @@
 # Roteiro final — Fase 5
 
 Último teste de aparelho antes da tag `review-v1-completo`. Roda contra a
-**build final** (`DexArmor-0.1.0`), não contra `npm run dev`.
+**build final** (`Revya-0.1.0`), não contra `npm run dev`.
 
 Aparelho: S23 Ultra (SM-S918B, One UI 8.5), por Wi-Fi.
 
@@ -9,7 +9,7 @@ Aparelho: S23 Ultra (SM-S918B, One UI 8.5), por Wi-Fi.
 
 ## Passo 0 — instalar a build final
 
-Montar `~/Desktop/DexArmor-0.1.0/DexArmor-0.1.0-arm64.dmg` e arrastar para
+Montar `~/Desktop/Revya-0.1.0/Revya-0.1.0-arm64.dmg` e arrastar para
 Aplicativos, por cima da versão que estiver instalada.
 
 Na primeira abertura o macOS vai avisar que é de desenvolvedor não
@@ -23,7 +23,7 @@ Bloqueado", que não tem saída nenhuma.
 
 ## Teste 1 — a Depuração sem fio do Android (NUNCA exercitada)
 
-É o caminho do achado 1 da Fase 4. O DexArmor sempre pareia por
+É o caminho do achado 1 da Fase 4. O Revya sempre pareia por
 `adb tcpip 5555` + `connect ip:5555`, então o serial que ele vê é `ip:porta`.
 A Depuração sem fio do Android 11+ usa mDNS e produz um serial de outro
 formato: `adb-R5CT...-XXXXXX._adb-tls-connect._tcp`.

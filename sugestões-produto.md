@@ -1,7 +1,7 @@
-# Sugestões de funções para o DexArmor — central de controle da sua TV
+# Sugestões de funções para o Revya — central de controle da sua TV
 
 Propostas para refinar o produto antes da venda, pensadas para o usuário leigo
-e para diferenciar o DexArmor como "central de controle do dispositivo de TV".
+e para diferenciar o Revya como "central de controle do dispositivo de TV".
 Ordenadas por relação impacto ÷ esforço (estimativa).
 
 ## 1. Controle remoto virtual
@@ -23,7 +23,7 @@ incham com o tempo e enchem o armazenamento. **Esforço: baixo.** Função de
 manutenção que dá motivo para o cliente reabrir o app periodicamente.
 
 ## 4. Atualizador de apps embutido
-Como o DexArmor desativa as atualizações automáticas do sistema (de propósito),
+Como o Revya desativa as atualizações automáticas do sistema (de propósito),
 oferecer um botão "Atualizar meus apps de TV" que instala versões novas dos
 APKs curados por você. **Esforço: médio.** É o caminho natural para receita
 recorrente (assinatura de catálogo atualizado).
@@ -44,7 +44,7 @@ completos" aplicáveis em vários aparelhos de uma vez. Público: quem monta e
 revende celulares configurados como TV — um mercado B2B pequeno mas fiel.
 **Esforço: médio.**
 
-## 8. Auto-update do próprio DexArmor
+## 8. Auto-update do próprio Revya
 `electron-updater` + um servidor de releases (o `publish` está `null` no
 `package.json` hoje). Essencial para produto comercial: correções e catálogo
 novo chegam sem o cliente baixar instalador de novo. **Esforço: médio.**
@@ -55,7 +55,7 @@ Pré-requisito prático para vender com suporte.
 ### Observações técnicas ligadas à venda
 - **macOS**: a permissão de "Rede local" já foi declarada no build
   (`NSLocalNetworkUsageDescription`); no primeiro uso do modo sem fio o
-  sistema pedirá autorização com o nome do DexArmor.
+  sistema pedirá autorização com o nome do Revya.
 - **Windows**: vale testar o firewall do Windows no primeiro `adb connect`
   (pode pedir liberação de rede — cenário análogo ao do macOS).
 - **Assinatura de código** (macOS notarization / Windows code signing) será
