@@ -82,7 +82,15 @@ export const TASK_GROUPS = [
         //                    release→release: aparelho com a v3 deve receber
         //                    a v4 POR CIMA, sem desinstalar. É o teste do
         //                    caminho de atualização (item 1 do PENDENCIAS).
-        minVersionCode: 4,
+        //   5 (06/08/2026) — renomeação para Revya. As v2..v4 acima são de
+        //                    OUTRO pacote (tech.dexarmor.launcher): para o
+        //                    Android, `tv.revya.launcher` é um app novo, então
+        //                    nenhum aparelho tem versão dele e a primeira
+        //                    execução instala do zero. O launcher antigo NÃO
+        //                    é desinstalado por isso — ele fica no aparelho
+        //                    como app independente até alguém removê-lo à mão
+        //                    (`adb uninstall tech.dexarmor.launcher`).
+        minVersionCode: 5,
         source: { type: 'local', dir: 'launchers', apk: '{Launcher} Revya TV.apk' } },
 
       // O Projectivy saiu em 25/07/2026, substituído pelo launcher próprio;
