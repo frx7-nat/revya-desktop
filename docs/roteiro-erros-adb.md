@@ -253,7 +253,7 @@ rodando (a partir do segundo ou terceiro item), desconectar o cabo.
 # quantas entradas ficaram registradas
 python3 -c "
 import json,os
-p=os.path.expanduser('~/Library/Application Support/dexarmor/revert/<SERIAL>.json')
+p=os.path.expanduser('~/Library/Application Support/revya/revert/<SERIAL>.json')
 d=json.load(open(p))
 print(len(d['entries']),'entradas')
 for e in d['entries']: print(' ', e['taskId'], '· revert:', bool(e.get('revert')))"
@@ -286,7 +286,7 @@ tw-rotate · tentativa 1` e `2` no diário).
 **Registro no estado parcial — consistente:**
 
 ```
-aplicadas (6)      lnch-dexarmor, tw-anim, tw-battery, tw-dnd, tw-font, tw-screen
+aplicadas (6)      lnch-revya, tw-anim, tw-battery, tw-dnd, tw-font, tw-screen
 não aplicadas (5)  tw-gestures, tw-home, tw-res-4k, tw-rotate, tw-sound
 ```
 
@@ -327,7 +327,7 @@ mensagem inútil, porque ninguém o vê durante o desenvolvimento.
 **Provocar** (reversível — só renomeia):
 
 ```bash
-cd "/Users/natalierjunior/dexarmor - app - atualizado - cópia 2/platform-tools/mac"
+cd "/Users/natalierjunior/revya/platform-tools/mac"
 mv adb adb.bak
 ```
 
@@ -350,7 +350,7 @@ mv adb.bak adb
 ### ⚠️ EXECUTADO em 29/07 — PASSA EM PARTE · achado `MÉDIO`
 
 > **Atenção ao caminho certo.** O app EMPACOTADO usa
-> `DexArmor.app/Contents/Resources/platform-tools/adb`, não a cópia do projeto
+> `Revya.app/Contents/Resources/platform-tools/adb`, não a cópia do projeto
 > (`adbPath()` decide pelo `isProd`). Renomear a do projeto com o app
 > empacotado rodando daria um falso "passou".
 

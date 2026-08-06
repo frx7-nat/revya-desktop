@@ -1,4 +1,4 @@
-# Plano de Revisão Formal — DexArmor (Desktop + Launcher)
+# Plano de Revisão Formal — Revya (Desktop + Launcher)
 
 **Objetivo:** submeter o projeto a uma inspeção equivalente à de um engenheiro sênior, eliminando código morto, inconsistências e padrões característicos de código gerado por IA, sem regressão funcional.
 
@@ -50,13 +50,13 @@
 
 ## Sobre a troca de nome do produto
 
-Está em avaliação renomear o DexArmor. **A ordem recomendada é revisar
+Está em avaliação renomear o Revya. **A ordem recomendada é revisar
 primeiro**, porque a revisão vai apagar código — renomear antes é renomear o
 que será deletado. A Fase 5 já prevê conferência de terminologia visível ao
 usuário, que é onde o rename cosmético encaixa.
 
 **Uma exceção**, se o nome já estiver decidido: o `applicationId` do Android
-(`tech.dexarmor.launcher`) não é texto, é **identidade**. Trocá-lo cria um app
+(`tv.revya.launcher`) não é texto, é **identidade**. Trocá-lo cria um app
 diferente — o antigo não atualiza e os dois convivem instalados. Como as Fases
 0, 3 e 5 verificam comportamento **em aparelho**, mudá-lo no fim invalida essas
 verificações e obriga a refazer o estado dos aparelhos.
@@ -68,7 +68,7 @@ aparelho será refeito depois do rename.
 
 Dimensão medida em 29/07: ~680 ocorrências do nome (259 no desktop, 248 no
 launcher, 43 na landing, 129 no site), das quais 65 são texto visível ao
-usuário. O caminho crítico não é o código — é o domínio `dexarmor.tech` e o
+usuário. O caminho crítico não é o código — é o domínio `revya.tech` e o
 trabalho de SEO já feito.
 
 ---
@@ -82,7 +82,7 @@ trabalho de SEO já feito.
 - [ ] Gerar build de referência de cada aplicação e arquivar os binários (fora do repositório)
 - [ ] Documentar em `docs/baseline.md` o comportamento verificado no aparelho real:
   - [ ] Desktop: conversão completa de um Galaxy em TV box, reversão em um clique, detecção e recuperação de erros ADB
-  - [ ] Launcher: navegação em loop pelas **seis** categorias (multimídia, navegação, launchers, emuladores, ferramentas, outros — `Category.kt`), botão MODO (**TV é o padrão** desde 25/07; TV compacta 15% sobre o canvas do Dashboard), ciclo das três cores de acento, menu CONFIG (Sistema → Reordenar seções → Reordenar apps), troca facilitada para outro launcher preservando o DexArmor
+  - [ ] Launcher: navegação em loop pelas **seis** categorias (multimídia, navegação, launchers, emuladores, ferramentas, outros — `Category.kt`), botão MODO (**TV é o padrão** desde 25/07; TV compacta 15% sobre o canvas do Dashboard), ciclo das três cores de acento, menu CONFIG (Sistema → Reordenar seções → Reordenar apps), troca facilitada para outro launcher preservando o Revya
   - [ ] Launcher: tela **contribua** (QR gerado em tempo de desenho; Pix em pt-BR, PayPal no fallback internacional)
   - [ ] **Atualização release→release** (v3 → v4 por cima, sem desinstalar) — validada em 28/07 nos dois aparelhos
 - [ ] Registrar versões de ambiente: Node, Electron, Gradle, SDK Android, modelo e versão do One UI do aparelho de teste

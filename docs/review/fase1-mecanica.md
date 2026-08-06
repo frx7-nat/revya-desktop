@@ -32,7 +32,7 @@ produzir **evidência objetiva** antes de qualquer opinião sobre o código.
 Todas em `node-tar`, por esta cadeia:
 
 ```
-dexarmor → electron-builder@24.13.3 → app-builder-lib → tar@6.2.1
+revya → electron-builder@24.13.3 → app-builder-lib → tar@6.2.1
 ```
 
 **Por que não chegam ao usuário:**

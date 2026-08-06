@@ -32,7 +32,7 @@ export const TASK_GROUPS = [
   // Em 27/07/2026 TODO o catálogo de APKs de terceiros saiu do programa
   // (streaming, ferramentas, emuladores) e os arquivos saíram da pasta apks/.
   // Motivo: DISTRIBUIÇÃO. Embutir e redistribuir o APK de outra empresa é
-  // problema legal nosso, não do usuário — e o produto é vendido. O DexArmor
+  // problema legal nosso, não do usuário — e o produto é vendido. O Revya
   // passa a fazer só a TRANSFORMAÇÃO do celular; os apps que o usuário quiser
   // ele instala a partir dos arquivos dele, pelo "Enviar para o celular"
   // (arrastar e soltar), explicado no guia sideloadGuide.js.
@@ -54,17 +54,17 @@ export const TASK_GROUPS = [
     // instalar os apps dele e mandar arquivos (TaskPanel renderiza o texto e
     // o botão, que abre o SideloadGuideDialog).
     tasks: [
-      // DexArmor TV é o launcher próprio do produto e o padrão do modo TV
+      // Revya TV é o launcher próprio do produto e o padrão do modo TV
       // (ligado ao tweak tw-home). É o ÚNICO app que nos pertence: por isso
       // vai embutido, sem depender de loja nenhuma.
-      // Arquivo em apks/launchers/{Launcher} DexArmor TV.apk (APK simples).
+      // Arquivo em apks/launchers/{Launcher} Revya TV.apk (APK simples).
       //
       // `minVersionCode` liga a atualização: o runner compara com o
       // versionCode instalado no aparelho e reinstala com -r quando o
       // embutido for maior. Ao publicar um APK novo, suba os DOIS —
       // o versionCode no build.gradle.kts do launcher e o número aqui.
-      { id: 'lnch-dexarmor', kind: 'install',
-        pkg: 'tech.dexarmor.launcher',
+      { id: 'lnch-revya', kind: 'install',
+        pkg: 'tv.revya.launcher',
         // Sobe JUNTO com o `versionCode` do app/build.gradle.kts do launcher.
         // Se ficar para trás, o runner compara o instalado contra este mínimo,
         // conclui "já atualizado" e nunca reinstala — o APK novo fica no
@@ -82,8 +82,16 @@ export const TASK_GROUPS = [
         //                    release→release: aparelho com a v3 deve receber
         //                    a v4 POR CIMA, sem desinstalar. É o teste do
         //                    caminho de atualização (item 1 do PENDENCIAS).
-        minVersionCode: 4,
-        source: { type: 'local', dir: 'launchers', apk: '{Launcher} DexArmor TV.apk' } },
+        //   5 (06/08/2026) — renomeação para Revya. As v2..v4 acima são de
+        //                    OUTRO pacote, o do nome anterior do produto: para
+        //                    o Android, `tv.revya.launcher` é um app novo, e
+        //                    por isso nenhum aparelho tem versão dele — a
+        //                    primeira execução instala do zero. O launcher
+        //                    anterior NÃO sai por causa disso: fica instalado
+        //                    como app independente até alguém removê-lo à mão.
+        //                    O comando está em changeset/RENAME-REVYA.md.
+        minVersionCode: 5,
+        source: { type: 'local', dir: 'launchers', apk: '{Launcher} Revya TV.apk' } },
 
       // O Projectivy saiu em 25/07/2026, substituído pelo launcher próprio;
       // os demais apps saíram em 27/07/2026 (ver comentário acima).
@@ -186,7 +194,7 @@ export const TASK_GROUPS = [
       // no catálogo de instalação acima. Os dois têm de andar juntos: o handler
       // recusa definir como padrão um launcher que não está instalado.
       { id: 'tw-home', kind: 'home',
-        pkg: 'tech.dexarmor.launcher',  // DexArmor TV — launcher próprio do modo TV
+        pkg: 'tv.revya.launcher',  // Revya TV — launcher próprio do modo TV
         modeScope: 'mode' },
 
       // Resolução da TV: três opções mutuamente exclusivas (o usuário escolhe
@@ -272,7 +280,7 @@ export function isModeTask(task) {
 // de execução vem de ALL_TASKS (launcher instala antes de virar padrão).
 // ---------------------------------------------------------------------------
 export const RECOMMENDED_TASK_IDS = [
-  'lnch-dexarmor',
+  'lnch-revya',
   'tw-screen', 'tw-battery', 'tw-anim', 'tw-font',
   'tw-rotate', 'tw-dnd', 'tw-sound', 'tw-home',
 ];

@@ -12,7 +12,7 @@
     "install": {
       "title": "Instalar o launcher de TV",
       "subtitle": "A cara do modo TV",
-      "notice": "Apps de streaming, navegador, jogos e emuladores não vêm com o DexArmor — você instala os que quiser, a partir dos arquivos que já tem.",
+      "notice": "Apps de streaming, navegador, jogos e emuladores não vêm com o Revya — você instala os que quiser, a partir dos arquivos que já tem.",
       "noticeAction": "Como instalar apps e enviar arquivos"
     },
     "tweaks": {
@@ -33,8 +33,8 @@
     "rm-social": {
       "label": "Redes sociais pré-instaladas"
     },
-    "lnch-dexarmor": {
-      "label": "DexArmor TV (launcher)"
+    "lnch-revya": {
+      "label": "Revya TV (launcher)"
     },
     "tw-screen": {
       "label": "Manter tela sempre ligada",
@@ -179,7 +179,7 @@
     }
   },
   "errors": {
-    "noSpace": "O celular está sem espaço para receber este arquivo. Libere espaço (você pode usar a Limpeza do DexArmor) e tente de novo.",
+    "noSpace": "O celular está sem espaço para receber este arquivo. Libere espaço (você pode usar a Limpeza do Revya) e tente de novo.",
     "disconnected": "O celular desconectou durante o envio. Reconecte o cabo (ou o Wi-Fi) e tente de novo.",
     "interrupted": "O envio foi interrompido no meio (o celular pode ter desconectado, entrado em suspensão ou o cabo pode ter oscilado). Reconecte o aparelho e tente de novo. Se acontecer de novo, troque o cabo ou a porta USB, ou use a conexão por Wi-Fi.",
     "permissionDenied": "O celular não permitiu gravar aqui. Confira se a transferência de arquivos está autorizada no aparelho e tente de novo.",
@@ -213,7 +213,7 @@
       "nothingToSave": "Nada para salvar ainda — aplique os ajustes de interface (resolução, rotação, tamanho…) e deixe a tela do seu jeito primeiro."
     },
     "cleanup": {
-      "title": "DexArmor — Registro de limpeza",
+      "title": "Revya — Registro de limpeza",
       "date": "Data: {date}",
       "device": "Aparelho: {device}",
       "freeBefore": "Espaço livre antes:  {value}",
@@ -225,7 +225,7 @@
       "noDataDeleted": "Nenhum dado, login ou configuração foi apagado."
     },
     "wifi": {
-      "blockedMacOS": "O computador bloqueou o acesso ao celular pela rede. No macOS, abra Ajustes do Sistema → Privacidade e Segurança → Rede local, permita o DexArmor e tente de novo. Confira também se o computador e o celular estão na mesma rede Wi-Fi.",
+      "blockedMacOS": "O computador bloqueou o acesso ao celular pela rede. No macOS, abra Ajustes do Sistema → Privacidade e Segurança → Rede local, permita o Revya e tente de novo. Confira também se o computador e o celular estão na mesma rede Wi-Fi.",
       "failed": "Não foi possível conectar por Wi-Fi ({reason})",
       "noAnswer": "sem resposta",
       "notOnWifi": "O aparelho não está em uma rede Wi-Fi. Conecte-o à mesma rede do computador e tente de novo."
@@ -237,7 +237,7 @@
     },
     "import": {
       "nothingToExport": "Não há reversões para exportar",
-      "notDexArmor": "Arquivo inválido: não é um registro de reversão do DexArmor.",
+      "notRevya": "Arquivo inválido: não é um registro de reversão do Revya.",
       "tooManyEntries": "Registro com entradas demais ({n}). Importação recusada por segurança.",
       "malformedEntry": "Registro inválido: uma das entradas está malformada.",
       "noTaskId": "Registro inválido: entrada sem identificador (taskId) válido.",
@@ -245,7 +245,7 @@
       "unknownRevertKind": "Registro inválido: a entrada \"{taskId}\" tem um tipo de reversão desconhecido{detail}.",
       "badPhoneProfile": "Registro inválido: a entrada \"{taskId}\" tem um perfil celular com tipo desconhecido.",
       "unreadable": "Não foi possível ler o arquivo escolhido.",
-      "tooLarge": "Arquivo grande demais para ser um registro de reversão do DexArmor.",
+      "tooLarge": "Arquivo grande demais para ser um registro de reversão do Revya.",
       "notJson": "Arquivo inválido: não é um JSON legível."
     }
   },
@@ -376,7 +376,7 @@
       "checkTailOk": ".",
       "checkVerbOne": "não confirmou",
       "checkVerbMany": "não confirmaram",
-      "pendingStopped": "O que ficou pendente não foi alterado. Na próxima conexão deste aparelho, o DexArmor oferece concluir a troca de onde parou.",
+      "pendingStopped": "O que ficou pendente não foi alterado. Na próxima conexão deste aparelho, o Revya oferece concluir a troca de onde parou.",
       "pendingAlready": "Tudo o que estava na fila já havia alternado.",
       "attentionOne": "{n} item precisa de atenção — veja os avisos acima. Você pode tentar de novo pelo mesmo botão; o que já alternou não é refeito.",
       "attentionMany": "{n} itens precisam de atenção — veja os avisos acima. Você pode tentar de novo pelo mesmo botão; o que já alternou não é refeito."
@@ -395,11 +395,11 @@
   "diagnostics": {
     "adbMissing": {
       "title": "Faltou um componente do programa",
-      "message": "O DexArmor precisa de um componente interno (o ADB) para conversar com o Galaxy, e ele não foi encontrado. Isso costuma indicar instalação incompleta ou arquivo removido por antivírus.",
+      "message": "O Revya precisa de um componente interno (o ADB) para conversar com o Galaxy, e ele não foi encontrado. Isso costuma indicar instalação incompleta ou arquivo removido por antivírus.",
       "steps": [
-        "Feche o DexArmor e abra de novo — às vezes basta isso.",
+        "Feche o Revya e abra de novo — às vezes basta isso.",
         "Se continuar, reinstale o programa a partir do arquivo de instalação original.",
-        "Se você usa antivírus, confira a quarentena dele: alguns removem componentes do DexArmor por engano."
+        "Se você usa antivírus, confira a quarentena dele: alguns removem componentes do Revya por engano."
       ]
     },
     "noDevices": {
@@ -416,7 +416,7 @@
       "title": "Sem permissão para acessar o dispositivo",
       "message": "O computador detectou o Galaxy mas não consegue acessá-lo. Costuma ser o serviço do ADB travado ou o driver USB ausente/desatualizado (Windows).",
       "steps": [
-        "Aguarde — o DexArmor vai reiniciar o serviço do ADB automaticamente.",
+        "Aguarde — o Revya vai reiniciar o serviço do ADB automaticamente.",
         "No Windows: reinstale o driver USB da Samsung e tente de novo.",
         "No Mac/Linux: reconecte o cabo após o reinício do serviço."
       ]
@@ -425,7 +425,7 @@
       "title": "Dispositivo não está respondendo",
       "message": "O Galaxy aparece, mas não está respondendo aos comandos. Geralmente é o serviço do ADB travado, cabo ruim ou o aparelho em estado estranho.",
       "steps": [
-        "Aguarde — o DexArmor vai reiniciar a conexão automaticamente.",
+        "Aguarde — o Revya vai reiniciar a conexão automaticamente.",
         "Se continuar, troque o cabo USB ou a porta do computador.",
         "Desconecte e reconecte o telefone."
       ]
@@ -455,7 +455,7 @@
     },
     "unauthorized": {
       "title": "Autorize o computador no telefone",
-      "message": "O DexArmor encontrou seu Galaxy, mas ele ainda não confia neste computador. Isso é normal na primeira conexão.",
+      "message": "O Revya encontrou seu Galaxy, mas ele ainda não confia neste computador. Isso é normal na primeira conexão.",
       "steps": [
         "Desbloqueie a tela do seu Galaxy (o aviso só aparece com a tela desbloqueada).",
         "Toque em \"Permitir\" no aviso \"Permitir depuração USB?\".",
@@ -465,7 +465,7 @@
     },
     "unknown": {
       "title": "Estado não reconhecido",
-      "message": "O dispositivo retornou um estado que o DexArmor ainda não conhece. Reinicie o telefone e a conexão e tente novamente.",
+      "message": "O dispositivo retornou um estado que o Revya ainda não conhece. Reinicie o telefone e a conexão e tente novamente.",
       "steps": [
         "Desconecte e reconecte o telefone.",
         "Reinicie o aparelho se o problema continuar."
@@ -505,12 +505,12 @@
       "roms": "Para emuladores instalados"
     },
     "installed": "Instalado no celular",
-    "installingApk": "Instalando o aplicativo no celular… pode levar alguns instantes. Não feche o DexArmor.",
+    "installingApk": "Instalando o aplicativo no celular… pode levar alguns instantes. Não feche o Revya.",
     "noPath": "Não consegui ler o caminho do arquivo",
     "noSpace": {
       "title": "Espaço insuficiente no celular",
-      "apk": "Este aplicativo ocupa {needed}, mas o celular só tem {free} livres. Libere espaço (você pode usar a {cleanup} do DexArmor) e tente de novo.",
-      "files": "Estes arquivos ocupam {needed}, mas o celular só tem {free} livres. Libere espaço (você pode usar a {cleanup} do DexArmor) e tente de novo.",
+      "apk": "Este aplicativo ocupa {needed}, mas o celular só tem {free} livres. Libere espaço (você pode usar a {cleanup} do Revya) e tente de novo.",
+      "files": "Estes arquivos ocupam {needed}, mas o celular só tem {free} livres. Libere espaço (você pode usar a {cleanup} do Revya) e tente de novo.",
       "cleanup": "Limpeza",
       "ok": "Entendi"
     },
@@ -521,19 +521,19 @@
     "sent": "Enviado",
     "sentOf": " de {size}",
     "sentPercent": "{percent}%{size} enviado",
-    "transferring": "Transferindo{size}… ({elapsed}) Arquivos grandes podem levar alguns minutos — não feche o DexArmor."
+    "transferring": "Transferindo{size}… ({elapsed}) Arquivos grandes podem levar alguns minutos — não feche o Revya."
   },
   "cleanup": {
     "title": "Pit stop · limpeza",
     "helpAria": "O que a limpeza faz?",
-    "help": "Remove só os arquivos temporários dos apps (cache), que crescem com o uso dos streamings. Nenhum dado, login ou configuração é apagado. Cada limpeza fica registrada em Documentos › DexArmor.",
+    "help": "Remove só os arquivos temporários dos apps (cache), que crescem com o uso dos streamings. Nenhum dado, login ou configuração é apagado. Cada limpeza fica registrada em Documentos › Revya.",
     "action": "Liberar espaço",
     "running": "No box… {seconds} s",
     "freeing": "Liberando cache",
     "doneLine": "Parada concluída em {seconds} s — {result}",
     "freed": "{value} liberados.",
     "alreadyClean": "já estava em ordem.",
-    "logSaved": "Registro salvo em Documentos › DexArmor › registros-limpeza",
+    "logSaved": "Registro salvo em Documentos › Revya › registros-limpeza",
     "open": "Abrir",
     "app": {
       "gms": "Serviços do Google"
@@ -662,7 +662,7 @@
       "hide": "Ocultar guia"
     },
     "save": "Salvar",
-    "shellBody": "O DexArmor é a estrutura — cada ajuste aplicado é uma peça da personalização que você constrói. Não gostou de uma peça? Toque em {undo} ao lado dela: sai na hora, sem desmontar o resto.",
+    "shellBody": "O Revya é a estrutura — cada ajuste aplicado é uma peça da personalização que você constrói. Não gostou de uma peça? Toque em {undo} ao lado dela: sai na hora, sem desmontar o resto.",
     "shellTitle": "Sua carapaça, seu controle.",
     "title": "Progresso",
     "undo": "Desfazer"
@@ -683,7 +683,7 @@
     "newSession": "Nova sessão iniciada — o registro anterior foi apagado. O aparelho pode ser configurado do zero quando você quiser.",
     "nothing": "Nada a reverter.",
     "running": "Revertendo…",
-    "sessionEnd": "Ao reverter tudo, o registro guardado desta configuração é apagado — modo TV salvo, histórico e preferências — e o DexArmor começa uma nova sessão do zero, como no primeiro uso. Os apps e arquivos pessoais do celular não são afetados.",
+    "sessionEnd": "Ao reverter tudo, o registro guardado desta configuração é apagado — modo TV salvo, histórico e preferências — e o Revya começa uma nova sessão do zero, como no primeiro uso. Os apps e arquivos pessoais do celular não são afetados.",
     "summary": "Revertido: {done} de {total} {unit}.",
     "title": "Reversão completa",
     "unitMany": "itens",
@@ -751,7 +751,7 @@
     "reportError": "ERRO",
     "reportPending": "PENDENTE",
     "reportRunning": "EM ANDAMENTO",
-    "reportTitle": "DexArmor — Relatório de configuração",
+    "reportTitle": "Revya — Relatório de configuração",
     "reportWarning": "AVISO",
     "signatureMismatch": "Já existe uma versão instalada com assinatura diferente.",
     "undoFailed": "Não foi possível desfazer: {error}",
@@ -773,7 +773,7 @@
     "validatedModel": "{model} validado."
   },
   "scrcpy": {
-    "windowTitle": "DexArmor — Tela do celular",
+    "windowTitle": "Revya — Tela do celular",
     "notFound": "scrcpy não encontrado. Coloque os binários em scrcpy/ (veja o README da pasta) ou instale o scrcpy no sistema.",
     "exited": "scrcpy encerrou com código {code}"
   },
@@ -804,7 +804,7 @@
   "contribute": {
     "tabLabel": "Contribua com o projeto",
     "title": "Contribua com o projeto",
-    "message": "O DexArmor é gratuito, mas nada impede que os esforços sejam recompensados. Se te ajudei e você descobriu um novo uso do seu celular, fique à vontade para retribuir.",
+    "message": "O Revya é gratuito, mas nada impede que os esforços sejam recompensados. Se te ajudei e você descobriu um novo uso do seu celular, fique à vontade para retribuir.",
     "footnote": "Contribuir é opcional — nada no programa depende disso.",
     "qr": {
       "pix": {
@@ -823,7 +823,7 @@
     "pushStalled": "O envio travou (sem progresso por muito tempo). Confira o cabo ou o Wi-Fi e tente de novo."
   },
   "firstGuide": {
-    "title": "Bem-vindo ao DexArmor",
+    "title": "Bem-vindo ao Revya",
     "intro": "Antes de começar, vale entender o jeito certo de usar o programa — são 2 minutos que evitam dor de cabeça depois.",
     "s1": {
       "title": "1. Monte primeiro o setup de TV",
@@ -835,7 +835,7 @@
     },
     "s3": {
       "title": "3. Depois, alimente o setup",
-      "body": "O dia a dia é adicionar conteúdo, não mexer na interface: arraste aplicativos (.apk), filmes, músicas e ROMs direto para a janela do DexArmor — eles vão para o celular na hora. O programa não traz apps de terceiros: os que você quiser, você instala."
+      "body": "O dia a dia é adicionar conteúdo, não mexer na interface: arraste aplicativos (.apk), filmes, músicas e ROMs direto para a janela do Revya — eles vão para o celular na hora. O programa não traz apps de terceiros: os que você quiser, você instala."
     },
     "s4": {
       "title": "4. Se a tela do celular desandar",
@@ -907,13 +907,13 @@
   },
   "sideload": {
     "title": "Instalar apps e enviar arquivos",
-    "intro": "O DexArmor transforma o celular em TV, mas não vem com aplicativos de terceiros: streaming, navegador, jogos e emuladores são escolha sua. Instalar qualquer um deles leva alguns segundos — é arrastar e soltar.",
+    "intro": "O Revya transforma o celular em TV, mas não vem com aplicativos de terceiros: streaming, navegador, jogos e emuladores são escolha sua. Instalar qualquer um deles leva alguns segundos — é arrastar e soltar.",
     "s1": {
       "title": "1. Tenha o arquivo no computador",
       "body": "Um aplicativo Android é um arquivo .apk. Baixe-o de uma fonte confiável (a loja de apps do próprio celular, o site oficial do aplicativo ou repositórios conhecidos) e deixe-o à mão."
     },
     "s2": {
-      "title": "2. Arraste para a janela do DexArmor",
+      "title": "2. Arraste para a janela do Revya",
       "body": "Com o celular conectado, arraste o arquivo para qualquer ponto desta janela. A tela inteira vira uma área de destino com os alvos possíveis — não precisa abrir nada antes."
     },
     "s3": {
@@ -925,9 +925,9 @@
       "body": "Filmes, músicas, ROMs e arquivos em geral: solte na pasta correspondente (Filmes, Músicas, ROMs de jogos, Downloads). Vários de uma vez também funciona, com progresso e opção de cancelar."
     },
     "notes": [
-      "Na primeira instalação, o Android pode pedir uma confirmação na tela do celular. É normal: autorize e o DexArmor segue daí.",
+      "Na primeira instalação, o Android pode pedir uma confirmação na tela do celular. É normal: autorize e o Revya segue daí.",
       "Arquivos .apkm e .xapk (pacotes com várias partes) também são aceitos.",
-      "Sem espaço no celular? O DexArmor avisa antes de começar — use a Limpeza, na coluna da direita, e tente de novo."
+      "Sem espaço no celular? O Revya avisa antes de começar — use a Limpeza, na coluna da direita, e tente de novo."
     ],
     "action": "Entendi"
   },

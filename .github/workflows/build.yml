@@ -111,7 +111,7 @@ jobs:
       - name: Subir os instaladores como artefato
         uses: actions/upload-artifact@v4
         with:
-          name: dexarmor-${{ matrix.platform }}
+          name: revya-${{ matrix.platform }}
           # Instaladores gerados ficam em release/ (definido no package.json).
           path: |
             release/*.exe

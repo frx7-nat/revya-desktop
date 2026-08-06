@@ -1,5 +1,5 @@
 {
-  "name": "dexarmor",
+  "name": "revya",
   "version": "0.1.0",
   "description": "Transforma celulares Samsung em dispositivos de mídia para TV via ADB",
   "main": "src/main/main.js",
@@ -11,7 +11,7 @@
     "build:renderer": "node scripts/check-i18n.js && vite build",
     "start": "npm run build:renderer && electron .",
     "dist": "npm run build:renderer && electron-builder",
-    "dist:win": "npm run build:renderer && electron-builder --win --config.directories.output=/private/tmp/dexarmor-build && npm run verify:win",
+    "dist:win": "npm run build:renderer && electron-builder --win --config.directories.output=/private/tmp/revya-build && npm run verify:win",
     "dist:mac": "npm run build:renderer && electron-builder --mac",
     "dist:linux": "npm run build:renderer && electron-builder --linux",
     "verify:win": "node scripts/verify-win.js"
@@ -33,8 +33,8 @@
     "wait-on": "^7.2.0"
   },
   "build": {
-    "appId": "com.dexarmor.app",
-    "productName": "DexArmor",
+    "appId": "com.revya.tv",
+    "productName": "Revya",
     "publish": null,
     "directories": {
       "output": "release"
@@ -110,7 +110,7 @@
       ],
       "category": "public.app-category.utilities",
       "extendInfo": {
-        "NSLocalNetworkUsageDescription": "O DexArmor usa a rede local para conectar ao seu celular por Wi-Fi (modo sem fio e espelhamento sem cabo)."
+        "NSLocalNetworkUsageDescription": "O Revya usa a rede local para conectar ao seu celular por Wi-Fi (modo sem fio e espelhamento sem cabo)."
       }
     },
     "linux": {
@@ -119,7 +119,7 @@
         "deb"
       ],
       "category": "Utility",
-      "maintainer": "DexArmor"
+      "maintainer": "Revya"
     },
     "afterPack": "scripts/after-pack.js"
   }

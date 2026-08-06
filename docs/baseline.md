@@ -5,8 +5,15 @@
 que a revisão formal encoste no código.
 
 Este documento é o critério de regressão das Fases 3 e 5 do
-[`plano-revisao-dexarmor.md`](../plano-revisao-dexarmor.md). Se um refactor
+[`plano-revisao-revya.md`](../plano-revisao-revya.md). Se um refactor
 quebrar qualquer item marcado como **verificado** aqui, é regressão.
+
+> **Nome do pacote do launcher (nota de 06/08/2026).** As tabelas abaixo
+> registram `tech.dexarmor.launcher` porque foi ISSO que os aparelhos tinham no
+> dia da medição. O produto virou **Revya** e o launcher virou
+> `tv.revya.launcher`, mas medição não se reescreve: trocar o valor aqui
+> transformaria uma observação em suposição, que é justamente o que a regra
+> abaixo proíbe. Uma remedição sob o nome novo entra como linha nova.
 
 > **Regra deste arquivo:** só entra como *verificado* o que foi observado
 > funcionando, com a evidência dita. O que é suposição vai para "não
@@ -19,8 +26,8 @@ quebrar qualquer item marcado como **verificado** aqui, é regressão.
 
 | repositório | tag | commit |
 | --- | --- | --- |
-| desktop (`dexarmor - app - atualizado - cópia 2`) | `pre-review-v1` | `91d2333` |
-| launcher (`dexarmor-launcher`) | `pre-review-v1` | `31d8fb6` |
+| desktop (`dexarmor - app - atualizado - cópia 2`, hoje `~/revya`) | `pre-review-v1` | `91d2333` |
+| launcher (`revya-launcher`) | `pre-review-v1` | `31d8fb6` |
 
 **Nenhum dos dois tem remote**, então não há `git push --tags`. As tags existem
 só nesta máquina — o que também significa que o congelamento **não sobrevive à
@@ -34,27 +41,27 @@ para não se perder.
 
 ## 2. Binários de referência
 
-Arquivados **fora dos repositórios**, em `~/dexarmor-baseline-v1/`:
+Arquivados **fora dos repositórios**, em `~/revya-baseline-v1/`:
 
 ```
-android/DexArmor-TV-v4-release.apk            51354eeb5e26149d0ef958860b28aeda81f97150d8103d027b1405b463fcc354
-macos/DexArmor-0.1.0-arm64.dmg                00dd7f2d8c9ff6c2776ad3a5776db20b9ecd13d1ea7b7a77bd9874a8e8a3fab5
-macos/DexArmor-0.1.0.dmg                      21459cdf38d202596adc05a9922d12d78f505746d1374d010f86e42139a95c16
-windows/DexArmor-0.1.0-x64-portable.zip       e0665539cc384bb6d4caa0e47e0800f537206fbc10e2b6df603177bdbcfb7d2e
-windows/DexArmor-0.1.0-x64.zip                d4019ccdc079324a90819a423a00f5892b143d4f07487ad4652e183e05fbc034
+android/Revya-TV-v4-release.apk            51354eeb5e26149d0ef958860b28aeda81f97150d8103d027b1405b463fcc354
+macos/Revya-0.1.0-arm64.dmg                00dd7f2d8c9ff6c2776ad3a5776db20b9ecd13d1ea7b7a77bd9874a8e8a3fab5
+macos/Revya-0.1.0.dmg                      21459cdf38d202596adc05a9922d12d78f505746d1374d010f86e42139a95c16
+windows/Revya-0.1.0-x64-portable.zip       e0665539cc384bb6d4caa0e47e0800f537206fbc10e2b6df603177bdbcfb7d2e
+windows/Revya-0.1.0-x64.zip                d4019ccdc079324a90819a423a00f5892b143d4f07487ad4652e183e05fbc034
 ```
 
 Também em `SHA256SUMS.txt`, na mesma pasta.
 
 **Os `.exe` estão em ZIP de propósito.** O Kaspersky desta máquina apaga
 instalador NSIS solto em qualquer pasta do diretório pessoal; o ZIP sobrevive.
-Ver [`dexarmor-distribuicao`] nas notas do projeto.
+Ver [`revya-distribuicao`] nas notas do projeto.
 
 **Assinaturas:**
 
-- APK: `CN=DexArmor, O=DexArmor, C=BR`, SHA-256
+- APK: `CN=Revya, O=Revya, C=BR`, SHA-256
   `3c0bbc45f2aefcea961dfa45ddaa3b7a58281caebd3c23e50adc72d307861790`
-- macOS: ad-hoc, `Identifier=com.dexarmor.app`, `spctl` = `rejected`
+- macOS: ad-hoc, `Identifier=com.revya.tv`, `spctl` = `rejected`
   (**não** `revoked` — a diferença entre "aviso normal" e "malware")
 - Windows: **sem assinatura** — SmartScreen esperado
 
@@ -138,7 +145,7 @@ O launcher aplicado é o **próprio**, não o Projectivy — o cenário que o
 `preferredTask` (28/07) passou a garantir.
 
 **Volta (TV → celular): retrato IDÊNTICO ao original**, campo por campo. As 8
-tasks de modo voltaram a dormentes; `lnch-dexarmor` e `tw-battery` seguiram
+tasks de modo voltaram a dormentes; `lnch-revya` e `tw-battery` seguiram
 ativas (corretas, são estruturais); o `phoneRevert` foi recapturado.
 
 ### Achado: a conferência pós-troca acusa divergência FALSA
@@ -287,7 +294,7 @@ Verificado **em bancada**, não em aparelho:
 
 | item | situação |
 | --- | --- |
-| **As correções da Fase 4 em aparelho** | R12/R13/R14 só passaram por bancada (§5f). O caminho mDNS em especial exige parear um Galaxy pela Depuração sem fio do Android — **o DexArmor nunca produz esse formato sozinho**, então nenhum teste anterior o exercitou |
+| **As correções da Fase 4 em aparelho** | R12/R13/R14 só passaram por bancada (§5f). O caminho mDNS em especial exige parear um Galaxy pela Depuração sem fio do Android — **o Revya nunca produz esse formato sozinho**, então nenhum teste anterior o exercitou |
 | **Pop-up de acessórios ao fechar** | não consegui reproduzi-lo em teste automatizado; a rede de 800 ms fecha direto quando a tela não confirma. **Conferir manualmente** — virou receita agora que o app é gratuito |
 | Navegação em loop, ciclo de acento, menu CONFIG | validados até 26/07; não reconferidos depois do i18n |
 | Fluidez em S8/S9 | nunca medida (item 2 do `PENDENCIAS`) |

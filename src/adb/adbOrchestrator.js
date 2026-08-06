@@ -1,6 +1,6 @@
 // src/adb/adbOrchestrator.js
 // -----------------------------------------------------------------------------
-// Fecha o ciclo de recuperação automática do DexArmor.
+// Fecha o ciclo de recuperação automática do Revya.
 //
 // Fluxo:
 //   1. Roda `adb devices -l` e diagnostica (via adbDiagnostics.js).

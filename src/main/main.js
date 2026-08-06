@@ -52,7 +52,7 @@ function createWindow() {
     height: 720,
     minWidth: 980,
     backgroundColor: '#141318',
-    title: 'DexArmor',
+    title: 'Revya',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -89,7 +89,7 @@ function createWindow() {
     // antes de atualizar, um script, o gerenciador de tarefas — chega com a
     // janela SEM FOCO. Interceptar nesse caso põe o pop-up atrás da janela de
     // quem pediu: ninguém confirma, o app nunca fecha, e o instalador desiste
-    // com "Não é possível fechar o DexArmor. Feche a janela e clique em
+    // com "Não é possível fechar o Revya. Feche a janela e clique em
     // Repetir".
     //
     // Encontrado em 28/07/2026 testando a atualização no Windows. Não é caso
@@ -718,11 +718,11 @@ function fmtBytes(b) {
   return `${Math.max(1, Math.round(b / 1024 ** 2))} MB`;
 }
 
-// Pasta de registros escolhida pelo projeto: Documentos › DexArmor ›
+// Pasta de registros escolhida pelo projeto: Documentos › Revya ›
 // registros-limpeza — visível e encontrável pelo usuário leigo (nada de
 // pastas ocultas de sistema).
 function cleanupLogDir() {
-  const dir = path.join(app.getPath('documents'), 'DexArmor', 'registros-limpeza');
+  const dir = path.join(app.getPath('documents'), 'Revya', 'registros-limpeza');
   fs.mkdirSync(dir, { recursive: true });
   return dir;
 }
@@ -908,7 +908,7 @@ ipcMain.handle('send:apk', async (event, serial, localPath) => {
 ipcMain.handle('report:save', async (_e, text) => {
   const { canceled, filePath } = await dialog.showSaveDialog({
     title: t('main.dialog.saveReport'),
-    defaultPath: `dexarmor-relatorio-${new Date().toISOString().slice(0, 10)}.txt`,
+    defaultPath: `revya-relatorio-${new Date().toISOString().slice(0, 10)}.txt`,
     filters: [{ name: 'Texto', extensions: ['txt'] }],
   });
   if (canceled || !filePath) return false;
@@ -924,7 +924,7 @@ ipcMain.handle('revert:export', async (_e, serial) => {
   if (!data.entries.length) throw new Error(t('main.import.nothingToExport'));
   const { canceled, filePath } = await dialog.showSaveDialog({
     title: t('main.dialog.exportJournal'),
-    defaultPath: `dexarmor-reversao-${storeKey}.json`,
+    defaultPath: `revya-reversao-${storeKey}.json`,
     filters: [{ name: 'JSON', extensions: ['json'] }],
   });
   if (canceled || !filePath) return false;
@@ -953,7 +953,7 @@ function validKindOf(obj) {
 }
 function validateImport(raw) {
   if (!raw || typeof raw !== 'object' || !Array.isArray(raw.entries)) {
-    throw new Error(t('main.import.notDexArmor'));
+    throw new Error(t('main.import.notRevya'));
   }
   if (raw.entries.length > MAX_IMPORT_ENTRIES) {
     throw new Error(t('main.import.tooManyEntries', { n: raw.entries.length }));
@@ -992,7 +992,7 @@ ipcMain.handle('revert:import', async (_e, serial) => {
   if (canceled || !filePaths || !filePaths[0]) return null;
   const file = filePaths[0];
   // Limite de tamanho ANTES de ler para a memória: um arquivo enorme é ruído
-  // ou ataque, não um registro do DexArmor.
+  // ou ataque, não um registro do Revya.
   let size = 0;
   try { size = fs.statSync(file).size; } catch { throw new Error(t('main.import.unreadable')); }
   if (size > MAX_IMPORT_BYTES) {

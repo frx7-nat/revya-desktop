@@ -1,4 +1,4 @@
-# DexArmor
+# Revya
 
 App desktop (Electron) que converte celulares Samsung Galaxy em dispositivos de
 mídia para TV via ADB — sem root. Remove bloatware, instala o launcher de TV
@@ -86,7 +86,7 @@ platform-tools/         (você adiciona) binários ADB por plataforma:
   win/                  adb.exe + AdbWinApi.dll + AdbWinUsbApi.dll
   mac/  linux/          adb (sem extensão, chmod +x)
 scrcpy/                 (você adiciona) release oficial do scrcpy por plataforma
-apks/                   só o APK próprio: launchers/{Launcher} DexArmor TV.apk
+apks/                   só o APK próprio: launchers/{Launcher} Revya TV.apk
 ```
 
 ## Setup
@@ -140,7 +140,7 @@ Três armadilhas resolvidas em 28/07/2026, todas registradas em `changeset/`:
 
 > Antivírus apagam instaladores NSIS dentro do `$HOME` — inclusive numa pasta
 > criada só para eles, o que foi tentado e **não** funcionou. A saída de
-> Windows vai para `/private/tmp/dexarmor-build`.
+> Windows vai para `/private/tmp/revya-build`.
 
 ## Decisões de design
 

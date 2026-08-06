@@ -27,7 +27,7 @@ function sha256File(filePath) {
 function downloadApk(url, redirects = 0) {
   return new Promise((resolve, reject) => {
     if (redirects > 5) return reject(new Error('Muitos redirecionamentos'));
-    const dest = path.join(os.tmpdir(), `dexarmor-${Date.now()}.apk`);
+    const dest = path.join(os.tmpdir(), `revya-${Date.now()}.apk`);
     const file = fs.createWriteStream(dest);
     https.get(url, (res) => {
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
@@ -86,7 +86,7 @@ function findApks(dir) {
 // Instala um pacote .apkm ou .xapk: extrai o ZIP, coleta os APKs internos
 // e usa adb install-multiple para split APKs ou adb install para APK único.
 async function installBundled(serial, archivePath, { signal } = {}) {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dexarmor-'));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'revya-'));
   try {
     await extractZip(archivePath, tmpDir);
     const apks = findApks(tmpDir);
@@ -263,7 +263,7 @@ async function runTask(serial, task) {
 
       // ATUALIZAÇÃO POR versionCode.
       // Só vale para app que embarcamos e cuja versão conhecemos: a task
-      // declara `minVersionCode` (hoje, o launcher DexArmor TV). Sem esse
+      // declara `minVersionCode` (hoje, o launcher Revya TV). Sem esse
       // campo o comportamento é o de sempre — instala/reinstala.
       //
       // Existir não basta como critério: um aparelho já provisionado tem o

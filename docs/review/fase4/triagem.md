@@ -39,12 +39,12 @@ pareados — é por isso que ninguém repareia depois de reiniciar o adb. O
 `connect ip:5555`, esse sim, morre de vez, porque nada o refaz.
 
 **O dano real é outro, e continua sendo dano:** a mensagem. Um aparelho mDNS
-`offline` cai em `diagnostics.offline`, que promete *"aguarde — o DexArmor vai
+`offline` cai em `diagnostics.offline`, que promete *"aguarde — o Revya vai
 reiniciar a conexão automaticamente"* e manda **trocar o cabo USB** — para
 alguém que não tem cabo nenhum ligado. É exatamente o defeito que a variante
 `offlineWireless` foi criada para eliminar, escapando pela porta dos fundos.
 
-**Alcance:** o fluxo do próprio DexArmor nunca produz esse formato — ele usa
+**Alcance:** o fluxo do próprio Revya nunca produz esse formato — ele usa
 `tcpip 5555` + `connect ip:5555` (`main.js:807-814`). Só chega lá quem já
 pareou pela Depuração sem fio do Android por conta própria. Estreito, não
 impossível.
@@ -175,5 +175,5 @@ chaves) e `build:renderer`.
 ### O que ainda não foi verificado
 
 Nada disto passou por **aparelho real** ainda. O caminho do mDNS, em especial,
-depende de parear um Galaxy pela Depuração sem fio do Android — o DexArmor
+depende de parear um Galaxy pela Depuração sem fio do Android — o Revya
 nunca produz esse formato sozinho. Fica para o ciclo de aparelho da Fase 5.

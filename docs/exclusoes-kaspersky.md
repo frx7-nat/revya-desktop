@@ -17,7 +17,7 @@ desconfortável — e o desconforto já cobrou duas sessões de diagnóstico err
 | --- | --- |
 | apaga o `Electron.app` recém-baixado dentro de `node_modules` | `electron .` não roda |
 | mata binário do Electron recém-construído com SIGKILL (exit 137) | idem |
-| apaga instaladores NSIS em **qualquer lugar** da pasta pessoal | por isso a saída de Windows vai para `/private/tmp/dexarmor-build` |
+| apaga instaladores NSIS em **qualquer lugar** da pasta pessoal | por isso a saída de Windows vai para `/private/tmp/revya-build` |
 | **nunca** toca em `.dmg` nem em `.zip` | os DMG e ZIP em `~/Desktop/DexArmor-0.1.0/` estão intactos |
 
 Criar uma pasta só para os instaladores **não** resolve — foi tentado.
@@ -27,7 +27,7 @@ Criar uma pasta só para os instaladores **não** resolve — foi tentado.
 ```
 node_modules/electron/dist/     → existe, mas SEM o Electron.app dentro
                                   (sobraram LICENSE, LICENSES.chromium.html, version)
-/private/tmp/dexarmor-build/    → os quatro .exe/.zip intactos
+/private/tmp/revya-build/    → os quatro .exe/.zip intactos
 ```
 
 Confirma as duas metades da medição: o que está na pasta pessoal foi comido, o
@@ -44,9 +44,9 @@ Na aba **Arquivos e pastas confiáveis** (*Trusted files and folders*), clique n
 **+** e adicione, um por um:
 
 ```
-/Users/natalierjunior/dexarmor - app - atualizado - cópia 2
+/Users/natalierjunior/revya
 /Users/natalierjunior/dexarmor-launcher
-/private/tmp/dexarmor-build
+/private/tmp/revya-build
 ```
 
 Confirme com **OK** ao fim — sem isso a lista não é gravada.
@@ -62,6 +62,14 @@ O `dexarmor-launcher` é **prevenção, não medição**: nunca vi o antivírus 
 num APK, mas o Gradle escreve binário novo em `app/build/` a cada release, que é
 o mesmo padrão que ele mata no Electron.
 
+> **Sobre os nomes (06/08/2026).** O produto virou **Revya**, mas os caminhos
+> desta lista são caminhos REAIS no disco e valem como estão: a pasta do
+> desktop virou `~/revya`, enquanto `~/dexarmor-launcher` e
+> `~/Desktop/DexArmor-0.1.0/` continuam com o nome antigo porque não foram
+> renomeadas. Exclusão de antivírus que aponta para caminho inexistente não
+> protege nada — se um dia renomear alguma delas, corrija aqui **e** refaça a
+> exclusão na interface do Kaspersky.
+
 ---
 
 ## Passo 2 — reparar o Electron (linha de comando, depois do passo 1)
@@ -69,7 +77,7 @@ o mesmo padrão que ele mata no Electron.
 O zip está no cache local, então isto funciona sem internet:
 
 ```bash
-cd "/Users/natalierjunior/dexarmor - app - atualizado - cópia 2"
+cd "/Users/natalierjunior/revya"
 rm -rf node_modules/electron/dist
 node node_modules/electron/install.js
 ls -d node_modules/electron/dist/Electron.app    # tem de existir agora
@@ -126,7 +134,7 @@ Para os instaladores Windows, o teste é gerar um e ver se ele continua lá um
 minuto depois:
 
 ```bash
-npm run dist:win && ls -lh /private/tmp/dexarmor-build/*.exe
+npm run dist:win && ls -lh /private/tmp/revya-build/*.exe
 ```
 
 ---
@@ -134,7 +142,7 @@ npm run dist:win && ls -lh /private/tmp/dexarmor-build/*.exe
 ## Se o item 2 (rename) acontecer depois disto
 
 As exclusões são por **caminho absoluto**. Renomear a pasta do projeto ou trocar
-`/private/tmp/dexarmor-build` faz cada uma delas apontar para o vazio, sem aviso
+`/private/tmp/revya-build` faz cada uma delas apontar para o vazio, sem aviso
 nenhum — e o antivírus volta a comer o Electron como se nada tivesse sido
 configurado.
 

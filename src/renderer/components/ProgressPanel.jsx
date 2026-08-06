@@ -114,7 +114,7 @@ export default function ProgressPanel({ log, percent, active, onSaveReport, fini
 
       {/* A carapaça é do usuário: resultado apresentado = cada peça pode ser
           desfeita na hora, sem desmontar o resto. Segurança que também é o
-          jeito DexArmor de montar uma configuração personalizada. */}
+          jeito Revya de montar uma configuração personalizada. */}
       {finished && (
         <Box sx={{
           mb: 1.4, p: 1.2, borderRadius: 1,

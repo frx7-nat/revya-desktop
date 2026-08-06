@@ -7,7 +7,7 @@
  * do Electron). Ele recebe os dados por props e dispara callbacks. A ligação
  * com o main é feita por IPC (window.api.checkDevices / window.api.onPhase).
  *
- * Construído com Material UI para encaixar no design já existente do DexArmor.
+ * Construído com Material UI para encaixar no design já existente do Revya.
  *
  * Props:
  *   diagnosis         objeto `actionable`/`overall` do checkDevices, ou null.

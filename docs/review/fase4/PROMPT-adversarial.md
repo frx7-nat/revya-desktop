@@ -62,7 +62,7 @@ autor faria para tornar uma decisão errada convincente.
 
 ## O que o programa faz, e o que está em jogo
 
-**DexArmor** é um app Electron (macOS/Windows) que transforma celulares Samsung
+**Revya** é um app Electron (macOS/Windows) que transforma celulares Samsung
 Galaxy em dispositivos de TV via ADB: muda resolução, densidade, fonte, rotação,
 launcher padrão, e instala um launcher próprio.
 
