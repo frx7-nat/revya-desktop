@@ -11,7 +11,7 @@
 //
 // Importante: apontamos o scrcpy para o NOSSO adb (env ADB). Sem isso, ele
 // usaria o adb dele — versões diferentes de adb derrubam o servidor uma da
-// outra e a conexão do DexArmor cairia no meio do espelhamento.
+// outra e a conexão do Revya cairia no meio do espelhamento.
 
 const { spawn } = require('child_process');
 const path = require('path');

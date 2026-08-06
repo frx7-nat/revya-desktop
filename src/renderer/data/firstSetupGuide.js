@@ -4,7 +4,7 @@
 // celular sem nenhuma configuração conecta.
 //
 // A mensagem central é a filosofia do produto: "configure até a interface
-// ideal e PERMANEÇA nela" — o DexArmor estrutura uma experiência de TV; o
+// ideal e PERMANEÇA nela" — o Revya estrutura uma experiência de TV; o
 // dia a dia depois é alimentá-la de conteúdo, não remexer na interface.
 
 // Só estrutura: ícone e CHAVE. O texto vive em `src/i18n/*.json`, sob

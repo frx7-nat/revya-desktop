@@ -4,7 +4,7 @@
 // que está sendo liberado (cache por app, via dumpsys diskstats) e, ao
 // final, o tempo da parada + o total recuperado.
 //
-// Cada limpeza grava um registro .txt em Documentos › DexArmor ›
+// Cada limpeza grava um registro .txt em Documentos › Revya ›
 // registros-limpeza (pasta escolhida pelo projeto), com atalho "abrir pasta".
 //
 // NÃO destrutivo por natureza: só arquivos temporários (cache) saem; nenhum
@@ -33,7 +33,7 @@ import { TOK } from '../theme/tokens';
 // O mapa do catálogo guarda o ID da task, não o rótulo: desde que a prosa saiu
 // do `tasks.js`, `task.label` é `undefined` — e a versão anterior disto mapeava
 // todo pacote para undefined em silêncio, fazendo o app do catálogo aparecer
-// pelo sufixo do pacote ("launcher" em vez de "DexArmor TV").
+// pelo sufixo do pacote ("launcher" em vez de "Revya TV").
 const CATALOG_IDS = Object.fromEntries(ALL_TASKS.filter((x) => x.pkg).map((x) => [x.pkg, x.id]));
 
 // Nomes de MARCA — não se traduzem em idioma nenhum.

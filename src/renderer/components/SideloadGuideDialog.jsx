@@ -1,6 +1,6 @@
 // src/renderer/components/SideloadGuideDialog.jsx
 // Aviso "Como instalar apps e enviar arquivos" — o que ficou no lugar do
-// antigo catálogo de APKs (o DexArmor não distribui apps de terceiros).
+// antigo catálogo de APKs (o Revya não distribui apps de terceiros).
 // Abre pelo botão do grupo "Instalar o launcher de TV", na coluna esquerda.
 //
 // Mesmo padrão visual do FirstSetupGuideDialog e do DexGuideDialog: passos

@@ -1,7 +1,7 @@
 // src/renderer/components/SendOverlay.jsx
 // "Enviar para o celular": overlay global de arrastar-e-soltar.
 //
-// Como funciona: ao arrastar qualquer arquivo para a janela do DexArmor (em
+// Como funciona: ao arrastar qualquer arquivo para a janela do Revya (em
 // qualquer aba), a janela inteira vira uma área de destino com alvos claros:
 //   - "Instalar no celular"  -> .apk/.apkm/.xapk (instala direto via ADB)
 //   - Downloads / Filmes / Músicas / ROMs -> pastas fixas do armazenamento

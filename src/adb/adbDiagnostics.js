@@ -1,6 +1,6 @@
 // src/adb/adbDiagnostics.js
 // -----------------------------------------------------------------------------
-// Diagnóstico de estados do ADB para o DexArmor.
+// Diagnóstico de estados do ADB para o Revya.
 //
 // Recebe a saída CRUA do comando `adb devices` (string) e devolve, para cada
 // dispositivo, um objeto com mensagem em linguagem simples e os próximos passos
@@ -112,7 +112,7 @@ function describeDevice({ serial, state }) {
   // deixou de aplicar `kill-server` nesse caso, porque ali ele apagava o
   // pareamento em vez de restaurá-lo (ver adbOrchestrator.js).
   //
-  // Sem esta variante o usuário leria "aguarde, o DexArmor vai reiniciar a
+  // Sem esta variante o usuário leria "aguarde, o Revya vai reiniciar a
   // conexão automaticamente" — promessa que o app deixou de cumprir — seguida
   // de dois passos sobre trocar o CABO, num aparelho que não tem cabo nenhum.
   const key = (state === DeviceState.OFFLINE && ehSemFio(serial))
