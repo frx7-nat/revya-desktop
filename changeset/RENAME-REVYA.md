@@ -147,5 +147,32 @@ O que a renomeação poderia ter quebrado em silêncio, e não quebrou:
 Perfil de modo TV aplicado (bate com `docs/baseline.md`): override 2160x3840,
 densidade 640, fonte 1.15, `user_rotation` 1, `zen_mode` 1.
 
-**Critério de aceite final do plano: CUMPRIDO** (1 aparelho de 3; S21 FE e S8
-não foram testados).
+#### Segundo aparelho: Galaxy S21 FE (SM-G990E, serial RXCW201M3HV)
+
+Mesmo ciclo, mesmo dia, mesmo resultado. Pré-condição também conferida no
+diário antigo: última troca `direction=phone 8/8` em 01/08 e todas as entradas
+de modo `dormant: true`.
+
+| passo | resultado |
+|---|---|
+| 1. `adb uninstall tech.dexarmor.launcher` | ok — estava instalado; home era a One UI Home |
+| 3. Revya abre e conecta | "Conectado! SM-G990E validado" |
+| 5. Configuração recomendada + modo TV | **8/8** — aqui o app perguntou o tamanho da interface (640/768/512 dpi); escolhido o padrão de 640 |
+| 6. Voltar ao modo celular | **8/8** — retrato IDÊNTICO ao original |
+| 7. Reversão completa | restaurado; **0 entradas pendentes**; nenhum pacote do produto no aparelho |
+| 8. Launcher como home no modo TV | `tv.revya.launcher/tv.revya.launcher.MainActivity` ✓ (versionCode 5) |
+| 8. Título do espelhamento | **"SM-G990E — Revya"** ✓ |
+
+Diferença útil em relação ao S23: neste aparelho as animações estavam em `1.0`
+antes, então a tarefa `tw-anim` teve trabalho de verdade (`1.0` → `0` → `1.0`)
+em vez de ser um no-op. E a One UI Home foi corretamente restaurada como home,
+enquanto no S23 quem voltou foi o `com.rama.mako` — o mapeamento "modo celular
+= o launcher que estava antes" vale nos dois casos.
+
+Ajustes que o app **não** tocou em nenhum dos dois, e por isso não aparecem nos
+diffs: `lockscreen_disabled` e `navigation_mode` no S21 FE são preferência da
+usuária (não constam do diário), e o `screen_off_timeout` alto nos dois
+aparelhos é valor original — o registro guarda `prev: "2147483647"`.
+
+**Critério de aceite final do plano: CUMPRIDO em 2 dos 3 aparelhos**
+(S23 Ultra e S21 FE; o S8 não foi testado).
