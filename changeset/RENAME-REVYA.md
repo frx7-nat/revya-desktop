@@ -81,3 +81,50 @@ aplicativos distintos para o macOS.
    corrija `docs/exclusoes-kaspersky.md` **e** refaça a exclusão no antivírus.
 3. Depósito da marca REVYA no INPI (classes 9 e 42); handles de redes; site e
    domínio (itens 5 e 6 do `PROXIMOS-PASSOS-LANCAMENTO.md`).
+
+---
+
+## Fase 8 — o que foi validado em 06/08/2026
+
+### 8.1 Estática — verde
+
+| checagem | resultado |
+|---|---|
+| resíduo de `dexarmor` em `src/ scripts/ build/ package.json` | **vazio** |
+| proteção `\bDeX\b` em `src/` | **51** — idêntico à contagem da Fase 1 |
+| `node --check` em `src/main/*.js` e `src/adb/*.js` | ok |
+| `npm run check:i18n` | 698 chaves, 2 idiomas, 0 pendentes |
+| `npm run build:renderer` | ok |
+
+### 8.2 Instaladores — gerados e conferidos
+
+| artefato | tamanho | verificação |
+|---|---|---|
+| `release/Revya-0.1.0.dmg` (x64) | 117 MB | `Identifier=com.revya.tv`, assinatura ad-hoc |
+| `release/Revya-0.1.0-arm64.dmg` | 109 MB | idem |
+| `/private/tmp/revya-build/Revya-0.1.0-x64.exe` | 89,6 MB | integridade ok (`7z t`) |
+| `/private/tmp/revya-build/Revya-0.1.0-x64-portable.exe` | 89,4 MB | integridade ok (`7z t`) |
+
+`spctl` = `rejected` no `.app` — **esperado**, é o mesmo comportamento da
+`docs/baseline.md` para assinatura ad-hoc, não uma regressão da renomeação.
+
+Os DMG antigos (`DexArmor-0.1.0*.dmg`) continuam em `release/` e **não devem ser
+distribuídos**.
+
+### 8.3 Em aparelho real — PENDENTE
+
+Não executado: nenhum aparelho conectado (`adb devices` vazio). É a única parte
+do plano que depende de hardware, e é o critério de aceite final. O roteiro está
+na Fase 8.3 do `MIGRACAO-REVYA-plano-executavel.md`.
+
+**Enquanto não passar, a branch `rename-revya` não deve ser mesclada na `main`
+nem receber a tag `revya-1.0`** — o plano gate a fusão nesse teste.
+
+Antes de rodar, no aparelho:
+
+```bash
+adb uninstall tech.dexarmor.launcher   # o launcher antigo, que sobrevive à troca
+```
+
+E na máquina, desinstalar o DexArmor antigo: `appId` diferente = apps distintos,
+os dois convivem.
