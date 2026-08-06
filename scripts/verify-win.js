@@ -10,9 +10,9 @@
 // ## Por que isto existe
 //
 // O Kaspersky desta máquina APAGA o instalador NSIS minutos depois de criado —
-// em `release/` e também em `~/dexarmor-instaladores/`, porque varre a pasta
-// pessoal inteira. Só `/private/tmp` escapa, e é por isso que o `dist:win`
-// escreve lá.
+// em `release/` e em QUALQUER pasta dentro da pasta pessoal, porque varre a
+// pasta pessoal inteira. Só `/private/tmp` escapa, e é por isso que o
+// `dist:win` escreve lá.
 //
 // O sintoma no Windows era enganoso: "NSIS Error — Installer integrity check
 // has failed", que parece download ruim. Não era. O arquivo já saía mutilado
@@ -27,7 +27,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-const DIR = '/private/tmp/dexarmor-build';
+const DIR = '/private/tmp/revya-build';
 
 function sha256(file) {
   return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
@@ -102,7 +102,7 @@ console.log('           Get-FileHash arquivo.zip -Algorithm SHA256');
 console.log('        Diferente = corrompeu no caminho. Não adianta extrair.');
 console.log('     3. Extraia. Se a extração acusar erro de CRC, o mesmo vale.');
 console.log('');
-console.log('  Copie DESTA pasta, nunca de release/ nem de ~/dexarmor-instaladores/:');
+console.log('  Copie DESTA pasta, nunca de release/ nem de dentro da pasta pessoal:');
 console.log('  o antivírus apaga o instalador NSIS em qualquer lugar da pasta pessoal.');
 console.log('  Se ele sumir antes de você copiar, use o -portable — ele nunca foi');
 console.log('  apagado, não instala, não desinstala e não tem checagem para falhar.');

@@ -8,7 +8,7 @@
 // O macOS recusava o app com o pior diagnóstico possível:
 //
 //     "Malware Bloqueado e Movido para o Lixo
-//      O app DexArmor.app não foi aberto porque contém malware."
+//      O app Revya.app não foi aberto porque contém malware."
 //
 // Não era o antivírus da máquina — era o GATEKEEPER da Apple. O `spctl`
 // respondia:
