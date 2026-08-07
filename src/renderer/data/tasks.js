@@ -99,6 +99,36 @@ export const TASK_GROUPS = [
         //                    entra POR CIMA, sem desinstalar, e o DataStore do
         //                    usuário sobrevive.
         minVersionCode: 6,
+        // O ARQUIVO APONTADO AQUI NÃO ESTÁ NO GIT. O `.gitignore` ignora
+        // `apks/**/*.apk`, então o número acima é versionado e o binário não —
+        // um clone deste repositório tem um catálogo que PROMETE a v6 e não a
+        // entrega, e o `install` falha por arquivo ausente. Não é descuido:
+        // binário grande em git já custou caro aqui (os ~500 MB de
+        // `release-english/` que o .gitignore deixava passar, 28/07/2026).
+        //
+        // De onde ele vem, quando faltar:
+        //
+        //   cd ~/revya-launcher
+        //   export JAVA_HOME=/opt/homebrew/opt/openjdk@17
+        //   ./gradlew packageRelease
+        //   cp app/build/outputs/apk/release/app-release.apk \
+        //      "<este repo>/apks/launchers/{Launcher} Revya TV.apk"
+        //
+        // O `packageRelease` EXIGE a chave de assinatura em
+        // `~/.dexarmor-keys/keystore.properties` e falha alto sem ela — de
+        // propósito, porque APK sem assinatura nem instala e APK assinado com a
+        // chave de debug instala e parece certo. Receita completa em
+        // `changeset/ASSINATURA.md` do repositório do launcher.
+        //
+        // Confira sempre os dois antes de publicar, que é o par que quebra
+        // calado se divergir:
+        //   aapt2 dump badging "apks/launchers/{Launcher} Revya TV.apk" \
+        //     | grep -o "versionCode='[0-9]*'"
+        //   grep -n 'minVersionCode:' src/renderer/data/tasks.js
+        //
+        // (o segundo devolve duas linhas: a de verdade e esta linha de
+        //  comentário, que contém o padrão. A que vale é a que NÃO começa com
+        //  `//`.)
         source: { type: 'local', dir: 'launchers', apk: '{Launcher} Revya TV.apk' } },
 
       // O Projectivy saiu em 25/07/2026, substituído pelo launcher próprio;
