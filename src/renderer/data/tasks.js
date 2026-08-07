@@ -90,7 +90,15 @@ export const TASK_GROUPS = [
         //                    anterior NÃO sai por causa disso: fica instalado
         //                    como app independente até alguém removê-lo à mão.
         //                    O comando está em changeset/RENAME-REVYA.md.
-        minVersionCode: 5,
+        //   6 (07/08/2026) — seção `acesso rápido` fixa em primeiro (favoritos
+        //                    do usuário), busca por nome de app com teclado e
+        //                    grade A-Z, pit stop no tile (segurar OK), atalhos
+        //                    de teclado na home, paginação vertical e a
+        //                    corrente do VOLTAR terminando no acesso rápido.
+        //                    Também `allowBackup=false`. Mesma chave da v5:
+        //                    entra POR CIMA, sem desinstalar, e o DataStore do
+        //                    usuário sobrevive.
+        minVersionCode: 6,
         source: { type: 'local', dir: 'launchers', apk: '{Launcher} Revya TV.apk' } },
 
       // O Projectivy saiu em 25/07/2026, substituído pelo launcher próprio;
