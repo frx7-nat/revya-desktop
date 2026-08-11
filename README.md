@@ -87,6 +87,7 @@ platform-tools/         (você adiciona) binários ADB por plataforma:
   mac/  linux/          adb (sem extensão, chmod +x)
 scrcpy/                 (você adiciona) release oficial do scrcpy por plataforma
 apks/                   só o APK próprio: launchers/{Launcher} Revya TV.apk
+                        (hoje: versionCode 11 / versionName 1.0 — não vai no git)
 ```
 
 ## Setup
@@ -141,6 +142,37 @@ Três armadilhas resolvidas em 28/07/2026, todas registradas em `changeset/`:
 > Antivírus apagam instaladores NSIS dentro do `$HOME` — inclusive numa pasta
 > criada só para eles, o que foi tentado e **não** funcionou. A saída de
 > Windows vai para `/private/tmp/revya-build`.
+
+### Publicar uma versão nova do launcher
+
+O APK **não** está no git (`apks/**/*.apk` é ignorado), mas o número que o
+catálogo promete está. São três passos, e eles só funcionam juntos:
+
+```bash
+cd ~/revya-launcher
+export JAVA_HOME=/opt/homebrew/opt/openjdk@17
+./gradlew packageRelease
+cp app/build/outputs/apk/release/app-release.apk \
+   "<este repo>/apks/launchers/{Launcher} Revya TV.apk"
+# e suba o `minVersionCode` da entrada `lnch-revya` no src/renderer/data/tasks.js
+```
+
+Confira sempre o par antes de dar por publicado — é ele que quebra calado:
+
+```bash
+aapt2 dump badging "apks/launchers/{Launcher} Revya TV.apk" | grep -o "versionCode='[0-9]*'"
+grep -n "^        minVersionCode:" src/renderer/data/tasks.js
+```
+
+Se o `minVersionCode` ficar para trás, o runner compara o instalado contra um
+mínimo velho, conclui "já atualizado" e o APK novo nunca chega ao aparelho.
+
+> **Copiar o APK não basta se você for testar por um build empacotado.** O
+> `apkDir()` do runner (`src/main/runner.js`) usa `process.resourcesPath/apks`
+> quando o app está empacotado, e só cai no `apks/` do repositório quando roda a
+> partir do código. Um `.app`/`.exe` gerado antes da cópia carrega o APK
+> ANTIGO — e o teste passa, instalando a versão errada sem nenhum aviso.
+> Depois de trocar o APK, **regere o instalador** antes de testar por ele.
 
 ## Decisões de design
 

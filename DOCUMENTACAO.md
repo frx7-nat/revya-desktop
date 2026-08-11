@@ -321,6 +321,16 @@ Bixby · Galaxy Store · Apps de escritório · Redes sociais pré-instaladas
 **Revya TV** — o launcher próprio, padrão do modo TV (ligado ao tweak
 `tw-home`). É o **único** APK embutido no programa.
 
+> **Versão no catálogo: `versionCode 11` / `versionName 1.0`** (11/08/2026).
+> O `minVersionCode` da entrada `lnch-revya` sobe JUNTO com o `versionCode` do
+> `app/build.gradle.kts` do launcher — é esse par que liga a atualização. Se o
+> número daqui ficar para trás, o runner compara o instalado contra um mínimo
+> velho, conclui "já atualizado" e o APK novo nunca chega ao aparelho.
+>
+> O salto 6 → 11 é real: as versões 7 a 10 existiram só na máquina de
+> desenvolvimento e nos aparelhos de teste. O que elas trazem chegou junto na
+> 11 — ver o `CHANGELOG.md` do repositório do launcher.
+
 O catálogo de apps de terceiros (streaming, ferramentas, emuladores e o
 Projectivy) foi removido em **27/07/2026**: redistribuir o APK de outra empresa
 dentro de um produto vendido é risco legal do projeto. No lugar dele, o grupo
@@ -377,6 +387,41 @@ suporte), prontos para receber links de produtos — abrem no navegador padrão.
 ## 5. Últimas atualizações realizadas
 
 Esta seção registra as mudanças mais recentes do projeto.
+
+### 11/08/2026 — Launcher v11 (1.0) publicado no catálogo
+
+Do lado do desktop a mudança é de uma linha — `minVersionCode: 6` → `11` em
+`src/renderer/data/tasks.js`, junto com o APK novo em `apks/launchers/`. O que
+chega ao aparelho, porém, é a maior leva desde a v6:
+
+- **CONFIG do launcher em dois níveis.** A raiz tem cinco linhas (`sistema`,
+  `organizar grade de apps`, `formato do relógio`, `sobre`, `contribua`) e as
+  cinco tarefas de organização — acesso rápido, reordenar seções, reordenar
+  apps, ocultar/mostrar, recategorizar — moram juntas no submenu.
+- **Quatro melhorias de navegação:** aviso `abrindo…` no tile enquanto o app
+  sobe (2 a 4 segundos de tela parada num S8/S9, onde a pessoa apertava OK de
+  novo); dicas girando na barra superior, porque metade do que o launcher sabe
+  fazer era invisível; a inicial do nome no lugar do ícone que o
+  `PackageManager` não decodifica; e um indicador de posição na grade longa.
+- **Interruptor das dicas** em `CONFIG → sistema`, ligado por padrão inclusive
+  para quem atualiza.
+- **Primeira versão com `versionName 1.0`** — a tela `sobre` do launcher passa a
+  mostrar `v1.0 (11)`.
+
+> **Um item foi implementado e removido no mesmo dia.** `liberar memória`, que
+> faria o que o "fechar tudo" do multitarefas faz, exigiu a primeira permissão
+> do projeto (`KILL_BACKGROUND_PROCESSES`) e foi **reprovado na medição em
+> aparelho**: desde o Android 14 o `killBackgroundProcesses` só encerra processo
+> do próprio app — pedido para outro pacote vira uma linha
+> `W ActivityManager: Invalid packageName` e mais nada. Item e permissão saíram;
+> o manifesto do launcher voltou a não ter uma linha de permissão. A medição
+> está em "Ideias descartadas" no `changeset/PENDENCIAS.md` do launcher.
+
+**Armadilha registrada:** copiar o APK novo para `apks/` **não** atualiza um
+instalador já gerado. O `apkDir()` do runner usa `process.resourcesPath/apks`
+quando o app está empacotado — um `.app`/`.exe` antigo carrega o APK antigo e
+instala a versão errada sem nenhum aviso. Depois de trocar o APK, regere o
+instalador antes de testar por ele.
 
 ### 21/07/2026 — Reset de interface + fim do descarte cego de dormentes
 
