@@ -98,7 +98,27 @@ export const TASK_GROUPS = [
         //                    Também `allowBackup=false`. Mesma chave da v5:
         //                    entra POR CIMA, sem desinstalar, e o DataStore do
         //                    usuário sobrevive.
-        minVersionCode: 6,
+        //  11 (11/08/2026) — primeira versão com `versionName` 1.0 (a tela
+        //                    `sobre` do launcher mostra `v1.0 (11)`). Traz o
+        //                    CONFIG em dois níveis (`organizar grade de apps`),
+        //                    o aviso `abrindo…` no tile enquanto o app sobe,
+        //                    dicas de navegação girando na barra superior com
+        //                    interruptor em CONFIG → sistema, a inicial do nome
+        //                    no lugar do ícone que falhou e o indicador de
+        //                    posição na grade.
+        //                    O SALTO 6 → 11 É REAL, não erro de digitação: as
+        //                    v7 a v10 existiram só na máquina de
+        //                    desenvolvimento e nos aparelhos de teste, e nunca
+        //                    entraram neste catálogo. A v7 chegou a trazer um
+        //                    item `liberar memória` que foi REPROVADO na
+        //                    medição — desde o Android 14 o
+        //                    `killBackgroundProcesses` só encerra processo do
+        //                    próprio app — e foi removido junto com a permissão
+        //                    que ele exigia. Ver "Ideias descartadas" no
+        //                    changeset/PENDENCIAS.md do launcher.
+        //                    Mesma chave da v6: entra POR CIMA, sem
+        //                    desinstalar, e o DataStore do usuário sobrevive.
+        minVersionCode: 11,
         // O ARQUIVO APONTADO AQUI NÃO ESTÁ NO GIT. O `.gitignore` ignora
         // `apks/**/*.apk`, então o número acima é versionado e o binário não —
         // um clone deste repositório tem um catálogo que PROMETE a v6 e não a
