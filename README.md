@@ -11,17 +11,17 @@
 ![Tela de conexão do Revya, pedindo para conectar o Galaxy por cabo](./docs/images/screenshot-connect-pt.png)
 ![O programa Revya, com o celular conectado e a Configuração recomendada pronta para aplicar](./docs/images/screenshot-pt.png)
 
-Antes de darmos início, o Revya TV não está disponível na play store
-porque a camada de mudanças realizada pelo programa é necessária
-para o maior aproveitamento do uso.
+Antes de darmos início, o programa não está disponível na
+play store porque a camada de mudanças realizada por ele é
+necessária para o maior aproveitamento do uso.
 
 Então, é um processo que precisa necessariamente ocorrer através do computador.
 
 O sistema é ajustado para tela grande, apps desnecessários saem,
-e o launcher **Revya TV** é instalado e definido como padrão.
+e uma tela inicial é instalada e definida como padrão.
 
 Quem faz essa preparação — do computador, pelo cabo — é este programa.
-**É a única porta de entrada**: não existe instalar o launcher Revya TV sozinho
+**É a única porta de entrada**: não existe instalar o launcher sozinho
 pela Play Store, porque ele depende do aparelho já estar pronto para recebê-la.
 
 O Revya é o que faz essa ponte entre o celular
