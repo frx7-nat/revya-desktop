@@ -1,4 +1,4 @@
-# Revya
+# Revya — Preparando um Samsung para ser usado na TV pelo HDMI
 
 **Português** · [English](./README.en.md)
 
