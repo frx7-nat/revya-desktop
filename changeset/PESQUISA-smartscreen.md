@@ -57,7 +57,7 @@ Revya se encaixa e onde não.
 
 | Exigência | Estado do Revya |
 | --- | --- |
-| Licença aprovada pela OSI, sem dual-licensing comercial | **Não atende ainda** — ver pendência abaixo |
+| Licença aprovada pela OSI, sem dual-licensing comercial | ✅ **resolvido em 13/08/2026** — ver abaixo |
 | Nenhum componente proprietário (bibliotecas de sistema tudo bem) | ✅ scrcpy e ADB são Apache 2.0, com aviso em `THIRD-PARTY-NOTICES.md` |
 | Repositório público | ✅ desde 13/08/2026 |
 | Já existir em forma lançável (não vale projeto sem release) | ✅ `v1.0.0` publicado |
@@ -66,15 +66,15 @@ Revya se encaixa e onde não.
 | Só pode assinar o PRÓPRIO código (o time que assina = o time que desenvolve) | ✅ |
 | Sem ferramenta de "achar/explorar vulnerabilidade ou burlar segurança" | ✅ o Revya modifica o PRÓPRIO celular do usuário via ADB — não é essa categoria |
 
-#### A pendência real: falta o arquivo `LICENSE`
+#### A pendência do arquivo `LICENSE` — RESOLVIDA em 13/08/2026
 
-`package.json` diz `"license": "MIT"`, mas **não existe `LICENSE` nem
-`LICENSE.md` na raiz do repositório** — só `LICENSES/apache-2.0.txt`, que é
-dos avisos de terceiros (scrcpy/ADB), não da licença do próprio Revya. Sem um
-arquivo de licença publicado, a checagem de elegibilidade (automática ou
-manual) provavelmente não confirma "OSI-approved" — é o único bloqueio
-factual encontrado, e é decisão de produto (publicar como MIT de verdade é
-uma escolha, não um erro de configuração) — **não mudei nada, só registrei**.
+`package.json` dizia `"license": "MIT"`, mas não existia `LICENSE` nem
+`LICENSE.md` na raiz do repositório — só `LICENSES/apache-2.0.txt`, que é dos
+avisos de terceiros (scrcpy/ADB), não da licença do próprio Revya. Corrigido:
+`LICENSE` (MIT, titular Natalier Júnior) publicado na raiz de
+`revya-desktop`, e o campo `author` do `package.json` (estava vazio) também
+preenchido. Único bloqueio factual encontrado na tabela acima — agora
+resolvido; falta só a aplicação em si (ver "Como aplicar" abaixo).
 
 #### O modelo de receita (Pix/PayPal + afiliados) é um problema?
 
