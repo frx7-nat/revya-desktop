@@ -2,6 +2,7 @@
 
 **Português** · [English](./README.en.md)
 
+![Tela de conexão do Revya, pedindo para conectar o Galaxy por cabo](./docs/images/screenshot-connect-pt.png)
 ![O programa Revya, com o celular conectado e a Configuração recomendada pronta para aplicar](./docs/images/screenshot-pt.png)
 
 Você não baixa a Revya TV — você transforma o seu celular nela. Aquela tela
