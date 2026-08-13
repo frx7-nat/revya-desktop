@@ -493,7 +493,7 @@ export default function App() {
     try {
       const res = await window.api.startMirror(
         device.serial,
-        `${device.model || 'Celular'} — DexArmor`
+        `${device.model || 'Celular'} — Revya`
       );
       setMirrorStatus(res.ok ? null : { error: res.error });
     } catch (e) {

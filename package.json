@@ -1,5 +1,5 @@
 {
-  "name": "dexarmor",
+  "name": "revya",
   "version": "0.1.0",
   "description": "Transforma celulares Samsung em dispositivos de mídia para TV via ADB",
   "main": "src/main/main.js",
@@ -33,8 +33,8 @@
     "wait-on": "^7.2.0"
   },
   "build": {
-    "appId": "com.dexarmor.app",
-    "productName": "DexArmor",
+    "appId": "com.revya.tv",
+    "productName": "Revya",
     "publish": null,
     "directories": {
       "output": "release"
@@ -110,7 +110,7 @@
       ],
       "category": "public.app-category.utilities",
       "extendInfo": {
-        "NSLocalNetworkUsageDescription": "O DexArmor usa a rede local para conectar ao seu celular por Wi-Fi (modo sem fio e espelhamento sem cabo)."
+        "NSLocalNetworkUsageDescription": "O Revya usa a rede local para conectar ao seu celular por Wi-Fi (modo sem fio e espelhamento sem cabo)."
       }
     },
     "linux": {
@@ -119,7 +119,7 @@
         "deb"
       ],
       "category": "Utility",
-      "maintainer": "DexArmor"
+      "maintainer": "Revya"
     },
     "afterPack": "scripts/after-pack.js"
   }

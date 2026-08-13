@@ -1,7 +1,7 @@
 /**
  * ConnectPhoneScreen.jsx
  * -----------------------------------------------------------------------------
- * Tela "Conecte seu Galaxy" do DexArmor.
+ * Tela "Conecte seu Galaxy" do Revya.
  *
  * Faz polling DO LADO DO RENDERER chamando window.api.checkDevices() em ciclos.
  * A cada ciclo, o cartão de diagnóstico é atualizado AO VIVO — então se o

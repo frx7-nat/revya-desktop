@@ -12,7 +12,7 @@
     "install": {
       "title": "Install the TV launcher",
       "subtitle": "The face of TV mode",
-      "notice": "Streaming apps, browsers, games and emulators do not come with DexArmor — you install the ones you want, from files you already have.",
+      "notice": "Streaming apps, browsers, games and emulators do not come with Revya — you install the ones you want, from files you already have.",
       "noticeAction": "How to install apps and send files"
     },
     "tweaks": {
@@ -33,8 +33,8 @@
     "rm-social": {
       "label": "Pre-installed social apps"
     },
-    "lnch-dexarmor": {
-      "label": "DexArmor TV (launcher)"
+    "lnch-revya": {
+      "label": "Revya TV (launcher)"
     },
     "tw-screen": {
       "label": "Keep the screen always on",
@@ -179,7 +179,7 @@
     }
   },
   "errors": {
-    "noSpace": "Your phone has run out of space for this file. Free up some space (you can use DexArmor's Cleanup) and try again.",
+    "noSpace": "Your phone has run out of space for this file. Free up some space (you can use Revya's Cleanup) and try again.",
     "disconnected": "The phone disconnected during the transfer. Reconnect the cable (or Wi-Fi) and try again.",
     "interrupted": "The transfer was cut short (the phone may have disconnected, gone to sleep, or the cable may have wobbled). Reconnect the device and try again. If it happens again, switch cable or USB port, or use the Wi-Fi connection.",
     "permissionDenied": "The phone refused to write here. Check that file transfer is allowed on the device and try again.",
@@ -213,7 +213,7 @@
       "nothingToSave": "Nothing to save yet — apply the interface settings (resolution, rotation, size…) and get the screen the way you want it first."
     },
     "cleanup": {
-      "title": "DexArmor — Cleanup log",
+      "title": "Revya — Cleanup log",
       "date": "Date: {date}",
       "device": "Device: {device}",
       "freeBefore": "Free space before: {value}",
@@ -225,7 +225,7 @@
       "noDataDeleted": "No data, logins or settings were deleted."
     },
     "wifi": {
-      "blockedMacOS": "Your computer blocked network access to the phone. On macOS, open System Settings → Privacy & Security → Local Network, allow DexArmor and try again. Also check that the computer and the phone are on the same Wi-Fi network.",
+      "blockedMacOS": "Your computer blocked network access to the phone. On macOS, open System Settings → Privacy & Security → Local Network, allow Revya and try again. Also check that the computer and the phone are on the same Wi-Fi network.",
       "failed": "Could not connect over Wi-Fi ({reason})",
       "noAnswer": "no answer",
       "notOnWifi": "The device is not on a Wi-Fi network. Connect it to the same network as the computer and try again."
@@ -237,7 +237,7 @@
     },
     "import": {
       "nothingToExport": "There are no reverts to export",
-      "notDexArmor": "Invalid file: this is not a DexArmor revert journal.",
+      "notRevya": "Invalid file: this is not a Revya revert journal.",
       "tooManyEntries": "Journal has too many entries ({n}). Import refused for safety.",
       "malformedEntry": "Invalid journal: one of the entries is malformed.",
       "noTaskId": "Invalid journal: entry without a valid identifier (taskId).",
@@ -245,7 +245,7 @@
       "unknownRevertKind": "Invalid journal: entry \"{taskId}\" has an unknown revert type{detail}.",
       "badPhoneProfile": "Invalid journal: entry \"{taskId}\" has a phone profile of unknown type.",
       "unreadable": "Could not read the chosen file.",
-      "tooLarge": "File too large to be a DexArmor revert journal.",
+      "tooLarge": "File too large to be a Revya revert journal.",
       "notJson": "Invalid file: not readable JSON."
     }
   },
@@ -376,7 +376,7 @@
       "checkTailOk": ".",
       "checkVerbOne": "did not confirm",
       "checkVerbMany": "did not confirm",
-      "pendingStopped": "What was left pending was not changed. The next time this device connects, DexArmor offers to finish the switch from where it stopped.",
+      "pendingStopped": "What was left pending was not changed. The next time this device connects, Revya offers to finish the switch from where it stopped.",
       "pendingAlready": "Everything in the queue had already switched.",
       "attentionOne": "{n} item needs attention — see the warnings above. You can try again from the same button; what already switched is not redone.",
       "attentionMany": "{n} items need attention — see the warnings above. You can try again from the same button; what already switched is not redone."
@@ -395,11 +395,11 @@
   "diagnostics": {
     "adbMissing": {
       "title": "A program component is missing",
-      "message": "DexArmor needs an internal component (ADB) to talk to your Galaxy, and it could not be found. This usually means an incomplete installation, or a file removed by antivirus software.",
+      "message": "Revya needs an internal component (ADB) to talk to your Galaxy, and it could not be found. This usually means an incomplete installation, or a file removed by antivirus software.",
       "steps": [
-        "Close DexArmor and open it again — sometimes that is enough.",
+        "Close Revya and open it again — sometimes that is enough.",
         "If it persists, reinstall the program from the original installer.",
-        "If you use antivirus software, check its quarantine: some remove DexArmor components by mistake."
+        "If you use antivirus software, check its quarantine: some remove Revya components by mistake."
       ]
     },
     "noDevices": {
@@ -416,7 +416,7 @@
       "title": "No permission to access the device",
       "message": "The computer detected the Galaxy but cannot reach it. This is usually a stuck ADB service or a missing/outdated USB driver (Windows).",
       "steps": [
-        "Hold on — DexArmor will restart the ADB service automatically.",
+        "Hold on — Revya will restart the ADB service automatically.",
         "On Windows: reinstall the Samsung USB driver and try again.",
         "On Mac/Linux: reconnect the cable after the service restarts."
       ]
@@ -425,7 +425,7 @@
       "title": "Device is not responding",
       "message": "The Galaxy shows up but is not responding to commands. Usually it is a stuck ADB service, a bad cable, or the device in an odd state.",
       "steps": [
-        "Hold on — DexArmor will restart the connection automatically.",
+        "Hold on — Revya will restart the connection automatically.",
         "If it persists, change the USB cable or the computer port.",
         "Unplug and reconnect the phone."
       ]
@@ -455,7 +455,7 @@
     },
     "unauthorized": {
       "title": "Authorize the computer on the phone",
-      "message": "DexArmor found your Galaxy, but it does not trust this computer yet. That is normal on the first connection.",
+      "message": "Revya found your Galaxy, but it does not trust this computer yet. That is normal on the first connection.",
       "steps": [
         "Unlock your Galaxy's screen (the prompt only appears with the screen unlocked).",
         "Tap \"Allow\" on the \"Allow USB debugging?\" prompt.",
@@ -465,7 +465,7 @@
     },
     "unknown": {
       "title": "Unrecognized state",
-      "message": "The device returned a state DexArmor does not know yet. Restart the phone and the connection, then try again.",
+      "message": "The device returned a state Revya does not know yet. Restart the phone and the connection, then try again.",
       "steps": [
         "Unplug and reconnect the phone.",
         "Restart the device if the problem continues."
@@ -505,12 +505,12 @@
       "roms": "For installed emulators"
     },
     "installed": "Installed on the phone",
-    "installingApk": "Installing the app on the phone… this may take a moment. Do not close DexArmor.",
+    "installingApk": "Installing the app on the phone… this may take a moment. Do not close Revya.",
     "noPath": "Could not read the file path",
     "noSpace": {
       "title": "Not enough space on the phone",
-      "apk": "This app needs {needed}, but the phone only has {free} free. Free up space (you can use DexArmor's {cleanup}) and try again.",
-      "files": "These files need {needed}, but the phone only has {free} free. Free up space (you can use DexArmor's {cleanup}) and try again.",
+      "apk": "This app needs {needed}, but the phone only has {free} free. Free up space (you can use Revya's {cleanup}) and try again.",
+      "files": "These files need {needed}, but the phone only has {free} free. Free up space (you can use Revya's {cleanup}) and try again.",
       "cleanup": "Cleanup",
       "ok": "Got it"
     },
@@ -521,19 +521,19 @@
     "sent": "Sent",
     "sentOf": " of {size}",
     "sentPercent": "{percent}%{size} sent",
-    "transferring": "Transferring{size}… ({elapsed}) Large files can take a few minutes — do not close DexArmor."
+    "transferring": "Transferring{size}… ({elapsed}) Large files can take a few minutes — do not close Revya."
   },
   "cleanup": {
     "title": "Pit stop · cleanup",
     "helpAria": "What does the cleanup do?",
-    "help": "Removes only the apps' temporary files (cache), which grow as you use streaming services. No data, logins or settings are deleted. Every cleanup is logged in Documents › DexArmor.",
+    "help": "Removes only the apps' temporary files (cache), which grow as you use streaming services. No data, logins or settings are deleted. Every cleanup is logged in Documents › Revya.",
     "action": "Free up space",
     "running": "In the box… {seconds} s",
     "freeing": "Freeing cache",
     "doneLine": "Stop finished in {seconds} s — {result}",
     "freed": "{value} freed.",
     "alreadyClean": "it was already tidy.",
-    "logSaved": "Log saved in Documents › DexArmor › registros-limpeza",
+    "logSaved": "Log saved in Documents › Revya › registros-limpeza",
     "open": "Open",
     "app": {
       "gms": "Google services"
@@ -662,7 +662,7 @@
       "hide": "Hide guide"
     },
     "save": "Save",
-    "shellBody": "DexArmor is the frame — every setting applied is one piece of the setup you are building. Don't like a piece? Tap {undo} next to it: it comes off right away, without dismantling the rest.",
+    "shellBody": "Revya is the frame — every setting applied is one piece of the setup you are building. Don't like a piece? Tap {undo} next to it: it comes off right away, without dismantling the rest.",
     "shellTitle": "Your shell, your call.",
     "title": "Progress",
     "undo": "Undo"
@@ -683,7 +683,7 @@
     "newSession": "New session started — the previous record was deleted. The device can be set up from scratch whenever you like.",
     "nothing": "Nothing to revert.",
     "running": "Reverting…",
-    "sessionEnd": "When you revert everything, the stored record of this setup is deleted — saved TV mode, history and preferences — and DexArmor starts a fresh session, as on first use. The phone's apps and personal files are not affected.",
+    "sessionEnd": "When you revert everything, the stored record of this setup is deleted — saved TV mode, history and preferences — and Revya starts a fresh session, as on first use. The phone's apps and personal files are not affected.",
     "summary": "Reverted: {done} of {total} {unit}.",
     "title": "Full revert",
     "unitMany": "items",
@@ -751,7 +751,7 @@
     "reportError": "ERROR",
     "reportPending": "PENDING",
     "reportRunning": "IN PROGRESS",
-    "reportTitle": "DexArmor — Setup report",
+    "reportTitle": "Revya — Setup report",
     "reportWarning": "WARNING",
     "signatureMismatch": "A version is already installed with a different signature.",
     "undoFailed": "Could not undo: {error}",
@@ -773,7 +773,7 @@
     "validatedModel": "{model} validated."
   },
   "scrcpy": {
-    "windowTitle": "DexArmor — Phone screen",
+    "windowTitle": "Revya — Phone screen",
     "notFound": "scrcpy not found. Put the binaries in scrcpy/ (see the folder README) or install scrcpy on your system.",
     "exited": "scrcpy exited with code {code}"
   },
@@ -804,7 +804,7 @@
   "contribute": {
     "tabLabel": "Support the project",
     "title": "Support the project",
-    "message": "DexArmor is free, but there's nothing wrong with rewarding the effort. If it helped you and you found a new use for your phone, feel free to give something back.",
+    "message": "Revya is free, but there's nothing wrong with rewarding the effort. If it helped you and you found a new use for your phone, feel free to give something back.",
     "footnote": "Contributing is optional — nothing in the program depends on it.",
     "qr": {
       "pix": {
@@ -823,7 +823,7 @@
     "pushStalled": "The transfer stalled (no progress for a long time). Check the cable or Wi-Fi and try again."
   },
   "firstGuide": {
-    "title": "Welcome to DexArmor",
+    "title": "Welcome to Revya",
     "intro": "Before you start, it's worth understanding the right way to use the program — 2 minutes that save you trouble later.",
     "s1": {
       "title": "1. Build the TV setup first",
@@ -835,7 +835,7 @@
     },
     "s3": {
       "title": "3. Then feed the setup",
-      "body": "Day to day is about adding content, not changing the interface: drag apps (.apk), films, music and ROMs straight onto the DexArmor window — they go to the phone right away. The program ships no third-party apps: the ones you want, you install."
+      "body": "Day to day is about adding content, not changing the interface: drag apps (.apk), films, music and ROMs straight onto the Revya window — they go to the phone right away. The program ships no third-party apps: the ones you want, you install."
     },
     "s4": {
       "title": "4. If the phone screen goes odd",
@@ -907,13 +907,13 @@
   },
   "sideload": {
     "title": "Install apps and send files",
-    "intro": "DexArmor turns the phone into a TV, but it does not come with third-party apps: streaming, browsers, games and emulators are your choice. Installing any of them takes seconds — just drag and drop.",
+    "intro": "Revya turns the phone into a TV, but it does not come with third-party apps: streaming, browsers, games and emulators are your choice. Installing any of them takes seconds — just drag and drop.",
     "s1": {
       "title": "1. Have the file on the computer",
       "body": "An Android app is a .apk file. Download it from a trusted source (the phone's own app store, the app's official site, or well-known repositories) and keep it handy."
     },
     "s2": {
-      "title": "2. Drag it onto the DexArmor window",
+      "title": "2. Drag it onto the Revya window",
       "body": "With the phone connected, drag the file anywhere onto this window. The whole screen becomes a drop area with the possible targets — nothing to open beforehand."
     },
     "s3": {
@@ -925,9 +925,9 @@
       "body": "Films, music, ROMs and general files: drop them on the matching folder (Movies, Music, Game ROMs, Downloads). Several at once works too, with progress and the option to cancel."
     },
     "notes": [
-      "On the first install, Android may ask for a confirmation on the phone screen. That's normal: allow it and DexArmor carries on from there.",
+      "On the first install, Android may ask for a confirmation on the phone screen. That's normal: allow it and Revya carries on from there.",
       ".apkm and .xapk files (multi-part packages) are accepted too.",
-      "Out of space on the phone? DexArmor warns you before starting — use Cleanup, in the right-hand column, and try again."
+      "Out of space on the phone? Revya warns you before starting — use Cleanup, in the right-hand column, and try again."
     ],
     "action": "Got it"
   },

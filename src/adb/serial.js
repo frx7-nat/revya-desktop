@@ -9,7 +9,7 @@
 // O adb expõe aparelhos sem fio em DOIS formatos, e eles se comportam de modo
 // diferente depois de um `kill-server`:
 //
-//   host:porta          `adb connect 192.168.3.3:5555`, o que o DexArmor usa
+//   host:porta          `adb connect 192.168.3.3:5555`, o que o Revya usa
 //                       (main.js: tcpip 5555 + connect). Morre no kill-server e
 //                       NÃO volta sozinho — alguém tem de refazer o `connect`.
 //
