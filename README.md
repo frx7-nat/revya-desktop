@@ -1,5 +1,9 @@
 # Revya
 
+**Português** · [English](./README.en.md)
+
+![O programa Revya, com o celular conectado e a Configuração recomendada pronta para aplicar](./docs/images/screenshot-pt.png)
+
 Você não baixa a Revya TV — você transforma o seu celular nela. Aquela tela
 inicial pensada para controle remoto, feita para um Galaxy virar central de
 mídia numa TV, não está na loja de apps porque **não é um app solto**: é a
