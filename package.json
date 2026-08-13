@@ -16,7 +16,7 @@
     "dist:linux": "npm run build:renderer && electron-builder --linux",
     "verify:win": "node scripts/verify-win.js"
   },
-  "author": "",
+  "author": "Natalier Júnior",
   "license": "MIT",
   "devDependencies": {
     "@emotion/react": "^11.11.4",
