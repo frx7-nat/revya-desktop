@@ -90,6 +90,16 @@ jobs:
       # Rosetta), servindo ao dmg das duas arquiteturas com um binário só.
       - name: Baixar scrcpy (espelhamento)
         shell: bash
+        env:
+          # Sem token, a API do GitHub limita a 60 chamadas/hora POR IP — e o
+          # IP é compartilhado entre TODOS os runners do Actions no momento,
+          # não só os deste repositório. Aconteceu de verdade: essa chamada
+          # falhou no job do mac (grep não achou "tag_name" na resposta,
+          # exit 1, matou o script sob `set -e`) enquanto win e linux, na
+          # mesma execução, passaram — é exatamente a cara de rate limit
+          # instável, não de erro na chamada em si. Com o token, o limite
+          # sobe para 5000/hora.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
           # A resposta vai para um arquivo ANTES do grep — não direto por pipe.
@@ -98,8 +108,14 @@ jobs:
           # com `pipefail`, falha o passo inteiro mesmo com o dado já em mãos.
           # Reproduzido de verdade: falhou nos três sistemas do Actions com
           # exit 23 (erro de escrita do curl), mesmo a chamada sendo válida.
-          curl -s https://api.github.com/repos/Genymobile/scrcpy/releases/latest -o sc_release.json
+          curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/Genymobile/scrcpy/releases/latest -o sc_release.json
           TAG=$(grep -m1 '"tag_name"' sc_release.json | cut -d '"' -f 4)
+          if [ -z "$TAG" ]; then
+            echo "::error::Não achei \"tag_name\" na resposta da API do scrcpy — provável rate limit ou API fora do ar. Resposta recebida:"
+            cat sc_release.json
+            exit 1
+          fi
           rm -f sc_release.json
           mkdir -p scrcpy/${{ matrix.platform }} sc_tmp
           if [ "${{ matrix.platform }}" = "win" ]; then
