@@ -1,4 +1,4 @@
-# Revya — Preparing a Samsung to be used on the TV over HDMI
+# Revya — Using a Samsung phone on a TV via DisplayPort Alt Mode
 
 [Português](./README.md) · **English**
 
