@@ -1,6 +1,6 @@
 {
   "name": "revya",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Transforma celulares Samsung em dispositivos de mídia para TV via ADB",
   "main": "src/main/main.js",
   "scripts": {

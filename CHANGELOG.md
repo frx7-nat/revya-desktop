@@ -4,6 +4,16 @@ Formato: o que mudou para quem **usa** o programa. O detalhe técnico de cada
 mudança fica em `changeset/`, um arquivo por assunto, e a revisão de código de
 28-29/07/2026 está em `docs/review/`.
 
+## 1.0.0 — Revya
+
+O programa passa a se chamar **Revya** (era DexArmor). Sem mudança de
+comportamento — é o nome que aparece na janela, no instalador e nos arquivos
+que o programa gera. O launcher de TV embutido também está sincronizado nesta
+versão: v11/1.0, pacote `tv.revya.launcher`.
+
+Avisos de licença de terceiros (scrcpy, ADB) adicionados — ver
+`THIRD-PARTY-NOTICES.md` e "Licenças de terceiros" dentro do programa.
+
 ## 0.1.0 — primeira versão pública
 
 Converte um Galaxy em dispositivo de TV e traz de volta, quantas vezes o
