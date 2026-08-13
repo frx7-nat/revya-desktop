@@ -1009,5 +1009,12 @@
       "ac-foto-gatilhos": "Quick-release clips",
       "ac-foto-cinto": "Multi-purpose belt"
     }
+  },
+  "licenses": {
+    "trigger": "Third-party licenses",
+    "title": "Third-Party Notices",
+    "intro": "Revya uses the following third-party components, distributed unmodified, as external binaries:",
+    "licensedUnder": "Licensed under {license} — full text in {file}.",
+    "projectLabel": "Project:"
   }
 }

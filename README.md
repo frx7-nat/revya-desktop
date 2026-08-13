@@ -1,15 +1,75 @@
-# Revya
+# Revya — Usando um celular samsung na TV através do DisplayPort Alt Mode
 
-App desktop (Electron) que converte celulares Samsung Galaxy em dispositivos de
-mídia para TV via ADB — sem root. Remove bloatware, instala o launcher de TV
-próprio, aplica ajustes de sistema, e sabe **desfazer tudo** (registro de
-reversão por aparelho). Aplicativos de terceiros não são distribuídos: o
-usuário instala os dele arrastando o APK para a janela.
+**Português** · [English](./README.en.md)
 
-Gratuito. A receita vem de doação (Pix e PayPal) e de links de afiliado dos
-acessórios — não há versão paga, licença nem telemetria.
+[![Linux](https://img.shields.io/badge/Linux-Download-orange?logo=linux&logoColor=white&style=for-the-badge)](https://github.com/frx7-nat/revya-desktop/releases/download/v1.0.0/linux-Revya-1.0.0.AppImage)
+[![Windows](https://img.shields.io/badge/Windows-Download-blue?logo=windows&logoColor=white&style=for-the-badge)](https://github.com/frx7-nat/revya-desktop/releases/download/v1.0.0/windows-Revya-1.0.0-instalador.exe)
+[![macOS Intel](https://img.shields.io/badge/macOS_Intel-Download-green?logo=apple&logoColor=white&style=for-the-badge)](https://github.com/frx7-nat/revya-desktop/releases/download/v1.0.0/macos-Revya-1.0.0-intel.dmg)
+[![macOS Apple Silicon](https://img.shields.io/badge/macOS_M1--M2--M3-Download-green?logo=apple&logoColor=white&style=for-the-badge)](https://github.com/frx7-nat/revya-desktop/releases/download/v1.0.0/macos-Revya-1.0.0-arm64.dmg)
 
-Bilíngue: português e inglês, 698 chaves de catálogo.
+![A tela inicial do Revya TV, o launcher que este programa prepara no seu Galaxy](./docs/images/launcher-pt.jpg)
+![Tela de conexão do Revya, pedindo para conectar o Galaxy por cabo](./docs/images/screenshot-connect-pt.png)
+![O programa Revya, com o celular conectado e a Configuração recomendada pronta para aplicar](./docs/images/screenshot-pt.png)
+
+Antes de darmos início, o programa não está disponível na
+play store porque a camada de mudanças realizada por ele é
+necessária para o maior aproveitamento do uso.
+
+Então, é um processo que precisa necessariamente ocorrer através do computador.
+
+O sistema é ajustado para tela grande, apps desnecessários saem,
+e uma tela inicial é instalada e definida como padrão.
+
+Quem faz essa preparação — do computador, pelo cabo — é este programa.
+**É a única porta de entrada**: não existe instalar o launcher sozinho
+pela Play Store, porque ele depende do aparelho já estar pronto para recebê-la.
+
+O Revya é o que faz essa ponte entre o celular
+que você tem hoje e a TV box que você quer ter.
+
+## Funcionalidades
+
+### Preparar o launcher Revya TV — a função central
+Com o Galaxy conectado por cabo, o preset recomendado aplica de uma vez tudo
+que é seguro em qualquer aparelho: remove bloatware por usuário (reversível),
+ajusta o sistema para uso em TV (fonte, animações, som, tela sempre ligada) e
+instala o launcher **Revya TV**, definindo-o como o padrão do modo TV. A
+resolução é o único ajuste que o programa pergunta — cada TV é diferente.
+Tudo é verificado direto no aparelho, não é promessa no escuro: o programa
+confere se o launcher realmente ficou instalado e definido como padrão antes
+de marcar a etapa como concluída.
+
+### Instalar apps e emuladores
+O programa não vem com nenhum aplicativo de terceiro embutido — nem
+streaming, nem emulador, nem ferramenta. Você arrasta o `.apk`, `.apkm` ou
+`.xapk` que já tem para a janela do Revya, e ele instala direto no celular
+pelo cabo, sem passar pela loja. É assim que se monta a TV com os apps e
+emuladores que você já usa.
+
+### Transferir arquivos
+Mesmo arrastar-e-soltar serve para levar filmes, músicas, fotos e ROMs de
+emulador para o celular — cada tipo de arquivo já cai na pasta certa do
+armazenamento, sem precisar navegar manualmente pela estrutura de pastas do
+Android.
+
+### Alternar entre modo celular e modo TV
+O aparelho não fica preso num modo só. Um clique alterna entre a experiência
+de TV e o celular do dia a dia, e o que foi personalizado de cada lado é
+preservado — a resolução que você achou ideal na TV continua lá da próxima
+vez, e o celular volta exatamente como estava. Detalhe técnico de como isso é
+guardado logo abaixo, em "Os dois modos".
+
+### Manutenção do aparelho
+Check-up confere se os ajustes aplicados continuam valendo (o Android
+reescreve alguns sozinho). Reversão desfaz qualquer alteração, isolada ou
+todas de uma vez, guiada por um registro que sobrevive à troca de computador.
+Limpeza libera o cache dos apps sem apagar dado nenhum.
+
+---
+
+Gratuito — a receita vem de doação (Pix e PayPal) e de links de afiliado dos
+acessórios, não há versão paga, licença nem telemetria. Bilíngue: português e
+inglês, 698 chaves de catálogo.
 
 ## Os dois modos
 
@@ -73,7 +133,7 @@ src/
       DexGuideDialog.jsx / FirstSetupGuideDialog.jsx / SideloadGuideDialog.jsx
       PhoneMock.jsx / PhoneScreen.jsx / PhoneAccessories.jsx  Celular central
 scripts/
-  check-i18n.js         Guarda de tradução (roda no build; ver changeset/I18N.md)
+  check-i18n.js         Guarda de tradução (roda no build)
   after-pack.js         Assinatura ad-hoc do .app antes do DMG (macOS)
   verify-win.js         Testa a integridade dos .exe gerados
 build/
@@ -126,7 +186,7 @@ Cada comando builda o renderer antes de empacotar. O filtro `${os}` no
 dependências de UI (React/MUI) ficam em `devDependencies` — o bundle do Vite já
 embute tudo. Builds de Mac precisam rodar em macOS.
 
-Três armadilhas resolvidas em 28/07/2026, todas registradas em `changeset/`:
+Três armadilhas resolvidas em 28/07/2026:
 
 - **macOS acusava "Malware Bloqueado".** Sem assinatura nenhuma, o Gatekeeper
   dava veredito `revoked` — que **não tem** o contorno de "abrir mesmo assim".
@@ -196,7 +256,7 @@ mínimo velho, conclui "já atualizado" e o APK novo nunca chega ao aparelho.
   (com densidade pareada), e bloqueio de tela/streaming ficam na seleção manual.
 - **Nenhum texto de interface no código**: tudo vem do catálogo, e três guardas
   quebram o build se faltar tradução. Elas não substituem abrir o app nos dois
-  idiomas — ver `changeset/I18N.md`.
+  idiomas.
 
 ## Limites conhecidos
 

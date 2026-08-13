@@ -18,6 +18,15 @@ on:
       - 'v*'            # dispara em tags como v0.1.0, v1.2.3
   workflow_dispatch: {} # permite rodar manualmente pela interface
 
+# Sem isto, o GITHUB_TOKEN padrão só tem leitura, e o passo "Publicar no
+# Release" falha com "Resource not accessible by integration" — aconteceu de
+# verdade no primeiro release de teste (13/08/2026), nos três sistemas.
+# Declarado aqui para não depender da configuração "Workflow permissions" do
+# repositório (Settings → Actions → General), que também resolve mas não
+# viaja com o código.
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
@@ -81,9 +90,33 @@ jobs:
       # Rosetta), servindo ao dmg das duas arquiteturas com um binário só.
       - name: Baixar scrcpy (espelhamento)
         shell: bash
+        env:
+          # Sem token, a API do GitHub limita a 60 chamadas/hora POR IP — e o
+          # IP é compartilhado entre TODOS os runners do Actions no momento,
+          # não só os deste repositório. Aconteceu de verdade: essa chamada
+          # falhou no job do mac (grep não achou "tag_name" na resposta,
+          # exit 1, matou o script sob `set -e`) enquanto win e linux, na
+          # mesma execução, passaram — é exatamente a cara de rate limit
+          # instável, não de erro na chamada em si. Com o token, o limite
+          # sobe para 5000/hora.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-          TAG=$(curl -s https://api.github.com/repos/Genymobile/scrcpy/releases/latest | grep -m1 '"tag_name"' | cut -d '"' -f 4)
+          # A resposta vai para um arquivo ANTES do grep — não direto por pipe.
+          # Um `grep -m1` fecha a leitura assim que acha a 1ª ocorrência; direto
+          # num pipe, isso pode derrubar o `curl` ainda escrevendo (SIGPIPE) e,
+          # com `pipefail`, falha o passo inteiro mesmo com o dado já em mãos.
+          # Reproduzido de verdade: falhou nos três sistemas do Actions com
+          # exit 23 (erro de escrita do curl), mesmo a chamada sendo válida.
+          curl -s -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/Genymobile/scrcpy/releases/latest -o sc_release.json
+          TAG=$(grep -m1 '"tag_name"' sc_release.json | cut -d '"' -f 4)
+          if [ -z "$TAG" ]; then
+            echo "::error::Não achei \"tag_name\" na resposta da API do scrcpy — provável rate limit ou API fora do ar. Resposta recebida:"
+            cat sc_release.json
+            exit 1
+          fi
+          rm -f sc_release.json
           mkdir -p scrcpy/${{ matrix.platform }} sc_tmp
           if [ "${{ matrix.platform }}" = "win" ]; then
             curl -L "https://github.com/Genymobile/scrcpy/releases/download/$TAG/scrcpy-win64-$TAG.zip" -o sc.zip
@@ -102,7 +135,23 @@ jobs:
           rm -rf sc.zip sc.tgz sc_tmp
 
       - name: Gerar instalador
-        run: npm run dist:${{ matrix.platform }}
+        # win é ESPECIAL: `npm run dist:win` manda a saída para
+        # /private/tmp/dexarmor-build, um contorno do Kaspersky que só faz
+        # sentido na máquina de desenvolvimento local (ver
+        # docs/exclusoes-kaspersky.md) — o runner do Actions não tem esse
+        # antivírus, e o glob deste workflow espera tudo em release/. Rodar o
+        # electron-builder direto aqui, sem passar pelo script, evita mexer no
+        # `dist:win` documentado em README/DOCUMENTACAO para uso local.
+        # Aconteceu de verdade: o primeiro release de teste (13/08/2026) subiu
+        # sem nenhum .exe, porque o glob não achava nada em release/.
+        shell: bash
+        run: |
+          npm run build:renderer
+          if [ "${{ matrix.platform }}" = "win" ]; then
+            npx electron-builder --win
+          else
+            npm run dist:${{ matrix.platform }}
+          fi
         env:
           # Token padrão do Actions, usado pelo electron-builder para publicar
           # no Release quando a execução vem de uma tag.

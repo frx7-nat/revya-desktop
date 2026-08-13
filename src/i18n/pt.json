@@ -1009,5 +1009,12 @@
       "ac-foto-gatilhos": "Gatilhos rápidos",
       "ac-foto-cinto": "Cinto Multiuso"
     }
+  },
+  "licenses": {
+    "trigger": "Licenças de terceiros",
+    "title": "Avisos de Terceiros",
+    "intro": "O Revya usa os seguintes componentes de terceiros, distribuídos sem modificações, como binários externos:",
+    "licensedUnder": "Licenciado sob a {license} — texto completo em {file}.",
+    "projectLabel": "Projeto:"
   }
 }
