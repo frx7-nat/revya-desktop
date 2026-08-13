@@ -48,23 +48,86 @@ Constrói reputação assim que a reputação por certificado começa a acumular
 mas ainda assim não é instantâneo (ver acima).
 
 ### 2. SignPath Foundation — assinatura GRÁTIS para projeto open source
-**Achado que pode valer a pena aqui, especialmente porque `revya-desktop` já
-é um repositório público.** A SignPath Foundation assina de graça builds de
-projetos open source elegíveis. Requisitos (resumo):
-- Licença aprovada pela OSI, sem componente proprietário
-- Repositório público (✅ já é, desde 13/08)
-- **Já ter um release publicado** (✅ já temos o v1.0.0)
-- O time que assina = o time que desenvolve (✅)
 
-**Pendência achada nesta pesquisa, não relacionada a nada anterior:** o
-`package.json` declara `"license": "MIT"`, mas **não existe nenhum arquivo
-`LICENSE`/`LICENSE.md` na raiz do repositório** — só o
-`LICENSES/apache-2.0.txt` dos avisos de terceiros (scrcpy/ADB). Sem um
-arquivo de licença de verdade, o projeto provavelmente nem passa na triagem
-automática de elegibilidade da SignPath. Isso é uma decisão de produto (qual
-licença usar de fato?), não uma correção técnica — não mudei nada.
-Formulário de elegibilidade: https://www.ossperks.com/programs/signpath/check
-Processo leva de alguns dias a algumas semanas depois de aplicar.
+**Aprofundado em 13/08/2026.** Peguei o texto completo das condições em
+`signpath.org/terms.html` (não só o resumo) para saber exatamente onde o
+Revya se encaixa e onde não.
+
+#### Elegibilidade — item por item, contra o estado real do projeto
+
+| Exigência | Estado do Revya |
+| --- | --- |
+| Licença aprovada pela OSI, sem dual-licensing comercial | **Não atende ainda** — ver pendência abaixo |
+| Nenhum componente proprietário (bibliotecas de sistema tudo bem) | ✅ scrcpy e ADB são Apache 2.0, com aviso em `THIRD-PARTY-NOTICES.md` |
+| Repositório público | ✅ desde 13/08/2026 |
+| Já existir em forma lançável (não vale projeto sem release) | ✅ `v1.0.0` publicado |
+| Mantido ativamente | ✅ |
+| Funcionalidade descrita na página de download | ⚠️ parcial — as notas do release descrevem, mas não há uma "página" formal fora do GitHub ainda (depende do 0.3) |
+| Só pode assinar o PRÓPRIO código (o time que assina = o time que desenvolve) | ✅ |
+| Sem ferramenta de "achar/explorar vulnerabilidade ou burlar segurança" | ✅ o Revya modifica o PRÓPRIO celular do usuário via ADB — não é essa categoria |
+
+#### A pendência real: falta o arquivo `LICENSE`
+
+`package.json` diz `"license": "MIT"`, mas **não existe `LICENSE` nem
+`LICENSE.md` na raiz do repositório** — só `LICENSES/apache-2.0.txt`, que é
+dos avisos de terceiros (scrcpy/ADB), não da licença do próprio Revya. Sem um
+arquivo de licença publicado, a checagem de elegibilidade (automática ou
+manual) provavelmente não confirma "OSI-approved" — é o único bloqueio
+factual encontrado, e é decisão de produto (publicar como MIT de verdade é
+uma escolha, não um erro de configuração) — **não mudei nada, só registrei**.
+
+#### O modelo de receita (Pix/PayPal + afiliados) é um problema?
+
+Não achei NADA nos termos da SignPath proibindo doação ou link de afiliado.
+A cláusula é sobre a LICENÇA DO SOFTWARE ("sem dual-licensing comercial" —
+ou seja, não pode vender uma versão paga fechada ao lado da versão aberta),
+não sobre como o projeto se sustenta financeirmente. Doação e afiliado não
+tocam a licença do código. Ainda assim, é uma pergunta que só a própria
+SignPath responde com certeza — não há como confirmar sem aplicar.
+
+#### Precedente: quem já usa
+
+A página inicial (`signpath.org`) lista como exemplos **Stellarium, LiteDB,
+Flameshot, Git Extensions** — nenhum é Electron, nenhum visivelmente
+monetizado por doação/afiliado como o Revya. Não é um "não" — é só que não
+achei um caso parecido para comparar. O risco maior não é rejeição por
+monetização, é rejeição por "não é bem isto que a SignPath imaginou assinar"
+na revisão manual — não tem como saber sem aplicar de verdade.
+
+#### Como a assinatura entraria no CI (technical, se aprovado)
+
+A integração é feita via **GitHub App da SignPath** + uma Trusted Build
+System configurada para "GitHub.com", ligada ao projeto. O `build.yml`
+precisaria de DOIS passos novos no job `win`, depois de "Gerar instalador":
+
+1. Subir o `.exe` **sem assinar** como artefato do GitHub Actions
+   (`actions/upload-artifact`, com `archive: false` para não virar `.zip`).
+2. Rodar a action `signpath/github-action-submit-signing-request@v2`,
+   passando `SIGNPATH_API_TOKEN` (secret), `organization-id`,
+   `project-slug`, `signing-policy-slug` e o ID do artefato do passo 1. Com
+   `wait-for-completion: true`, o próprio job espera a assinatura terminar e
+   recebe o `.exe` assinado de volta numa pasta de saída.
+
+A SignPath confere que a build veio de verdade de um workflow do GitHub (não
+de alguém só de posse do token) — os metadados de origem vêm do próprio
+GitHub, o que dificulta forjar uma submissão.
+
+#### Como aplicar
+
+Não achei um formulário de auto-atendimento funcionando nesta pesquisa (o
+link de checagem retornou 404 no momento do teste — pode ter mudado de
+endereço). O caminho confirmado é `signpath.org` → seção de projetos open
+source, ou contato direto em `info@signpath.io`. Prazo relatado: de alguns
+dias a algumas semanas depois de aplicar.
+
+#### Ordem prática se decidir seguir esta rota
+
+1. Publicar um `LICENSE` de verdade na raiz do `revya-desktop` (decisão de
+   produto: confirmar que MIT é mesmo a intenção).
+2. Aplicar via `signpath.org` (ou e-mail direto), citando o repositório
+   público e o release `v1.0.0` já existente.
+3. Só depois de aprovado, mexer no `build.yml` — não vale a pena montar a
+   integração de CI antes de saber se o projeto é aceito.
 
 ### 3. Microsoft Store — a Microsoft assina por você
 **A rota que mais me chamou atenção.** Publicar pela Microsoft Store (via
