@@ -18,6 +18,15 @@ on:
       - 'v*'            # dispara em tags como v0.1.0, v1.2.3
   workflow_dispatch: {} # permite rodar manualmente pela interface
 
+# Sem isto, o GITHUB_TOKEN padrão só tem leitura, e o passo "Publicar no
+# Release" falha com "Resource not accessible by integration" — aconteceu de
+# verdade no primeiro release de teste (13/08/2026), nos três sistemas.
+# Declarado aqui para não depender da configuração "Workflow permissions" do
+# repositório (Settings → Actions → General), que também resolve mas não
+# viaja com o código.
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
