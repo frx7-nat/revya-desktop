@@ -119,7 +119,23 @@ jobs:
           rm -rf sc.zip sc.tgz sc_tmp
 
       - name: Gerar instalador
-        run: npm run dist:${{ matrix.platform }}
+        # win é ESPECIAL: `npm run dist:win` manda a saída para
+        # /private/tmp/dexarmor-build, um contorno do Kaspersky que só faz
+        # sentido na máquina de desenvolvimento local (ver
+        # docs/exclusoes-kaspersky.md) — o runner do Actions não tem esse
+        # antivírus, e o glob deste workflow espera tudo em release/. Rodar o
+        # electron-builder direto aqui, sem passar pelo script, evita mexer no
+        # `dist:win` documentado em README/DOCUMENTACAO para uso local.
+        # Aconteceu de verdade: o primeiro release de teste (13/08/2026) subiu
+        # sem nenhum .exe, porque o glob não achava nada em release/.
+        shell: bash
+        run: |
+          npm run build:renderer
+          if [ "${{ matrix.platform }}" = "win" ]; then
+            npx electron-builder --win
+          else
+            npm run dist:${{ matrix.platform }}
+          fi
         env:
           # Token padrão do Actions, usado pelo electron-builder para publicar
           # no Release quando a execução vem de uma tag.
