@@ -1,15 +1,61 @@
-# DexArmor
+# Revya
 
-App desktop (Electron) que converte celulares Samsung Galaxy em dispositivos de
-mídia para TV via ADB — sem root. Remove bloatware, instala o launcher de TV
-próprio, aplica ajustes de sistema, e sabe **desfazer tudo** (registro de
-reversão por aparelho). Aplicativos de terceiros não são distribuídos: o
-usuário instala os dele arrastando o APK para a janela.
+Você não baixa a Revya TV — você transforma o seu celular nela. Aquela tela
+inicial pensada para controle remoto, feita para um Galaxy virar central de
+mídia numa TV, não está na loja de apps porque **não é um app solto**: é a
+cara de um Samsung que passou por uma preparação antes. Sistema ajustado para
+tela grande, bloatware fora, e o launcher **Revya TV** instalado e definido
+como padrão.
 
-Gratuito. A receita vem de doação (Pix e PayPal) e de links de afiliado dos
-acessórios — não há versão paga, licença nem telemetria.
+Quem faz essa preparação — do computador, pelo cabo — é este programa. **É a
+única porta de entrada**: não existe instalar a Revya TV sozinha pela Play
+Store, porque ela depende do aparelho já estar pronto para recebê-la. O Revya
+é o que faz essa ponte entre o celular que você tem hoje e a TV box que você
+quer ter.
 
-Bilíngue: português e inglês, 698 chaves de catálogo.
+## Funcionalidades
+
+### Preparar o launcher Revya TV — a função central
+Com o Galaxy conectado por cabo, o preset recomendado aplica de uma vez tudo
+que é seguro em qualquer aparelho: remove bloatware por usuário (reversível),
+ajusta o sistema para uso em TV (fonte, animações, som, tela sempre ligada) e
+instala o launcher **Revya TV**, definindo-o como o padrão do modo TV. A
+resolução é o único ajuste que o programa pergunta — cada TV é diferente.
+Tudo é verificado direto no aparelho, não é promessa no escuro: o programa
+confere se o launcher realmente ficou instalado e definido como padrão antes
+de marcar a etapa como concluída.
+
+### Instalar apps e emuladores
+O programa não vem com nenhum aplicativo de terceiro embutido — nem
+streaming, nem emulador, nem ferramenta. Você arrasta o `.apk`, `.apkm` ou
+`.xapk` que já tem para a janela do Revya, e ele instala direto no celular
+pelo cabo, sem passar pela loja. É assim que se monta a TV com os apps e
+emuladores que você já usa.
+
+### Transferir arquivos
+Mesmo arrastar-e-soltar serve para levar filmes, músicas, fotos e ROMs de
+emulador para o celular — cada tipo de arquivo já cai na pasta certa do
+armazenamento, sem precisar navegar manualmente pela estrutura de pastas do
+Android.
+
+### Alternar entre modo celular e modo TV
+O aparelho não fica preso num modo só. Um clique alterna entre a experiência
+de TV e o celular do dia a dia, e o que foi personalizado de cada lado é
+preservado — a resolução que você achou ideal na TV continua lá da próxima
+vez, e o celular volta exatamente como estava. Detalhe técnico de como isso é
+guardado logo abaixo, em "Os dois modos".
+
+### Manutenção do aparelho
+Check-up confere se os ajustes aplicados continuam valendo (o Android
+reescreve alguns sozinho). Reversão desfaz qualquer alteração, isolada ou
+todas de uma vez, guiada por um registro que sobrevive à troca de computador.
+Limpeza libera o cache dos apps sem apagar dado nenhum.
+
+---
+
+Gratuito — a receita vem de doação (Pix e PayPal) e de links de afiliado dos
+acessórios, não há versão paga, licença nem telemetria. Bilíngue: português e
+inglês, 698 chaves de catálogo.
 
 ## Os dois modos
 
@@ -86,7 +132,7 @@ platform-tools/         (você adiciona) binários ADB por plataforma:
   win/                  adb.exe + AdbWinApi.dll + AdbWinUsbApi.dll
   mac/  linux/          adb (sem extensão, chmod +x)
 scrcpy/                 (você adiciona) release oficial do scrcpy por plataforma
-apks/                   só o APK próprio: launchers/{Launcher} DexArmor TV.apk
+apks/                   só o APK próprio: launchers/{Launcher} Revya TV.apk
 ```
 
 ## Setup
