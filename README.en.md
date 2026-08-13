@@ -2,6 +2,7 @@
 
 [Português](./README.md) · **English**
 
+![Revya's connect screen, asking to plug in the Galaxy by cable](./docs/images/screenshot-connect-en.png)
 ![The Revya program, with the phone connected and Recommended setup ready to apply](./docs/images/screenshot-en.png)
 
 You don't download Revya TV — you turn your phone into it. That home screen
