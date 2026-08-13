@@ -83,7 +83,15 @@ jobs:
         shell: bash
         run: |
           set -e
-          TAG=$(curl -s https://api.github.com/repos/Genymobile/scrcpy/releases/latest | grep -m1 '"tag_name"' | cut -d '"' -f 4)
+          # A resposta vai para um arquivo ANTES do grep — não direto por pipe.
+          # Um `grep -m1` fecha a leitura assim que acha a 1ª ocorrência; direto
+          # num pipe, isso pode derrubar o `curl` ainda escrevendo (SIGPIPE) e,
+          # com `pipefail`, falha o passo inteiro mesmo com o dado já em mãos.
+          # Reproduzido de verdade: falhou nos três sistemas do Actions com
+          # exit 23 (erro de escrita do curl), mesmo a chamada sendo válida.
+          curl -s https://api.github.com/repos/Genymobile/scrcpy/releases/latest -o sc_release.json
+          TAG=$(grep -m1 '"tag_name"' sc_release.json | cut -d '"' -f 4)
+          rm -f sc_release.json
           mkdir -p scrcpy/${{ matrix.platform }} sc_tmp
           if [ "${{ matrix.platform }}" = "win" ]; then
             curl -L "https://github.com/Genymobile/scrcpy/releases/download/$TAG/scrcpy-win64-$TAG.zip" -o sc.zip

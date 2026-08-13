@@ -11,12 +11,16 @@ release*/
 *.log
 .DS_Store
 
-# Binários e APKs não vão para o controle de versão (são grandes / licenciados).
-# Mantenha as pastas, mas ignore o conteúdo pesado.
+# Binários e APKs de TERCEIROS não vão para o controle de versão (são
+# grandes / licenciados). O launcher próprio (apks/launchers/) é EXCEÇÃO
+# de propósito: é software nosso, sem restrição de redistribuição — e sem
+# ele no repo, o build do CI (.github/workflows/build.yml) sai sem o
+# launcher embutido, e a task de instalar falha com "APK não encontrado".
 platform-tools/*/adb
 platform-tools/*/adb.exe
 platform-tools/*/*.dll
 apks/**/*.apk
+!apks/launchers/*.apk
 apks/**/*.apkm
 apks/**/*.xapk
 
