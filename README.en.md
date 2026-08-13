@@ -11,18 +11,22 @@
 ![Revya's connect screen, asking to plug in the Galaxy by cable](./docs/images/screenshot-connect-en.png)
 ![The Revya program, with the phone connected and Recommended setup ready to apply](./docs/images/screenshot-en.png)
 
-You don't download Revya TV — you turn your phone into it. That home screen
-built for a remote control, made to turn a Galaxy into a media center on a
-TV, isn't in the app store because **it isn't a standalone app**: it's the
-face of a Samsung that went through preparation first. System tuned for the
-big screen, bloatware out, and the **Revya TV** launcher installed and set as
-default.
+Before we get started, Revya TV isn't available on the Play Store because
+the layer of changes made by the program is necessary to get the most out
+of using it.
 
-The one that does this preparation — from a computer, over cable — is this
-program. **It's the only way in**: there's no installing Revya TV by itself
-from the Play Store, because it depends on the device already being ready to
-receive it. Revya is the bridge between the phone you have today and the TV
-box you want to have.
+So it's a process that necessarily has to happen through the computer.
+
+The system is tuned for the big screen, unnecessary apps are removed, and
+the **Revya TV** launcher is installed and set as default.
+
+The one that does this preparation — from the computer, over cable — is
+this program. **It's the only way in**: there's no installing the Revya TV
+launcher by itself from the Play Store, because it depends on the device
+already being ready to receive it.
+
+Revya is the bridge between the phone you have today and the TV box you
+want to have.
 
 ## Features
 
