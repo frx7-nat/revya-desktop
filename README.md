@@ -11,18 +11,21 @@
 ![Tela de conexão do Revya, pedindo para conectar o Galaxy por cabo](./docs/images/screenshot-connect-pt.png)
 ![O programa Revya, com o celular conectado e a Configuração recomendada pronta para aplicar](./docs/images/screenshot-pt.png)
 
-Você não baixa a Revya TV — você transforma o seu celular nela. Aquela tela
-inicial pensada para controle remoto, feita para um Galaxy virar central de
-mídia numa TV, não está na loja de apps porque **não é um app solto**: é a
-cara de um Samsung que passou por uma preparação antes. Sistema ajustado para
-tela grande, bloatware fora, e o launcher **Revya TV** instalado e definido
-como padrão.
+Antes de darmos início, o Revya TV não está disponível na play store
+porque a camada de mudanças realizada pelo programa é necessária
+para o maior aproveitamento do uso.
 
-Quem faz essa preparação — do computador, pelo cabo — é este programa. **É a
-única porta de entrada**: não existe instalar a Revya TV sozinha pela Play
-Store, porque ela depende do aparelho já estar pronto para recebê-la. O Revya
-é o que faz essa ponte entre o celular que você tem hoje e a TV box que você
-quer ter.
+Então, é um processo que precisa necessariamente ocorrer através do computador.
+
+O sistema é ajustado para tela grande, apps desnecessários saem,
+e o launcher **Revya TV** é instalado e definido como padrão.
+
+Quem faz essa preparação — do computador, pelo cabo — é este programa.
+**É a única porta de entrada**: não existe instalar o launcher Revya TV sozinho
+pela Play Store, porque ele depende do aparelho já estar pronto para recebê-la.
+
+O Revya é o que faz essa ponte entre o celular
+que você tem hoje e a TV box que você quer ter.
 
 ## Funcionalidades
 
