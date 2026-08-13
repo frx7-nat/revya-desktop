@@ -11,9 +11,9 @@
 ![Revya's connect screen, asking to plug in the Galaxy by cable](./docs/images/screenshot-connect-en.png)
 ![The Revya program, with the phone connected and Recommended setup ready to apply](./docs/images/screenshot-en.png)
 
-Before we get started, program isn't available on the Play Store because
-the layer of changes made by the program is necessary to get the most out
-of using it.
+Before we get started, the program isn't available on the Play Store
+because the layer of changes made by the program is necessary to get the
+most out of using it.
 
 So it's a process that necessarily has to happen through the computer.
 
