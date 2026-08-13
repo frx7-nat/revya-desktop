@@ -2,6 +2,11 @@
 
 **Português** · [English](./README.en.md)
 
+[![Linux](https://img.shields.io/badge/Linux-Download-orange?logo=linux&logoColor=white&style=for-the-badge)](https://github.com/frx7-nat/revya-desktop/releases/download/v1.0.0/linux-Revya-1.0.0.AppImage)
+[![Windows](https://img.shields.io/badge/Windows-Download-blue?logo=windows&logoColor=white&style=for-the-badge)](https://github.com/frx7-nat/revya-desktop/releases/download/v1.0.0/windows-Revya-1.0.0-instalador.exe)
+[![macOS Intel](https://img.shields.io/badge/macOS_Intel-Download-green?logo=apple&logoColor=white&style=for-the-badge)](https://github.com/frx7-nat/revya-desktop/releases/download/v1.0.0/macos-Revya-1.0.0-intel.dmg)
+[![macOS Apple Silicon](https://img.shields.io/badge/macOS_M1--M2--M3-Download-green?logo=apple&logoColor=white&style=for-the-badge)](https://github.com/frx7-nat/revya-desktop/releases/download/v1.0.0/macos-Revya-1.0.0-arm64.dmg)
+
 ![A tela inicial do Revya TV, o launcher que este programa prepara no seu Galaxy](./docs/images/launcher-pt.jpg)
 ![Tela de conexão do Revya, pedindo para conectar o Galaxy por cabo](./docs/images/screenshot-connect-pt.png)
 ![O programa Revya, com o celular conectado e a Configuração recomendada pronta para aplicar](./docs/images/screenshot-pt.png)
