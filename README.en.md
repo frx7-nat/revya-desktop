@@ -2,6 +2,7 @@
 
 [Português](./README.md) · **English**
 
+![The Revya TV home screen, the launcher this program prepares on your Galaxy](./docs/images/launcher-en.jpg)
 ![Revya's connect screen, asking to plug in the Galaxy by cable](./docs/images/screenshot-connect-en.png)
 ![The Revya program, with the phone connected and Recommended setup ready to apply](./docs/images/screenshot-en.png)
 

@@ -2,6 +2,7 @@
 
 **Português** · [English](./README.en.md)
 
+![A tela inicial do Revya TV, o launcher que este programa prepara no seu Galaxy](./docs/images/launcher-pt.jpg)
 ![Tela de conexão do Revya, pedindo para conectar o Galaxy por cabo](./docs/images/screenshot-connect-pt.png)
 ![O programa Revya, com o celular conectado e a Configuração recomendada pronta para aplicar](./docs/images/screenshot-pt.png)
 
