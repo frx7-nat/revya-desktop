@@ -28,8 +28,8 @@ O escopo relevante de segurança é, principalmente:
 ## Fora do escopo
 
 - Avisos do Gatekeeper (macOS) ou SmartScreen (Windows) por falta de
-  assinatura paga — é uma decisão de produto documentada, não uma
-  vulnerabilidade. Ver `changeset/PESQUISA-smartscreen.md`.
+  assinatura paga — é uma decisão de produto deliberada, não uma
+  vulnerabilidade.
 - Vulnerabilidades em binários de terceiros embutidos sem modificação
   (scrcpy, ADB/platform-tools) — reporte direto ao projeto de origem. Ver
   `THIRD-PARTY-NOTICES.md`.

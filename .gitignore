@@ -27,3 +27,22 @@ apks/**/*.xapk
 # Binários do scrcpy (espelhamento de tela) — baixados à parte, ver scrcpy/README.txt
 scrcpy/*/*
 !scrcpy/*/README.txt
+
+# Diário de bordo do projeto: decisões, testes, planos e revisões de código.
+# Útil para quem desenvolve, sem nenhuma serventia para quem só roda o
+# programa — e público de propósito só localmente (fora do controle de
+# versão) desde 13/08/2026, quando o repositório virou público. Os arquivos
+# continuam no disco, só não vão mais para o Git.
+changeset/
+docs/review/
+docs/baseline.md
+docs/exclusoes-kaspersky.md
+docs/retrato-*.txt
+docs/roteiro-erros-adb.md
+docs/roteiro-final-fase5.md
+DOCUMENTACAO.md
+dexarmor-estrategia-completa.md
+fluxograma-dexarmor-recuperacoes.pdf
+plano-revisao-dexarmor.md
+PROXIMOS-PASSOS-LANCAMENTO.md
+sugestões-produto.md

@@ -133,7 +133,7 @@ src/
       DexGuideDialog.jsx / FirstSetupGuideDialog.jsx / SideloadGuideDialog.jsx
       PhoneMock.jsx / PhoneScreen.jsx / PhoneAccessories.jsx  Celular central
 scripts/
-  check-i18n.js         Guarda de tradução (roda no build; ver changeset/I18N.md)
+  check-i18n.js         Guarda de tradução (roda no build)
   after-pack.js         Assinatura ad-hoc do .app antes do DMG (macOS)
   verify-win.js         Testa a integridade dos .exe gerados
 build/
@@ -185,7 +185,7 @@ Cada comando builda o renderer antes de empacotar. O filtro `${os}` no
 dependências de UI (React/MUI) ficam em `devDependencies` — o bundle do Vite já
 embute tudo. Builds de Mac precisam rodar em macOS.
 
-Três armadilhas resolvidas em 28/07/2026, todas registradas em `changeset/`:
+Três armadilhas resolvidas em 28/07/2026:
 
 - **macOS acusava "Malware Bloqueado".** Sem assinatura nenhuma, o Gatekeeper
   dava veredito `revoked` — que **não tem** o contorno de "abrir mesmo assim".
@@ -224,7 +224,7 @@ Três armadilhas resolvidas em 28/07/2026, todas registradas em `changeset/`:
   (com densidade pareada), e bloqueio de tela/streaming ficam na seleção manual.
 - **Nenhum texto de interface no código**: tudo vem do catálogo, e três guardas
   quebram o build se faltar tradução. Elas não substituem abrir o app nos dois
-  idiomas — ver `changeset/I18N.md`.
+  idiomas.
 
 ## Limites conhecidos
 

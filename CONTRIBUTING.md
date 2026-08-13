@@ -33,8 +33,8 @@ npm run check:i18n
 - **Apps de terceiros embutidos.** O catálogo de instalação inclui só o
   launcher próprio (Revya TV) — ver `apks/README.txt` para o porquê. Um PR
   reintroduzindo um catálogo de apps de terceiros não vai ser aceito.
-- **Telemetria ou coleta de dados.** É uma decisão de produto documentada no
-  `changeset/` do projeto irmão (`revya-launcher`), e vale dos dois lados.
+- **Telemetria ou coleta de dados.** É uma decisão de produto deliberada, e
+  vale dos dois lados (desktop e launcher).
 
 ## Antes de abrir um PR
 

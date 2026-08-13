@@ -1,8 +1,6 @@
 # Changelog
 
-Formato: o que mudou para quem **usa** o programa. O detalhe técnico de cada
-mudança fica em `changeset/`, um arquivo por assunto, e a revisão de código de
-28-29/07/2026 está em `docs/review/`.
+Formato: o que mudou para quem **usa** o programa.
 
 ## 1.0.0 — Revya
 
@@ -39,8 +37,8 @@ resolvidos:
 
 ### Estabilidade da conexão ADB
 
-Seis cenários de falha foram executados em aparelho real (`docs/roteiro-erros-adb.md`)
-e duas correções saíram deles:
+Seis cenários de falha foram executados em aparelho real, e duas correções
+saíram deles:
 
 - Conexão por Wi-Fi que ficava `offline` por oscilação da rede **sumia de vez**:
   a recuperação automática reiniciava o servidor ADB e derrubava o pareamento

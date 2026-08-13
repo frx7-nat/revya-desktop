@@ -134,7 +134,7 @@ src/
       DexGuideDialog.jsx / FirstSetupGuideDialog.jsx / SideloadGuideDialog.jsx
       PhoneMock.jsx / PhoneScreen.jsx / PhoneAccessories.jsx  Center phone
 scripts/
-  check-i18n.js         Translation guard (runs on build; see changeset/I18N.md)
+  check-i18n.js         Translation guard (runs on build)
   after-pack.js         Ad-hoc signing of the .app before the DMG (macOS)
   verify-win.js         Tests the integrity of the generated .exe files
 build/
@@ -187,7 +187,7 @@ Each command builds the renderer before packaging. The `${os}` filter in
 scrcpy). UI dependencies (React/MUI) live in `devDependencies` — Vite's
 bundle already embeds everything. Mac builds must run on macOS.
 
-Three pitfalls solved on 28/07/2026, all logged in `changeset/`:
+Three pitfalls solved on 28/07/2026:
 
 - **macOS flagged "Malware Blocked."** With no signature at all, Gatekeeper
   gave a `revoked` verdict — which **has no** "open anyway" workaround.
@@ -226,7 +226,7 @@ Three pitfalls solved on 28/07/2026, all logged in `changeset/`:
   density), and screen lock/streaming stay in manual selection.
 - **No interface text in the code**: everything comes from the catalog, and
   three guards break the build if a translation is missing. They don't
-  replace opening the app in both languages — see `changeset/I18N.md`.
+  replace opening the app in both languages.
 
 ## Known limits
 
