@@ -50,7 +50,9 @@ import SettingsRemoteIcon from '@mui/icons-material/SettingsRemote';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import SquareIcon from './SquareIcon';
 import ProfilesPanel from './ProfilesPanel';
+import LicensesDialog from './LicensesDialog';
 import { TASK_GROUPS, accessoryGroupsFor, ACCESSORY_DISCLOSURE_KEY } from '../data/tasks';
+import { LICENSES_TRIGGER_KEY } from '../data/thirdPartyNotices';
 import { friendlyError } from '../utils/errors';
 import { useT, has } from '../i18n';
 
@@ -496,6 +498,9 @@ export default function TaskPanel({
   // Estado interno é fallback; se o pai controla (viewProp), usamos o dele.
   const [viewLocal, setViewLocal] = useState('mods'); // 'mods' | 'profiles' | 'accessories'
   const view = viewProp ?? viewLocal;
+  // Diálogo de atribuição de terceiros (scrcpy, ADB): informativo, sem
+  // depender do aparelho — por isso fica com estado próprio, aqui mesmo.
+  const [licensesOpen, setLicensesOpen] = useState(false);
   const setView = (v) => { setViewLocal(v); onViewChange && onViewChange(v); };
 
   return (
@@ -663,6 +668,15 @@ export default function TaskPanel({
 
           {/* Diário de trocas: o histórico do aparelho, em linguagem simples. */}
           {hasDevice && onLoadJournal && <JournalList onLoad={onLoadJournal} />}
+
+          {/* Atribuição de terceiros (scrcpy, ADB): informativo, tom discreto
+              — não é uma ação sobre o aparelho como o resto da seção. */}
+          <Link component="button" type="button" onClick={() => setLicensesOpen(true)}
+            underline="hover" color="text.secondary"
+            sx={{ display: 'block', fontSize: '0.72rem', mb: 2, textAlign: 'left' }}>
+            {t(LICENSES_TRIGGER_KEY)}
+          </Link>
+          <LicensesDialog open={licensesOpen} onClose={() => setLicensesOpen(false)} />
 
           {/* Convite para salvar a interface como perfil: aparece quando há
               ajustes de modo ativos — o momento em que "a tela ficou boa". */}
